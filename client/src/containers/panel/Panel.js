@@ -22,11 +22,11 @@ import { Grid, IconButton } from '@material-ui/core';
 import { obtenerSistemaEvaluaciones, obtenerTodos } from '../../utils/API/sistemas.js';
 import Crear from './components/Crear'
 import Eliminar from './components/Eliminar'
-import { obtenerMetricasSistemas, obtenerPanelResult } from '../../utils/API/evaluaciones';
+import { obtenerTodos as obtenerMetricasSistemas } from '../../utils/API/clientes';
 import Bar from './components/Bar';
 import Box from '@material-ui/core/Box';
 import Tab2 from './components/Tab2';
-import { obtenerTodos as obtenerTodosS } from '../../utils/API/sistemas';
+import { obtenerTodos as obtenerTodosS } from '../../utils/API/facturas';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Radio from './components/Radio';
 import noValue from '../../assets/noValue.svg'
@@ -163,9 +163,7 @@ export default function Sistemas(props) {
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerTodos(setData0, initializer)
-            obtenerPanelResult(setData, setLabels, setValues, initializer)
             obtenerTodosS(setSistemas, initializer)
-            obtenerMetricasSistemas(setData1, initializer)
             obtenerSistemaEvaluaciones(setLabels2, setValues2, initializer)
 
         }
@@ -223,7 +221,7 @@ export default function Sistemas(props) {
 
 
                         <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
-                            {data.length}
+                            {sistemas.length}
                         </Typography>
                         <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
                             Total Ventas
@@ -245,10 +243,10 @@ export default function Sistemas(props) {
 
 
                         <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
-                            {data.length}
+                            {data1.length}
                         </Typography>
                         <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
-                            Ingresos
+                            Clientes
                         </Typography>
                     </CardContent>
                 </Card>
