@@ -16,7 +16,7 @@ import Initializer from '../../../store/Initializer'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { obtenerTodos } from '../../../utils/API/facturas';
+import { obtenerTodos } from '../../../utils/API/clientes.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
@@ -56,7 +56,7 @@ export default function Sistemas(props) {
 
             <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography variant="h5" >
-                    Facturas
+                    Clientes
                 </Typography>
                 <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
                         Nuevo
@@ -87,21 +87,14 @@ export default function Sistemas(props) {
                 <MaterialTable
                     icons={TableIcons}
                     columns={[
-                        { title: "Factura #", field: "id" },
+                      
+                        { title: "Documento", field: "document" },
+                        { title: "Nombres", field: "names" },
+                        { title: "Celular", field: "cellphone" },
+                        { title: "Teléfono", field: "landline" },
+                        { title: "Dirección", field: "address" },
+                        { title: "Correo", field: "email" },
 
-                        { title: "Documento", field: "document",
-                        render: rowData => (
-                            <span >{rowData.final_consumer==1?'-':rowData.document}</span>
-                        )  },
-                        { title: "Cliente", field: "names",
-                        render: rowData => (
-                            <span >{rowData.final_consumer==1?'Consumidor Final':rowData.names}</span>
-                        ) },
-                        { title: "Producto", field: "name" },
-                        { title: "Códio de Barras", field: "bar_code" },
-                        { title: "Total", field: "total" },
-
-                        
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 
@@ -112,7 +105,35 @@ export default function Sistemas(props) {
 
                     localization={LocalizationTable}
 
-                 
+                    actions={[
+                        {
+                            icon: TableIcons.Edit,
+                            tooltip: 'Editar',
+
+                            onClick: (event, rowData) => {
+                                setSelected(rowData)
+                                setOpen(true)
+                            }
+                        },
+                       
+
+                        {
+                            icon: TableIcons.Delete,
+                            tooltip: "Borrar",
+
+                            onClick: (event, rowData) => {
+                                setSelected2(rowData)
+                                setOpen2(true)
+                            }
+                        },
+                        {
+                            icon: TableIcons.Filter,
+                            tooltip: 'Filtrar',
+                            isFreeAction: true,
+                            onClick: (event) => setOpenFilter(true)
+                          }
+
+                    ]}
 
                     options={{
                         pageSize:10,

@@ -3,20 +3,15 @@
 namespace App\Http\Controllers\v1\Ventas;
 
 use App\Http\Controllers\Controller;
-use App\Models\Invoice;
-use App\Models\InvoiceProduct;
-use App\Models\Product;
+use App\Models\Client;
 use Illuminate\Http\Request;
 
-class InvoiceController extends Controller
+class ClientController extends Controller
 {
     public function index()
     {
         try {
-            $data = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
-            ->join('invoice_products', 'invoice_products.invoice_id', '=', 'invoices.id')
-            ->join('products', 'invoice_products.product_id', '=', 'products.id')
-            ->selectRaw('invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,clients.document,clients.names,products.name,products.bar_code')->get();
+            $data = Client::all();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -31,37 +26,10 @@ class InvoiceController extends Controller
             ]);
         }
     }
-    public function decreaseProductStock($id,$quantity){
-        $pr = Product::find($id);
-        $pr->stock = $quantity;
-        $pr->save();
-    }
     public function create(Request $request)
     {
-
-        $data = $request->input('data');
-        $clientId = $request->input('client_id');
-        $finalConsumer = $request->input('final_consumer');
-        $total = $request->input('total');
-
         try {
-            $inv= Invoice::create([
-                'client_id' => $clientId,
-                'final_consumer' => $finalConsumer,
-                'total'=> $total,
-                'status'=>'A',
-                'user_id'=>1
-            ]);
-            foreach ($data as $val) {
-                InvoiceProduct::create([
-                    'invoice_id' =>  $inv->id,
-                    'product_id' => $val['product_id'],
-                    'quantity'=> $val['quantity'],
-                    'subtotal'=>$val['subtotal'],
-                    'user_id'=>1
-                ]);
-                $this->decreaseProductStock($val['product_id'],$val['stock']);
-            }
+            Client::create($request->all());
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',
@@ -77,7 +45,7 @@ class InvoiceController extends Controller
     }
     public function show($id)
     {
-        $data = Invoice::find($id);
+        $data = Client::find($id);
         return response()->json([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
@@ -87,7 +55,7 @@ class InvoiceController extends Controller
     }
     public function update(Request $request,$id){
         try {
-            $co = Invoice::find($id);
+            $co = Client::find($id);
             $co->update($request->all());
             return response()->json([
                 "status" => "200",
@@ -105,7 +73,7 @@ class InvoiceController extends Controller
   
     public function delete($id)
     {
-        $data = Invoice::find($id);
+        $data = Client::find($id);
         $data->delete();
         return response()->json([
             "status" => "200",

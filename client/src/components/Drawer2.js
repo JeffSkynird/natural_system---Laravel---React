@@ -241,6 +241,10 @@ function ResponsiveDrawer(props) {
                         <ListItemIcon style={{ color: 'inherit' }}><PostAddIcon  style={{ color: 'inherit' }} /> </ListItemIcon>
                         <ListItemText primary={'Ventas'} />
                     </ListItem>
+                    <ListItem button onClick={() => props.history.push('/clientes')} style={comprobador('/clientes')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon  style={{ color: 'inherit' }} /> </ListItemIcon>
+                        <ListItemText primary={'Clientes'} />
+                    </ListItem>
                     <ListItem button onClick={handleOpenSettings} style={comprobador('/inventario')}>
                         <ListItemIcon style={{ color: 'inherit' }}><ListIcon style={{ color: 'inherit' }} /> </ListItemIcon>
                         <ListItemText primary={'Inventario'} />

@@ -132,6 +132,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('invoices', 'App\Http\Controllers\v1\Ventas\InvoiceController@index');
     Route::delete('invoices/{id}', 'App\Http\Controllers\v1\Ventas\InvoiceController@delete');
 
+    Route::post('clients', 'App\Http\Controllers\v1\Ventas\ClientController@create');
+    Route::put('clients/{id}', 'App\Http\Controllers\v1\Ventas\ClientController@update');
+    Route::get('clients/{id}', 'App\Http\Controllers\v1\Ventas\ClientController@show');
+    Route::get('clients', 'App\Http\Controllers\v1\Ventas\ClientController@index');
+    Route::delete('clients/{id}', 'App\Http\Controllers\v1\Ventas\ClientController@delete');
     Route::middleware('auth:api')->group(function () {
         
         Route::post('autorize_order/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@autorize');

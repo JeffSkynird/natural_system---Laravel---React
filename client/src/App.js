@@ -43,7 +43,7 @@ import Inventario from './containers/Inventario/Inventario/Index';
 import Transferencias from './containers/Inventario/Transferencias/Index';
 import Ajustes from './containers/Inventario/Ajustes/Index'
 import Facturas from './containers/Inventario/Facturas/Index'
- 
+ import Clientes from './containers/Inventario/Clientes/Index'
 import { indigo } from '@material-ui/core/colors';
 
 function Alert(props) {
@@ -185,6 +185,7 @@ export default function App(props) {
                   <Route exact path="/inventario/transferencias" component={Transferencias} />
                   <Route exact path="/inventario/ajustes" component={Ajustes} />
                   <Route exact path="/facturas" component={Facturas} />
+                  <Route exact path="/clientes" component={Clientes} />
 
                   
                   <Route render={() => <Redirect to="/panel" />} />
