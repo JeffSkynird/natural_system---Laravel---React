@@ -113,6 +113,8 @@ class OrderController extends Controller
             foreach ($data['suppliers'] as $val) {
                 $order = Order::create([
                     'supplier_id' => $val['supplier_id'],
+                    'user_id' => 1,
+
                 ]);
                 foreach ($val['products'] as $val2) {
                     $this->createDetailOrder($val2['product_id'], $val2['quantity'], $order->id);

@@ -288,7 +288,7 @@ function ResponsiveDrawer(props) {
                         </List>
                     </Collapse>
 
-                    <ListItem button onClick={() => props.history.push('evaluaciones')} style={comprobador('/evaluaciones')}>
+                    <ListItem button onClick={() => props.history.push('/personal')} style={comprobador('/personal')}>
                         <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
                         <ListItemText primary={'Personal'} />
                     </ListItem>
