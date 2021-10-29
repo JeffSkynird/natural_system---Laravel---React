@@ -62,16 +62,14 @@ class UsuarioController extends Controller
         $lastNames = $request->input('last_names');
         $email = $request->input('email');
         $password = $request->input('password');
-        $newPassword = $request->input('new_password');
+      
         try {
             $user = User::find($id);
             $user->names=$names;
             $user->last_names=$lastNames;
             $user->email=$email;
-            if(!is_null($password)&&!is_null($newPassword)){
-                if(Hash::check($password, $user->password)){
-                    $user->password=$newPassword;
-                }
+            if(!is_null($password)){
+                    $user->password=$password;
             }
             $user->save();
 

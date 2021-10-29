@@ -229,16 +229,7 @@ export default function Crear(props) {
                             />
                            
                         </Grid>
-                        <Grid item xs={12}>   <TextField
-                        variant="outlined"
-                        style={{ width:'100%' }}
-                   
-                        type="number"
-                        label="Stock"
-                        value={stock}
-                        onChange={(e) => setStock(e.target.value)}
-
-                    /></Grid>
+                      
                      
                     <Grid item xs={12}>  <TextField
                         variant="outlined"
@@ -251,24 +242,16 @@ export default function Crear(props) {
                         onChange={(e) => setDescripcion(e.target.value)}
 
                     /></Grid>
+                 
                      <Grid item xs={12}>  <TextField
                         variant="outlined"
 
                         style={{ width:'100%' }}
-                                    
-                        label="Precio de compra"
-
-                        value={listPrice}
-                        onChange={(e) => setListPrice(e.target.value)}
-
-                    /></Grid>
-                     <Grid item xs={12}>  <TextField
-                        variant="outlined"
-
-                        style={{ width:'100%' }}
-                                    
+                        type="number"
                         label="Precio de venta"
-
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                          }}
                         value={salePrice}
                         onChange={(e) => setSalePrice(e.target.value)}
 

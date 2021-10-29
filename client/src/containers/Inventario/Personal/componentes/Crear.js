@@ -73,7 +73,7 @@ export default function Crear(props) {
 
         }
         props.setOpen(false)
-        props.carga()
+      
     }
     const limpiar=()=>{
         setNombre("")
