@@ -16,7 +16,7 @@ import Initializer from '../../../store/Initializer'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { obtenerTodos } from '../../../utils/API/clientes.js';
+import { obtenerTodos } from '../../../utils/API/usuarios.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'

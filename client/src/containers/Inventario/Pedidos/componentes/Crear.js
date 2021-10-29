@@ -6,13 +6,21 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { Tooltip } from '@material-ui/core';
 import Initializer from '../../../../store/Initializer'
 import Confirmar from '../../../../components/Confirmar'
 import Slide from '@material-ui/core/Slide';
+import { PersonAddOutlined, PostAddOutlined } from '@material-ui/icons';
+
 import { Checkbox, FormControlLabel, Grid } from '@material-ui/core';
 import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido } from '../../../../utils/API/pedidos';
 import { obtenerTodos } from '../../../../utils/API/proveedores';
 import { obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
+import Crear from '../../Productos/componentes/Crear'
+import CrearProveedor from '../../Proveedores/componentes/Crear'
+
+
+import IconButton from '@material-ui/core/IconButton';
 
 import { Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
@@ -20,7 +28,7 @@ import { LocalizationTable, TableIcons } from '../../../../utils/table';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function Crear(props) {
+export default function CrearN(props) {
     const initializer = React.useContext(Initializer);
     const [open, setOpen] = React.useState(false)
 
@@ -31,6 +39,8 @@ export default function Crear(props) {
     const [productos, setProductos] = React.useState([])
     const [productosData, setProductosData] = React.useState([])
     const [producto, setProducto] = React.useState([])
+    const [crearProducto, setCrearProducto] = React.useState(false)
+    const [crearProveedor, setCrearProveedor] = React.useState(false)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
@@ -50,6 +60,8 @@ export default function Crear(props) {
 
        if (props.sistema == null) {
             registrarPedido({ suppliers: validarData(),authorize:autorizar?1:0 }, initializer)
+            obtenerProductos(setProductosData, initializer)
+
             limpiar()
         } else {
             editarPedido(props.sistema.id, { suppliers: validarData(),authorize:autorizar?1:0 }, initializer)
@@ -95,12 +107,22 @@ export default function Crear(props) {
     const obtenerProductosPorId=(id)=>{
         return productos.filter((e)=>e.supplier_id==id)
     }
+    const existeEnDetalle=(id)=>{
+        let exs = false
+        productos.map((e)=>{
+          if(e.product_id==id){
+              exs=true
+          }  
+        })
+        return exs
+    }
     const agregar=() => {
         if(producto.length!=0!=""&&proveedor!=""&&cantidad!=""&&cantidad>0&&cantidad>0){
             let t = productos.slice()
             producto.map((e)=>{
+                if(!existeEnDetalle(e.id)){
                 t.push({product:e.name,supplier:obtenerProveedor(proveedor),product_id:e.id,quantity:cantidad,supplier_id:proveedor})
-
+                }
             })
             setProductos(t)
             setCantidad('')
@@ -156,15 +178,38 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            
+              <CrearProveedor sistema={null} setSelected={()=>null} setOpen={setCrearProveedor} open={crearProveedor} carga={()=>{
+                obtenerTodos(setProveedorData, initializer)
+       
+              
+         }} />
+             <Crear sistema={null} setSelected={()=>null} setOpen={setCrearProducto} open={crearProducto} carga={()=>{
+                 obtenerProductos(setProductosData, initializer)
+         }} />
             <Confirmar open={open} setOpen={setOpen} accion={guardar} titulo='¿Desea continuar? Se anulará la orden y se creará otra.'/>
             <DialogTitle id="alert-dialog-slide-title">{props.sistema!=null?'Orden de compra '+props.sistema.id:'Orden de compra'}</DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description">
-                    {props.sistema != null ? "Formulario de edición de compras" : "Formulario de creación de compras"}
+                <DialogContentText id="alert-dialog-slide-description"  style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                    {props.sistema != null ? "Formulario de edición de compras" : "Formulario de creación de compras"}  
+                    <div style={{display:'flex'}}>
+
+                    <Tooltip title="Crear proveedor">
+                <IconButton aria-label="add_proveedor" onClick={()=>setCrearProveedor(true)}>
+                    <PersonAddOutlined />
+                </IconButton>
+                </Tooltip>
+                      <Tooltip title="Crear producto">
+                       
+                <IconButton aria-label="add_producto" onClick={()=>setCrearProducto(true)}>
+                    <PostAddOutlined />
+                </IconButton>
+                </Tooltip>
+
+</div>
+                   
                 </DialogContentText>
                 <Grid container spacing={2}>
-                <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
@@ -175,7 +220,7 @@ export default function Crear(props) {
                             onChange={(event, newValue) => {
                                 setProducto(newValue);
                               }}
-                              getOptionLabel={(option) => option.bar_code+" - "+option.name}
+                              getOptionLabel={(option) => option.bar_code+" - "+option.name+ " - stock: "+option.stock}
                          // prints the selected value
                             renderInput={params => (
                                 <TextField    variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
@@ -183,7 +228,7 @@ export default function Crear(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12}>    <TextField
+                    <Grid item xs={12} md={4}>    <TextField
                         variant="outlined"
                         style={{  width: '100%' }}
                         type="number"
@@ -194,7 +239,7 @@ export default function Crear(props) {
                         onChange={(e) => setCantidad(e.target.value)}
 
                     /></Grid>
-                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                    <Grid item xs={12} md={4} style={{ display: 'flex' }}>
                         <Autocomplete
     size="small"
                             style={{ width: '100%' }}

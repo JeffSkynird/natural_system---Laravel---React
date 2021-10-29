@@ -107,10 +107,10 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle id="alert-dialog-slide-title">Bodegas</DialogTitle>
+            <DialogTitle id="alert-dialog-slide-title">Clientes</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                   {props.sistema!=null?"Formulario de edición de bodegas": "Formulario de creación de bodegas"}
+                   {props.sistema!=null?"Formulario de edición de clientes": "Formulario de creación de clientes"}
                 </DialogContentText>
             
                 <Grid container spacing={2}>
@@ -119,7 +119,7 @@ export default function Crear(props) {
                         variant="outlined"
                         style={{ width:'100%' }}
                       
-                        label="Documento"
+                        label="Cédula/RUC"
                         value={documento}
                         onChange={(e) => setDocumento(e.target.value)}
 
@@ -167,7 +167,7 @@ export default function Crear(props) {
                         variant="outlined"
                         style={{ width:'100%' }}
                       
-                        label="Teléfono fijo"
+                        label="Correo"
                         value={correo}
                         onChange={(e) => setCorreo(e.target.value)}
 

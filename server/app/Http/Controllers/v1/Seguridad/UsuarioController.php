@@ -12,6 +12,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 class UsuarioController extends Controller
 {
+    public function index(){
+        $usuarios = User::all();
+        return response()->json([
+            "status" => "200",
+            "data"=> $usuarios,
+            "message" => 'Listado exitoso',
+            "type" => 'success'
+        ]);
+    }
     public function create(UserRequest $request)
     {
         try {
@@ -119,7 +128,7 @@ class UsuarioController extends Controller
             ]);
         }
     }
-    public function delete(UserRequest $request,$id)
+    public function delete($id)
     {
         $data = User::find($id);
         $data->delete();

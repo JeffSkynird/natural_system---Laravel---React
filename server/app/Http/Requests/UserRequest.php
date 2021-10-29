@@ -81,8 +81,7 @@ class UserRequest extends FormRequest
                 'email' => 'required|email:rfc,dns|unique:users,email,' . $this->id,
                 'dni'=>'required',
                 'names' => 'required',
-                'last_names' => 'required',
-                'password' => 'required'
+                'last_names' => 'required'
             ];
         }else{
             return [

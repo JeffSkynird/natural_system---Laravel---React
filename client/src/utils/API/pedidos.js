@@ -265,7 +265,7 @@ axios(setting)
 
   });
 }
-export const cambiarEstado = (data,store) => {
+export const cambiarEstado = (data,store,carga) => {
   const { usuario, mostrarNotificacion, mostrarLoader } = store;
   
   let url = ENTRYPOINT+"change_order_status";
@@ -286,6 +286,7 @@ export const cambiarEstado = (data,store) => {
        
         mostrarLoader(false);
         mostrarNotificacion({ type: "success", message: response.message });
+        carga()
       } else {
         mostrarNotificacion({ type: "error", message: response.message });
         mostrarLoader(false);

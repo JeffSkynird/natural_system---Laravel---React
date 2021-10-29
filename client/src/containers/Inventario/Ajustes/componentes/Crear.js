@@ -14,6 +14,7 @@ import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedi
 import { obtenerTodos as obtenerRazones } from '../../../../utils/API/razones';
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
 import { obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
+import Crear from '../../Productos/componentes/Crear'
 
 import { Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
@@ -22,7 +23,7 @@ import { registrarUnidad } from '../../../../utils/API/ajustes';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function Crear(props) {
+export default function Crearn(props) {
     const initializer = React.useContext(Initializer);
     const [open, setOpen] = React.useState(false)
 
@@ -31,6 +32,7 @@ export default function Crear(props) {
     const [razonData, setRazonData] = React.useState([])
     const [inventario, setInventario] = React.useState([])
     const [productos, setProductos] = React.useState([])
+    const [crearProducto, setCrearProducto] = React.useState(false)
 
 
     const [almacen, setAlmacen] = React.useState([])
@@ -164,17 +166,40 @@ export default function Crear(props) {
         }
   
     }
+    const existeEnDetalle=(id)=>{
+        let exs = false
+        productos.map((e)=>{
+          if(e.product_id==id){
+              exs=true
+          }  
+        })
+        return exs
+    }
     const agregar=() => {
         if(producto.length!=0!=""&&razon!=""&&cantidad!=""&&cantidad>0&&cantidad>0){
+            let outStock=false
             let t = productos.slice()
             producto.map((e)=>{
-                t.push({product:e.name,bar_code:e.bar_code,stock:e.stock,product_id:e.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                if(!existeEnDetalle(e.id)){
+                if(razon==2){
+                    if((e.stock-cantidad)>=0){
+                        t.push({product:e.name,bar_code:e.bar_code,stock:e.stock,product_id:e.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                        }else{
+                            outStock=true
+                        }
+                }else{
+                    t.push({product:e.name,bar_code:e.bar_code,stock:e.stock,product_id:e.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
 
+                }
+            }
             })
             setProductos(t)
             setCantidad('')
   
             setProducto([])
+            if(outStock){
+                initializer.mostrarNotificacion({ type: "warning", message: 'No hay suficiente stock' });
+            }
         }else{
             initializer.mostrarNotificacion({ type: "warning", message: 'No deje campos vacíos' });
 
@@ -206,44 +231,16 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            
+              <Crear sistema={null} setSelected={()=>null} setOpen={setCrearProducto} open={crearProducto} carga={()=>{
+                 obtenerProductos(setProductosData, initializer)
+         }} />
             <DialogTitle id="alert-dialog-slide-title">Ajuste</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
                     Seleccione los productos y cantidades a ajustar
                 </DialogContentText>
                 <Grid container spacing={2}>
-                <Grid item xs={12} md={12} style={{ display: 'flex' }}>
-                        <Autocomplete
-
-                            style={{ width: '100%' }}
-                            size="small"
-                            options={productosData}
-                            multiple
-                            value={producto}
-                            onChange={(event, newValue) => {
-                                setProducto(newValue);
-                              }}
-                            getOptionLabel={(option) => option.bar_code+" - "+option.name}
-                         // prints the selected value
-                            renderInput={params => (
-                                <TextField    variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
-                            )}
-                        />
-
-                    </Grid>
-                    <Grid item xs={12}>    <TextField
-                        variant="outlined"
-                        style={{  width: '100%' }}
-                        type="number"
-                        size="small"
-                        label="Cantidad"
-                        min="0"
-                        value={cantidad}
-                        onChange={(e) => setCantidad(e.target.value)}
-
-                    /></Grid>
-                  <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
@@ -270,6 +267,37 @@ export default function Crear(props) {
                         />
 
                     </Grid>
+                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
+                        <Autocomplete
+
+                            style={{ width: '100%' }}
+                            size="small"
+                            options={productosData}
+                            multiple
+                            value={producto}
+                            onChange={(event, newValue) => {
+                                setProducto(newValue);
+                              }}
+                            getOptionLabel={(option) => option.bar_code+" - "+option.name+" - stock: "+option.stock}
+                         // prints the selected value
+                            renderInput={params => (
+                                <TextField    variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
+                            )}
+                        />
+
+                    </Grid>
+                    <Grid item xs={4}>    <TextField
+                        variant="outlined"
+                        style={{  width: '100%' }}
+                        type="number"
+                        size="small"
+                        label="Cantidad"
+                        min="0"
+                        value={cantidad}
+                        onChange={(e) => setCantidad(e.target.value)}
+
+                    /></Grid>
+                  
                  
                  <Grid item xs={12} md={12}>
 

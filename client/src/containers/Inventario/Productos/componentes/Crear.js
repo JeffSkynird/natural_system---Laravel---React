@@ -82,7 +82,7 @@ export default function Crear(props) {
         'sale_price':salePrice,
         'category_id':category,
         'description': descripcion,
-        'stock': stock,
+        'stock': stock!=""?stock:0,
         'min_stock': stockMin,
         'max_stock': stockMax,
         'unity_id': unity,

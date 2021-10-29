@@ -206,7 +206,7 @@ function ResponsiveDrawer(props) {
 
     const drawer = (
         <div >
-            <div style={{ marginBottom: 15, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <div style={{  display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                 <Avatar size="" className={classes.avatar} src={logo}>
 
                 </Avatar>
@@ -229,7 +229,7 @@ function ResponsiveDrawer(props) {
             </div>
 
             <Divider />
-            <div style={{ justifyContent: 'space-between', flexDirection: 'column', display: 'flex', height: '100%' }}>
+            <div style={{ justifyContent: 'space-between', flexDirection: 'column', display: 'flex' }}>
                 <List style={{ padding: 10 }} >
 
                     <ListItem button onClick={() => props.history.push('panel')} style={comprobador('/panel')}>
@@ -241,6 +241,12 @@ function ResponsiveDrawer(props) {
                         <ListItemIcon style={{ color: 'inherit' }}><PostAddIcon  style={{ color: 'inherit' }} /> </ListItemIcon>
                         <ListItemText primary={'Ventas'} />
                     </ListItem>
+                    <ListItem button  onClick={()=>props.history.push('/compras')}  style={comprobador('/compras')}>
+                                <ListItemIcon style={{ color: 'inherit' }}>
+                                    <PostAddIcon />
+                                </ListItemIcon>
+                                <ListItemText  primary="Compras" />
+                            </ListItem>
                     <ListItem button onClick={() => props.history.push('/clientes')} style={comprobador('/clientes')}>
                         <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon  style={{ color: 'inherit' }} /> </ListItemIcon>
                         <ListItemText primary={'Clientes'} />
@@ -259,35 +265,31 @@ function ResponsiveDrawer(props) {
                                 </ListItemIcon>
                                 <ListItemText  primary="Productos" />
                             </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/pedidos')} >
+                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/kardex')} >
                                 <ListItemIcon>
                                     <AllInboxIcon />
                                 </ListItemIcon>
-                                <ListItemText  primary="Compras" />
+                                <ListItemText  primary="Kardex" />
                             </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/bodegas')} >
-                                <ListItemIcon>
-                                    {" "}
-                                    <StoreIcon />{" "}
-                                </ListItemIcon>
-                                <ListItemText  primary="Laboratorio" />
-                            </ListItem>
+                           
                          
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/ajustes')}>
-                                <ListItemIcon>
+                          
+                        </List>
+                    </Collapse>
+                  
+                    <ListItem button  onClick={()=>props.history.push('/inventario/ajustes')}>
+                                <ListItemIcon style={{ color: 'inherit' }}>
                                     <TransformIcon />
                                 </ListItemIcon>
                                 <ListItemText  primary="Ajuste" />
                             </ListItem>
-                            <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/proveedores')}>
-                                <ListItemIcon>
+                              
+                            <ListItem button onClick={()=>props.history.push('/inventario/proveedores')}>
+                                <ListItemIcon style={{ color: 'inherit' }}>
                                     <EmojiTransportationIcon />
                                 </ListItemIcon>
                                 <ListItemText  primary="Proveedores" />
                             </ListItem>
-                        </List>
-                    </Collapse>
-
                     <ListItem button onClick={() => props.history.push('/personal')} style={comprobador('/personal')}>
                         <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
                         <ListItemText primary={'Personal'} />
@@ -298,10 +300,7 @@ function ResponsiveDrawer(props) {
                 <div>
                     <Divider />
                     <List>
-                        <ListItem button onClick={() => props.history.push('ajustes')} style={comprobador('/ajustes')} >
-                            <ListItemIcon style={{ color: 'inherit' }}><SettingsIcon /> </ListItemIcon>
-                            <ListItemText primary={'Configuración'} />
-                        </ListItem>
+                
                         <ListItem button onClick={cerrar}>
                             <ListItemIcon><ExitToAppIcon /> </ListItemIcon>
                             <ListItemText primary={'Salir'} />

@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Initializer from '../../../../store/Initializer'
 import Confirmar from '../../../../components/Confirmar'
 import Slide from '@material-ui/core/Slide';
-import { Checkbox,  Grid, InputAdornment } from '@material-ui/core';
+import { Checkbox,  Grid, InputAdornment, Tooltip } from '@material-ui/core';
 import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido, obtenerInventarioOrden, guardarAlmacen } from '../../../../utils/API/pedidos';
 import { obtenerTodos as obtenerRazones } from '../../../../utils/API/razones';
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
@@ -25,15 +25,19 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
-
-
+import { Paper } from '@material-ui/core';
+import { PersonAddOutlined, PostAddOutlined } from '@material-ui/icons';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
+import CrearCliente from '../../Clientes/componentes/Crear'
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-export default function Crear(props) {
+export default function CrearN(props) {
     const initializer = React.useContext(Initializer);
     const [open, setOpen] = React.useState(false)
     const [finalConsumer, setFinalConsumer] = React.useState(false)
+    const [crearCliente, setCrearCliente] = React.useState(false)
 
     const [cantidad, setCantidad] = React.useState("")
 
@@ -78,7 +82,8 @@ export default function Crear(props) {
             registrarUnidad({client_id:finalConsumer?'':client,final_consumer:finalConsumer?1:0,total:subTotalV+(subTotalV*0.12), data: productos }, initializer)
 
             props.setOpen(false)
-    
+            obtenerProductos(setProductosData, initializer)
+
             limpiar()
         
         
@@ -248,25 +253,44 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
+        
+  <CrearCliente sistema={null} setSelected={()=>null} setOpen={setCrearCliente} open={crearCliente} carga={()=>{
+                  obtenerClientes(setClientData, initializer)
 
-            <DialogTitle id="alert-dialog-slide-title">Factura</DialogTitle>
-            <DialogContent>
-                <DialogContentText id="alert-dialog-slide-description" style={{display:'flex',justifyContent:'space-between'}}>
+}} />
+
+            <DialogTitle id="alert-dialog-slide-title" >
+                
+                <span>Factura</span> 
+           
+                </DialogTitle>
+            <DialogContent >
+            <DialogContentText id="alert-dialog-slide-description" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                     Seleccione el cliente y productos a facturar
-                    <FormControlLabel
-                        control={<Switch checked={finalConsumer} onChange={()=>{
-                            setFinalConsumer(!finalConsumer)
-                        }}   name="checkedA" />}
-                        label="Consumidor Final"
-                    />
+                    <div style={{display:'flex'}}>
+             
+                <Tooltip title="Crear cliente">
+                <IconButton aria-label="add_proveedor" onClick={()=>setCrearCliente(true)}>
+                    <PersonAddOutlined />
+                </IconButton>
+                </Tooltip>
+                <Tooltip title={!finalConsumer?"Consumidor final":"Cliente"}>
+                <IconButton aria-label="cambiar" onClick={()=>setFinalConsumer(!finalConsumer)}>
+                   { finalConsumer?<AccountBoxIcon />:<SupervisedUserCircleIcon />}
+                </IconButton>
+                </Tooltip>
+                
+                </div>
+             
+                  
                 </DialogContentText>
                 <Grid container spacing={2}>
-                        {
-                            !finalConsumer&&(
-                                <Grid item xs={12} md={12} style={{ display: 'flex',justifyContent:'space-between',alignItems:'center'}}>
+                      
+                           { !finalConsumer&&(
+                                <Grid item xs={12} md={4} style={{ display: 'flex',justifyContent:'space-between',alignItems:'center'}}>
                                 <Autocomplete
-        
-                                    style={{ width: '96%' }}
+                        
+                                    style={{ width: '100%' }}
                                     size="small"
                                     options={clientData}
                                     
@@ -288,14 +312,14 @@ export default function Crear(props) {
                                         <TextField variant="outlined" {...params} label="Seleccione un cliente" variant="outlined" fullWidth  />
                                     )}
                                 />
-                                <IconButton aria-label="delete">
-                                <GroupAddIcon />
-                                </IconButton>
+                             
                             </Grid>
                             )
-                        }
+                                    }
+                                
+                         
                    
-                    <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                    <Grid item xs={12} md={finalConsumer?6:4} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
@@ -314,7 +338,7 @@ export default function Crear(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12}>    <TextField
+                    <Grid item xs={12}  md={finalConsumer?6:4} >    <TextField
                         variant="outlined"
                         style={{ width: '100%' }}
                         type="numeric"
@@ -325,6 +349,7 @@ export default function Crear(props) {
                         onChange={(e) => setCantidad(e.target.value)}
 
                     /></Grid>
+                
 
 
                     <Grid item xs={12} md={12}>
@@ -377,7 +402,9 @@ export default function Crear(props) {
                                     quitar(rowData)
                                 }
                             }]}
-
+                            components={{
+                                Container: props => <Paper {...props} elevation={0}/>
+                           }}
 
                             options={{
                                 pageSize: 10,
@@ -386,7 +413,8 @@ export default function Crear(props) {
 
                                 actionsColumnIndex: -1,
                                 width: '100%',
-                                maxBodyHeight: 150,
+                                maxBodyHeight: 200,
+                                
                                 padding: 'dense',
                                 headerStyle: {
                                     textAlign: 'left'
@@ -402,11 +430,10 @@ export default function Crear(props) {
 
                         />
                     </Grid>
-                    <Grid item xs={12} md={12} >
+                    <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'flex-end'}} >
                         <TextField
                             variant="outlined"
-                            style={{ width: '100%' }}
-                            type="number"
+                        
                             size="small"
                             label="SubTotal"
                             value={subTotalV}
@@ -416,11 +443,10 @@ export default function Crear(props) {
                         />
                         
                     </Grid>
-                    <Grid item xs={12} md={12} >
+                    <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'flex-end'}} >
                     <TextField
                             variant="outlined"
-                            style={{ width: '100%' }}
-                            type="number"
+                       
                             size="small"
                             label="Iva"
                             value={(subTotalV * 0.12).toFixed(2)}
@@ -430,11 +456,10 @@ export default function Crear(props) {
                         />
                          
                 </Grid>
-                    <Grid item xs={12} md={12} >
+                    <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'flex-end'}} >
                     <TextField
                             variant="outlined"
-                            style={{ width: '100%' }}
-                            type="number"
+                        
                             size="small"
                             label="Total"
                             value={subTotalV + (subTotalV * 0.12)}

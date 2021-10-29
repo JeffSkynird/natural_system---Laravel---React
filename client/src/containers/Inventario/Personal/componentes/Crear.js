@@ -10,7 +10,7 @@ import Initializer from '../../../../store/Initializer'
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
 import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
-import { editar as editarBodega, registrar as registrarBodega } from '../../../../utils/API/clientes';
+import { editar as editarBodega, registrar as registrarBodega } from '../../../../utils/API/usuarios';
 import { obtenerTodos as obtenerZonas } from '../../../../utils/API/zones';
 import { Autocomplete } from '@material-ui/lab';
 
@@ -34,8 +34,8 @@ export default function Crear(props) {
     const [image, setImage] = React.useState("")
 
     const [stock, setStock] = React.useState("")
-    const [stockMin, setStockMin] = React.useState("")
-    const [stockMax, setStockMax] = React.useState("")
+    const [clave, setClave] = React.useState("")
+    const [apellidos, setApellidos] = React.useState("")
 
     const [descripcion, setDescripcion] = React.useState("")
     React.useEffect(() => {
@@ -47,8 +47,9 @@ export default function Crear(props) {
 }, [initializer.usuario])
     React.useEffect(()=>{
         if(props.sistema!=null){
-            setNombre(props.sistema.names+" "+props.sistema.lastnames)
-            setDocumento(props.sistema.document)
+            setNombre(props.sistema.names)
+            setApellidos(props.sistema.last_names)
+            setDocumento(props.sistema.dni)
   
             setCorreo(props.sistema.email)
      
@@ -58,12 +59,11 @@ export default function Crear(props) {
     const guardar=()=>{
         let data={ 
         'names': nombre,
-        'document': documento,
-        'address': direccion,
-        'cellphone': celular,
+        'last_names':apellidos,
+        'dni': documento,
         'email': correo,
-        'landline': telefono,
-        'user_id': 1}
+        'password':clave
+   }
         if(props.sistema==null){
             registrarBodega(data,initializer)
             limpiar()
@@ -78,6 +78,7 @@ export default function Crear(props) {
     const limpiar=()=>{
         setNombre("")
         setDocumento("")
+        setClave("")
         setDireccion("")
         setCelular("")
         setCorreo("")
@@ -106,10 +107,10 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle id="alert-dialog-slide-title">Bodegas</DialogTitle>
+            <DialogTitle id="alert-dialog-slide-title">Personal</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                   {props.sistema!=null?"Formulario de edición de bodegas": "Formulario de creación de bodegas"}
+                   {props.sistema!=null?"Formulario de edición de usuarios": "Formulario de creación de usuarios"}
                 </DialogContentText>
             
                 <Grid container spacing={2}>
@@ -118,7 +119,7 @@ export default function Crear(props) {
                         variant="outlined"
                         style={{ width:'100%' }}
                       
-                        label="Documento"
+                        label="Cédula/RUC"
                         value={documento}
                         onChange={(e) => setDocumento(e.target.value)}
 
@@ -128,22 +129,38 @@ export default function Crear(props) {
                         variant="outlined"
                         style={{ width:'100%' }}
                       
-                        label="Nombre"
+                        label="Nombres "
                         value={nombre}
                         onChange={(e) => setNombre(e.target.value)}
 
                     /></Grid>
-                   
+                    <Grid item xs={12}>    <TextField
+                        variant="outlined"
+                        style={{ width:'100%' }}
+                      
+                        label="Apellidos "
+                        value={apellidos}
+                        onChange={(e) => setApellidos(e.target.value)}
+
+                    /></Grid>
                    <Grid item xs={12}>    <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
                       
-                        label="Teléfono fijo"
+                        label="Correo"
                         value={correo}
                         onChange={(e) => setCorreo(e.target.value)}
 
                     /></Grid>
+    <Grid item xs={12}>    <TextField
+                        variant="outlined"
+                        style={{ width:'100%' }}
+                        type="password"
+                        label="Clave"
+                        value={clave}
+                        onChange={(e) => setClave(e.target.value)}
 
+                    /></Grid>
 
                 </Grid>
 

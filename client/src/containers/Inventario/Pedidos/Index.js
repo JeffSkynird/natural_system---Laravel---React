@@ -17,7 +17,7 @@ import Confirmar from '../../../components/Confirmar'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { autorizarOrden, obtenerStatusOrden, obtenerTodos } from '../../../utils/API/pedidos.js';
+import { autorizarOrden, cambiarEstado, obtenerStatusOrden, obtenerTodos } from '../../../utils/API/pedidos.js';
 import Crear from './componentes/Crear'
 import EstadoOrden from './componentes/EstadoOrden'
 import Asignar from './componentes/Asignar'
@@ -81,7 +81,10 @@ export default function Sistemas(props) {
             
         }
     }
-
+    const cambiarEstadoE = (id) => {
+            cambiarEstado({order:id,status:'E'}, initializer,carga)
+            
+    }
     return (
         <Grid container spacing={2}>
          <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={autorizar} titulo='¿Desea continuar? Se autorizará la orden.'/>
@@ -157,7 +160,7 @@ export default function Sistemas(props) {
                                     setSelected(rowData)
                                     setOpen(true)
                                 }else{
-                                    initializer.mostrarNotificacion({ type: "warning", message: 'No se puede editar un pedido entregado' });
+                                    initializer.mostrarNotificacion({ type: "warning", message: 'No se puede editar una compra confirmada' });
 
                                 }
                           
@@ -166,38 +169,19 @@ export default function Sistemas(props) {
 
                         {
                             icon: TableIcons.Check,
-                            tooltip: 'Cambiar estado',
+                            tooltip: 'Confirmar compra',
                        
                             onClick: (event, rowData) => {
                                 if(rowData.status!='E'){
-                                    setSelected4(rowData)
-                                    setOpen3(true)
+                                    cambiarEstadoE(rowData.id)
                                 }else{
-                                    initializer.mostrarNotificacion({ type: "warning", message: 'El pedido ya ha sido entregado' });     
+                                    initializer.mostrarNotificacion({ type: "warning", message: 'La compra ya ha sido confirmada' });     
                                 }
                                 
 
                             }
                         },
-                        {
-                            icon: TableIcons.ImportExportIcon,
-                            tooltip: 'Almacenar productos',
-                       
-                            onClick: (event, rowData) => {
-                             if(rowData.status=='E'){
-                                setSelected5(rowData)
-                                setOpen4(true)
-                             }else{
-                       
-                                 initializer.mostrarNotificacion({ type: "warning", message: 'El pedido primero debe ser entregado' });     
-
-                             }
-                                  
-                              
-                                
-
-                            }
-                        },
+                     
                         {
                             icon: TableIcons.Delete,
                             tooltip: "Borrar",

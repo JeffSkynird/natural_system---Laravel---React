@@ -186,7 +186,7 @@ export const cerrarSesion = (store) => {
      
       mostrarNotificacion({type:"success",message:res.data.message})
       mostrarLoader(false)
-      window.location.href="/bienvenida"
+      window.location.href="/login"
 
     })
     .catch((error) => {
