@@ -140,6 +140,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::delete('clients/{id}', 'App\Http\Controllers\v1\Ventas\ClientController@delete');
     Route::post('orders', 'App\Http\Controllers\v1\Inventario\OrderController@create');
 
+    Route::get('kpis', 'App\Http\Controllers\v1\Ventas\ClientController@kpis');
+
     Route::middleware('auth:api')->group(function () {
         
         Route::post('autorize_order/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@autorize');

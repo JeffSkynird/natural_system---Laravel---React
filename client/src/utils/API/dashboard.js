@@ -1,6 +1,38 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT} from '../../config/API'
 const axios = require('axios');
+export const obtenerKpisPanel = (setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+let url = ENTRYPOINT+"kpis"
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
+
+};
+
+mostrarLoader(true);
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+   if(response.type!="error"){
+      setData(response.data)
+      mostrarLoader(false);
+      mostrarNotificacion({ type: "success", message: response.message });
+
+   }else{
+    mostrarNotificacion({ type: "error", message: response.message });
+    mostrarLoader(false);
+   }
+  })
+  .catch((error) => {
+    mostrarLoader(false);
+
+
+  });
+}
 
 export const obtenerStatusPorSupervisor = (supervisor,setData1,store,min,max) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;

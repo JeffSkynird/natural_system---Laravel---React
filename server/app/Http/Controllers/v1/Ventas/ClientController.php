@@ -4,10 +4,31 @@ namespace App\Http\Controllers\v1\Ventas;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\Invoice;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
+    public function kpis(){
+        $ventas = Invoice::count();
+        $monto = Invoice::sum('total');
+        $clientes = Client::count();
+        $proveedores = Supplier::count();
+
+        return response()->json([
+            "status" => "200",
+            'data'=> [
+                'ventas' => $ventas,
+                'monto' => $monto,
+                'clientes' => $clientes,
+                'proveedores' => $proveedores
+            ]
+            ,
+            "message" => 'Data obtenida con éxito',
+                "type" => 'success'
+        ]);
+    }
     public function index()
     {
         try {
