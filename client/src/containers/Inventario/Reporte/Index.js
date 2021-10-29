@@ -37,6 +37,7 @@ export default function Sistemas(props) {
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
     const [openFilter, setOpenFilter] = React.useState(false)
+    const [filtro, setFiltro] = React.useState('')
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
@@ -56,7 +57,7 @@ export default function Sistemas(props) {
         return tot
     }
     const reporte = () => {
-        downloadFiles({tipo:tipo},initializer)
+        downloadFiles({tipo:tipo,filtro:filtro},initializer)
     }
     return (
         <Grid container spacing={2}>
@@ -70,11 +71,13 @@ export default function Sistemas(props) {
                 </Typography>
 
             </Grid>
-
             <Grid item xs={12} md={12}>
+
+            <Grid  xs={12} md={12}>
                 <Card >
                     <CardContent>
-                        
+                        <Grid container spacing={2}>
+                    <Grid item xs={12} md={12}>
                         <FormControl variant="outlined"    style={{ width: '100%' }} >
                             <InputLabel id="demo-simple-select-outlined-label"   style={{ width: '100%' }} >Seleccione el reporte</InputLabel>
                             <Select
@@ -82,7 +85,10 @@ export default function Sistemas(props) {
                                 id="demo-simple-select-outlined"
                                 value={tipo}
                                 style={{ width: '100%' }}
-                                onChange={(e) => setTipo(e.target.value)}
+                                onChange={(e) => {
+                                    setTipo(e.target.value)
+                                    setFiltro("")
+                                }}
                                 label="Seleccione el reporte"
                             >
                                 <MenuItem value="">
@@ -94,15 +100,29 @@ export default function Sistemas(props) {
                                 <MenuItem value={'productos'}>Productos</MenuItem>
 
                             </Select>
-                        </FormControl>
+                            </FormControl>
+                            </Grid>
+                            {tipo=='facturas'&&(
+                            <Grid item xs={12}>    <TextField
+                        variant="outlined"
+                        style={{ width:'100%' }}
+                        type="number"
+                        label="Número"
+                        value={filtro}
+                        onChange={(e) => setFiltro(e.target.value)}
+
+                    /></Grid>)
+                    }
+                      </Grid>
                     </CardContent>
                     <CardActions>
                         <Button variant="contained" disabled={tipo==""} startIcon={<GetAppOutlinedIcon />} size="small" color="primary" onClick={reporte}>Descargar reporte</Button>
                     </CardActions>
                 </Card>
+                </Grid>
 
+                </Grid>
 
-            </Grid>
 
         </Grid>
     )
