@@ -16,69 +16,53 @@ import Initializer from '../../../store/Initializer'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { obtenerTodos } from '../../../utils/API/sistemas.js';
+import { obtenerTodos } from '../../../utils/API/kardex';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
-import { PUBLIC_PATH } from '../../../config/API';
-import Confirmar from '../../../components/Confirmar'
+
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
-    const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
 
     const [data, setData] = React.useState([])
+    const [kpi1, setKpi1] = React.useState(0)
+    const [kpi2, setKpi2] = React.useState(0)
+
     const [open, setOpen] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
-    const [imageSelected, setImageSelected] = React.useState(null)
-
     const [openFilter, setOpenFilter] = React.useState(false)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            obtenerTodos(setData, initializer)
+            obtenerTodos(setData, initializer,setKpi1,setKpi2)
         }
     }, [initializer.usuario])
     const carga = () => {
-        obtenerTodos(setData, initializer)
+        obtenerTodos(setData, initializer,setKpi1,setKpi2)
         setSelected(null)
         setSelected2(null)
     }
-    const total = () => {
-        let tot = 0
-        data.map((e) => {
-            tot += e.evaluaciones
+    const total=()=>{
+        let tot=0
+        data.map((e)=>{
+            tot+=e.evaluaciones
         })
         return tot
     }
     return (
         <Grid container spacing={2}>
-
-            <Confirmar ancho={true} body={<img
-                style={{ height: '100%', width: '100%' }}
-                src={PUBLIC_PATH+"storage/" + imageSelected}
-            />} open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={() => {
-                setImageSelected(null)
-                setConfirmarMensaje(false)
-            }} titulo='Foto del producto' />
-
-            <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
-            <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
-            <Filtro setOpen={setOpenFilter} open={openFilter} />
-
-            <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography variant="h5" >
-                    Productos
+                    Kardex
                 </Typography>
-                <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
-                    Nuevo
-                </Button>
+               
             </Grid>
 
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
 
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5, borderRadius: 12, borderColor: 'rgba(0, 0, 0, 0.12)', borderWidth: 1, borderStyle: 'solid' }} elevation={0}>
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
                     <CardContent>
                         <Typography variant="subtitle1" gutterBottom>
                             Totales
@@ -93,32 +77,54 @@ export default function Sistemas(props) {
                         </div>
                     </CardContent>
                 </Card>
-
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                    <CardContent>
+                        <Typography variant="subtitle1" gutterBottom>
+                            Entrada
+                        </Typography>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant="h4" gutterBottom>
+                                {kpi1}
+                            </Typography>
+                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(94, 53, 177)', borderRadius: 20 }} >
+                                <DesktopWindowsIcon />
+                            </Avatar>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                    <CardContent>
+                        <Typography variant="subtitle1" gutterBottom>
+                            Salida
+                        </Typography>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant="h4" gutterBottom>
+                                {kpi2}
+                            </Typography>
+                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(94, 53, 177)', borderRadius: 20 }} >
+                                <DesktopWindowsIcon />
+                            </Avatar>
+                        </div>
+                    </CardContent>
+                </Card>
             </Grid>
-
+      
             <Grid item xs={12}>
                 <MaterialTable
                     icons={TableIcons}
                     columns={[
-                        {
-                            title: 'Imágen',
-                            field: 'avatar',
-                            render: rowData => (
-                                <img
-                                    onClick={() =>{
-                                        setConfirmarMensaje(true)
-                                        setImageSelected(rowData.image)
-                                    }}
-                                    style={{ height: 36, width: 36, borderRadius: 36 ,cursor: 'pointer' }}
-                                    src={PUBLIC_PATH+"storage/" + rowData.image}
-                                />
-                            ),
-                        },
+                      
+                        { title: "Producto", field: "name" },
                         { title: "Código de Barras", field: "bar_code" },
-                        { title: "Nombre", field: "name" },
-                        { title: "Presentación", field: "unity" },
-                        { title: "Categoria", field: "category" },
+                        { title: "Concepto", field: "concept",render: rowData => (
+                            <span>{rowData.concept=='E'?'Entrada':'Salida'}</span>
+                        ), },
+                        { title: "Cantidad", field: "quantity" },
                         { title: "Stock", field: "stock" },
+                        { title: "Tipo", field: "type" ,render: rowData => (
+                            <span>{rowData.type=='V'?'Venta':(rowData.type=='C'?'Compra':'Ajuste')}</span>
+                        ), },
+                        { title: "Usuario", field: "names" },
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 
@@ -129,35 +135,13 @@ export default function Sistemas(props) {
 
                     localization={LocalizationTable}
 
-                    actions={[
-                        {
-                            icon: TableIcons.Edit,
-                            tooltip: 'Editar',
-
-                            onClick: (event, rowData) => {
-                                setSelected(rowData)
-                                setOpen(true)
-                            }
-                        },
-
-                        {
-                            icon: TableIcons.Delete,
-                            tooltip: "Borrar",
-
-                            onClick: (event, rowData) => {
-                                setSelected2(rowData)
-                                setOpen2(true)
-                            }
-                        },
-                      
-
-                    ]}
+                   
 
                     options={{
-                        pageSize: 10,
+                        pageSize:10,
                         showTitle: false,
                         actionsColumnIndex: -1,
-
+                      
                         maxBodyHeight: 350,
                         padding: 'dense',
                         headerStyle: {

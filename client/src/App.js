@@ -45,7 +45,7 @@ import Ajustes from './containers/Inventario/Ajustes/Index'
 import Facturas from './containers/Inventario/Facturas/Index'
  import Clientes from './containers/Inventario/Clientes/Index'
  import Personal from './containers/Inventario/Personal/Index'
-
+import Kardex from './containers/Inventario/Kardex/Index'
 import { indigo } from '@material-ui/core/colors';
 
 function Alert(props) {
@@ -189,6 +189,8 @@ export default function App(props) {
                   <Route exact path="/facturas" component={Facturas} />
                   <Route exact path="/clientes" component={Clientes} />
                   <Route exact path="/personal" component={Personal} />
+               
+                  <Route exact path="/inventario/kardex" component={Kardex} />
 
                   
                   <Route render={() => <Redirect to="/panel" />} />

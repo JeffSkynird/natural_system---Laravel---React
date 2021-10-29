@@ -141,6 +141,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('orders', 'App\Http\Controllers\v1\Inventario\OrderController@create');
 
     Route::get('kpis', 'App\Http\Controllers\v1\Ventas\ClientController@kpis');
+    Route::get('kardex', 'App\Http\Controllers\v1\Ventas\KardexController@index');
 
     Route::middleware('auth:api')->group(function () {
         
