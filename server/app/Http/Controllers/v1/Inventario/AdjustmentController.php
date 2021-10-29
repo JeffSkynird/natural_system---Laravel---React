@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1\Inventario;
 
 use App\Http\Controllers\Controller;
 use App\Models\Adjustment;
+use App\Models\Kardex;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -48,10 +49,26 @@ class AdjustmentController extends Controller
                    if($val['reason_id']==1){
                        $ord->stock = intval($ord->stock) + intval($val['quantity']);
                        $ord->save();
+                       Kardex::create([
+                        'product_id' => $val['product_id'],
+                        'quantity' => $val['quantity'],
+                        'type' => 'A',
+                        'concept' =>'E',
+                        'stock'=>$ord->stock,
+                        'user_id'=>1
+                    ]);
                    }else{
                        if($ord->stock!=0){
                             $ord->stock = intval($ord->stock) - intval($val['quantity']);
                             $ord->save();
+                            Kardex::create([
+                                'product_id' => $val['product_id'],
+                                'quantity' => $val['quantity'],
+                                'type' => 'A',
+                                'concept' =>'S',
+                                'stock'=>$ord->stock,
+                                'user_id'=>1
+                            ]);
                        }
                       
                    }

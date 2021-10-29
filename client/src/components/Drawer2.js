@@ -25,6 +25,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import MenuIcon from '@material-ui/icons/Menu';
 import { useHistory } from "react-router-dom";
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
+import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
                     import EmojiTransportationIcon from '@material-ui/icons/EmojiTransportation';
 import Toolbar from '@material-ui/core/Toolbar';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -293,6 +294,10 @@ function ResponsiveDrawer(props) {
                     <ListItem button onClick={() => props.history.push('/personal')} style={comprobador('/personal')}>
                         <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
                         <ListItemText primary={'Personal'} />
+                    </ListItem>
+                    <ListItem button onClick={() => props.history.push('/reporte')} style={comprobador('/reporte')}>
+                        <ListItemIcon style={{ color: 'inherit' }}><PrintOutlinedIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                        <ListItemText primary={'Reporte'} />
                     </ListItem>
                    
                 </List>

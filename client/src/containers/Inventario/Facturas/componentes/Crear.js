@@ -78,6 +78,10 @@ export default function CrearN(props) {
             initializer.mostrarNotificacion({ type: "warning", message: 'Seleccione un cliente' });
             return false
         }
+        if(subTotalV==0){
+            initializer.mostrarNotificacion({ type: "warning", message: 'No puede hacer una factura por valor 0' });
+            return false
+        }
 
             registrarUnidad({client_id:finalConsumer?'':client,final_consumer:finalConsumer?1:0,total:subTotalV+(subTotalV*0.12), data: productos }, initializer)
 

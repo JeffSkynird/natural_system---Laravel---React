@@ -5,6 +5,7 @@ namespace App\Http\Controllers\v1\Ventas;
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Models\InvoiceProduct;
+use App\Models\Kardex;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -35,6 +36,7 @@ class InvoiceController extends Controller
         $pr = Product::find($id);
         $pr->stock = $quantity;
         $pr->save();
+       
     }
     public function create(Request $request)
     {
@@ -61,6 +63,14 @@ class InvoiceController extends Controller
                     'user_id'=>1
                 ]);
                 $this->decreaseProductStock($val['product_id'],$val['stock']);
+                Kardex::create([
+                    'product_id' => $val['product_id'],
+                    'quantity' => $val['quantity'],
+                    'type' => 'V',
+                    'concept' =>'S',
+                    'stock'=>$val['stock'],
+                    'user_id'=>1
+                ]);
             }
             return response()->json([
                 "status" => "200",

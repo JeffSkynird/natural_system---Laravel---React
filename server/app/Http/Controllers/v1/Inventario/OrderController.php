@@ -4,6 +4,7 @@ namespace App\Http\Controllers\v1\Inventario;
 
 use App\Http\Controllers\Controller;
 use App\Models\Inventory;
+use App\Models\Kardex;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
@@ -41,10 +42,18 @@ class OrderController extends Controller
             'quantity' => $quantity,
             'product_id' => $product
         ]);
-
         $pr = Product::find($product);
         $pr->stock =intval($pr->stock)+intval($quantity);
         $pr->save();
+        Kardex::create([
+            'product_id' => $product,
+            'quantity' => $quantity,
+            'type' => 'C',
+            'concept' =>'E',
+            'stock'=>$pr->stock,
+            'user_id'=>1
+        ]);
+     
     }
     public function obtenerDetallePedido($id)
     {
