@@ -15,9 +15,8 @@ class InvoiceController extends Controller
     {
         try {
             $data = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
-            ->join('invoice_products', 'invoice_products.invoice_id', '=', 'invoices.id')
-            ->join('products', 'invoice_products.product_id', '=', 'products.id')
-            ->selectRaw('invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,clients.document,clients.names,products.name,products.bar_code')->get();
+          
+            ->selectRaw('invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,clients.document,clients.names')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,

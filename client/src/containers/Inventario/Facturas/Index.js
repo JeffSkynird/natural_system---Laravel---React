@@ -97,8 +97,7 @@ export default function Sistemas(props) {
                         render: rowData => (
                             <span >{rowData.final_consumer==1?'Consumidor Final':rowData.names}</span>
                         ) },
-                        { title: "Producto", field: "name" },
-                        { title: "Códio de Barras", field: "bar_code" },
+                     
                         { title: "Total", field: "total" },
 
                         

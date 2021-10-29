@@ -1,6 +1,6 @@
 import React from 'react'
 import Typography from '@material-ui/core/Typography';
-
+import GetAppOutlinedIcon from '@material-ui/icons/GetAppOutlined';
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 import Button from '@material-ui/core/Button';
@@ -26,6 +26,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
+import { downloadFiles } from '../../../utils/API/reporte';
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
     const [tipo, setTipo] = React.useState("")
@@ -53,6 +54,9 @@ export default function Sistemas(props) {
             tot += e.evaluaciones
         })
         return tot
+    }
+    const reporte = () => {
+        downloadFiles({tipo:tipo},initializer)
     }
     return (
         <Grid container spacing={2}>
@@ -84,16 +88,16 @@ export default function Sistemas(props) {
                                 <MenuItem value="">
                                     <em>Seleccione una opción</em>
                                 </MenuItem>
-                                <MenuItem value={1}>Facturas</MenuItem>
-                                <MenuItem value={2}>Kardex</MenuItem>
-                                <MenuItem value={3}>Clientes</MenuItem>
-                                <MenuItem value={4}>Productos</MenuItem>
+                                <MenuItem value={'facturas'}>Facturas</MenuItem>
+                                <MenuItem value={'kardex'}>Kardex</MenuItem>
+                                <MenuItem value={'clientes'}>Clientes</MenuItem>
+                                <MenuItem value={'productos'}>Productos</MenuItem>
 
                             </Select>
                         </FormControl>
                     </CardContent>
                     <CardActions>
-                        <Button variant="contained" disabled={tipo==""} startIcon={<VisibilityOutlinedIcon />} size="small" color="primary">Ver reporte</Button>
+                        <Button variant="contained" disabled={tipo==""} startIcon={<GetAppOutlinedIcon />} size="small" color="primary" onClick={reporte}>Descargar reporte</Button>
                     </CardActions>
                 </Card>
 

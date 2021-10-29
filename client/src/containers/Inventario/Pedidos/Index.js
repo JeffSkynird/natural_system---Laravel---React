@@ -127,7 +127,7 @@ export default function Sistemas(props) {
                     icons={TableIcons}
                     columns={[
                 
-                        {
+                    /*     {
                             title: 'Estado',
                             field: 'status',
                             render: rowData =>{
@@ -136,7 +136,7 @@ export default function Sistemas(props) {
                                     <span>{est.length!=0?est[0].name:rowData.status}</span> 
                                 )
                             },
-                          },
+                          }, */
                         { title: "Número", field: "id" },
                         { title: "Proveedor", field: "supplier" },
                         { title: "Fecha", field: "created_at", type: "datetime" },
@@ -150,7 +150,7 @@ export default function Sistemas(props) {
 
                     localization={LocalizationTable}
 
-                    actions={[
+                  /*   actions={[
                         {
                             icon: TableIcons.Edit,
                             tooltip: 'Editar',
@@ -197,7 +197,7 @@ export default function Sistemas(props) {
                             
                             }
                         },
-                    ]}
+                    ]} */
 
                     options={{
                         pageSize:10,
