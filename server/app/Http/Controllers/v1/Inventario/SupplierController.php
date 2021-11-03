@@ -7,6 +7,8 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use File;
+use Illuminate\Support\Facades\Auth;
+
 class SupplierController extends Controller
 {
     public function save($file)
@@ -62,6 +64,7 @@ class SupplierController extends Controller
         try {
             $url = $this->save($request->file('url'));
             $request['logo']=$url;
+            $request['user_id']=Auth::id();
             Supplier::create($request->all());
             return response()->json([
                 "status" => "200",

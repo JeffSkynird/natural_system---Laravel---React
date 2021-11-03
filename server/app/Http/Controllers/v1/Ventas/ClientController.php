@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
@@ -53,7 +54,9 @@ class ClientController extends Controller
     public function create(Request $request)
     {
         try {
-            Client::create($request->all());
+            $params= $request->all();
+            $params['user_id']=Auth::id();
+            Client::create($params);
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',

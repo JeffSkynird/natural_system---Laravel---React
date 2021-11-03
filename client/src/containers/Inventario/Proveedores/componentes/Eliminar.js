@@ -10,14 +10,14 @@ import Initializer from '../../../../store/Initializer'
 
 import Slide from '@material-ui/core/Slide';
 import { Grid } from '@material-ui/core';
-import { eliminarSistema, registrarSistema } from '../../../../utils/API/sistemas';
+import { eliminar, registrarSistema } from '../../../../utils/API/proveedores';
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 export default function Crear(props) {
     const initializer = React.useContext(Initializer);
     const guardar=()=>{
-        eliminarSistema(props.sistema.id,initializer)
+        eliminar(props.sistema.id,initializer)
         props.setOpen(false)
         props.carga()
     }

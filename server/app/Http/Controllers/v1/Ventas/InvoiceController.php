@@ -8,6 +8,7 @@ use App\Models\InvoiceProduct;
 use App\Models\Kardex;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
@@ -53,7 +54,7 @@ class InvoiceController extends Controller
                 'total'=> $total,
                 'iva'=>$iva,
                 'status'=>'A',
-                'user_id'=>1
+                'user_id'=>Auth::id()
             ]);
             foreach ($data as $val) {
                 InvoiceProduct::create([
@@ -61,7 +62,7 @@ class InvoiceController extends Controller
                     'product_id' => $val['product_id'],
                     'quantity'=> $val['quantity'],
                     'subtotal'=>$val['subtotal'],
-                    'user_id'=>1
+                    'user_id'=>Auth::id()
                 ]);
                 $this->decreaseProductStock($val['product_id'],$val['stock']);
                 Kardex::create([
@@ -70,7 +71,7 @@ class InvoiceController extends Controller
                     'type' => 'V',
                     'concept' =>'S',
                     'stock'=>$val['stock'],
-                    'user_id'=>1
+                    'user_id'=>Auth::id()
                 ]);
             }
             return response()->json([

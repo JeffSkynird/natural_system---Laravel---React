@@ -107,8 +107,7 @@ export default function Crear(props) {
             'unity_id': unity,
             'url': image,
             'has_iva':hasIva?1:0,
-            'fraction': fraction,
-            'user_id': 1
+            'fraction': fraction
         }
         if(validaciones(data)){
             if (props.sistema == null) {

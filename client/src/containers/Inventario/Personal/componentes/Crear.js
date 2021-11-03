@@ -65,11 +65,10 @@ export default function Crear(props) {
         'password':clave
    }
         if(props.sistema==null){
-            registrarBodega(data,initializer)
-            limpiar()
+            registrarBodega(data,initializer,limpiar)
+            
         }else{
-            editarBodega(props.sistema.id,data,initializer)
-            limpiar()
+            editarBodega(props.sistema.id,data,initializer,limpiar)
 
         }
         props.setOpen(false)

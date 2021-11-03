@@ -63,8 +63,7 @@ export default function Crear(props) {
         'address': direccion,
         'cellphone': celular,
         'email': correo,
-        'landline': telefono,
-        'user_id': 1}
+        'landline': telefono}
         if(props.sistema==null){
             registrarBodega(data,initializer)
             limpiar()
@@ -147,7 +146,7 @@ export default function Crear(props) {
                       <Grid item xs={12}>    <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                      
+                        type="number"
                         label="Celular"
                         value={celular}
                         onChange={(e) => setCelular(e.target.value)}
@@ -156,7 +155,7 @@ export default function Crear(props) {
                       <Grid item xs={12}>    <TextField
                         variant="outlined"
                         style={{ width:'100%' }}
-                      
+                        type="number"
                         label="Teléfono fijo"
                         value={telefono}
                         onChange={(e) => setTelefono(e.target.value)}

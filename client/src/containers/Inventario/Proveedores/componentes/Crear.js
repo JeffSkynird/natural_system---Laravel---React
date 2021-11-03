@@ -52,8 +52,7 @@ export default function Crear(props) {
         'business_name': nombre,
         'ruc': ruc,
         'cellphone': celular,
-        'email': correo,
-        'user_id': 1}
+        'email': correo}
         if(props.sistema==null){
             registrarProveedor(data,initializer)
             limpiar()

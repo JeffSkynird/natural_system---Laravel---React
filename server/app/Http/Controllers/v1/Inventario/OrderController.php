@@ -53,7 +53,7 @@ class OrderController extends Controller
             'type' => 'C',
             'concept' =>'E',
             'stock'=>$pr->stock,
-            'user_id'=>1
+            'user_id'=>Auth::id()
         ]);
      
     }
@@ -119,13 +119,12 @@ class OrderController extends Controller
     public function create(Request $request)
     {
         try {
-            $idUser = Auth::id();
             $data = $request->all();
             foreach ($data['suppliers'] as $val) {
                 $order = Order::create([
                     'supplier_id' => $val['supplier_id'],
                     'total'=>$data['total'],
-                    'user_id' => 1
+                    'user_id' => Auth::id()
 
                 ]);
                 foreach ($val['products'] as $val2) {

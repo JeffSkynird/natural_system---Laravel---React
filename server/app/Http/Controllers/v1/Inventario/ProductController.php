@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use File;
+use Illuminate\Support\Facades\Auth;
+
 class ProductController extends Controller
 {
     public function save($file)
@@ -48,6 +50,7 @@ class ProductController extends Controller
             $request['image']=$url;
             $request['list_price']=$request->input('list_price')!=null?$request->input('list_price'):0;
             $request['sale_price']=$request->input('sale_price')!=null?$request->input('sale_price'):0;
+            $request['user_id']=Auth::id();
             Product::create($request->all());
 
             return response()->json([

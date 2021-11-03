@@ -24,7 +24,9 @@ class UsuarioController extends Controller
     public function create(UserRequest $request)
     {
         try {
-            User::create($request->validated());
+            $params = $request->validated();
+            $params['user_id']=Auth::id();
+            User::create($params);
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',

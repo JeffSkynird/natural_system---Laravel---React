@@ -7,6 +7,7 @@ use App\Models\Adjustment;
 use App\Models\Kardex;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdjustmentController extends Controller
 {
@@ -42,7 +43,7 @@ class AdjustmentController extends Controller
                     'reason_id' => $val['reason_id'],
                     'quantity'=> $val['quantity'],
                     'status'=>'I',
-                    'user_id'=> 1
+                    'user_id'=> Auth::id()
                 ]);
                $ord = Product::find($val['product_id']);
                if($ord!=null){
@@ -55,7 +56,7 @@ class AdjustmentController extends Controller
                         'type' => 'A',
                         'concept' =>'E',
                         'stock'=>$ord->stock,
-                        'user_id'=>1
+                        'user_id'=>Auth::id()
                     ]);
                    }else{
                        if($ord->stock!=0){
@@ -67,7 +68,7 @@ class AdjustmentController extends Controller
                                 'type' => 'A',
                                 'concept' =>'S',
                                 'stock'=>$ord->stock,
-                                'user_id'=>1
+                                'user_id'=>Auth::id()
                             ]);
                        }
                       
