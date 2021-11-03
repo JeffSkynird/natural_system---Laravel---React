@@ -73,16 +73,57 @@
             background-color: #3f51b5;
             color: white;
         }
+        .banner {
+            text-align: left;
+
+            width: 190px;
+            object-fit: cover;
+            text-align: center;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .left {
+            text-align: left;
+
+
+        }
+
+        .right {
+            text-align: right;
+
+
+        }
+
+        .cabecera {
+            display: flex;
+            margin: 0px;
+        }
+
+        .subtitle {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
+<div class="cabecera">
+        <img src="{{ public_path('banner.jpg') }}" class="banner">
+        <div class="right">
+            <h3 style="margin-bottom:0px;margin-top:0px;">CENTRO NATURISTA F.CH</h3>
+            <span class="subtitle">Chamba Morales Fausto Sebastian</span>
+            <span class="subtitle">Matriz: Sucre s/n y Juan Montalvo</span>
+            <span class="subtitle">Cell.: 0993040644</span>
+        </div>
+    </div>
+
+
     <header class="title" style="padding-bottom:0px;margin:0px;">
-        <h2 style="text-align:center;margin:0px;">REPORTE {{strtoupper($tipo)}}</h2>
+        <h3 style="text-align:center;margin:0px;">REPORTE DE FACTURAS</h3>
 
     </header>
-    <h3 style="text-align:center;margin-top:5px;">TOTAL {{count($data )}}</h3>
-    <br>
+    <p style="font-weight:bold;text-align:left;margin-top:5px;  font-size:17px; margin: 10px;">Total registros: {{count($data )}}</p>
+
     <section class="personal_data" style="margin-bottom:30px;">
         <table id="customers">
             <thead>
@@ -91,6 +132,8 @@
                     <th>#</th>
                     <th>Cédula/RUC</th>
                     <th>Cliente</th>
+                    <th>IVA</th>
+
                     <th>Total</th>
                    
                 </tr>
@@ -102,6 +145,7 @@
                     <td>{{ $dt['id'] }}</td>
                     <td>{{ $dt['final_consumer']==1?'-':$dt['document']  }}</td>
                     <td>{{ $dt['final_consumer']==1?'Consumidor Final':$dt['names']  }}</td>
+                    <td>{{ $dt['iva'] }}</td>
 
                     <td>${{ $dt['total'] }}</td>
            

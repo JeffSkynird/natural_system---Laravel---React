@@ -16,7 +16,7 @@ class InvoiceController extends Controller
         try {
             $data = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
           
-            ->selectRaw('invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,clients.document,clients.names')->get();
+            ->selectRaw('invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -44,12 +44,14 @@ class InvoiceController extends Controller
         $clientId = $request->input('client_id');
         $finalConsumer = $request->input('final_consumer');
         $total = $request->input('total');
+        $iva = $request->input('iva');
 
         try {
             $inv= Invoice::create([
                 'client_id' => $clientId,
                 'final_consumer' => $finalConsumer,
                 'total'=> $total,
+                'iva'=>$iva,
                 'status'=>'A',
                 'user_id'=>1
             ]);

@@ -67,29 +67,68 @@
         }
 
         #customers th {
-         /*    padding-top: 12px;
+            /*    padding-top: 12px;
             padding-bottom: 12px; */
             text-align: left;
             background-color: #3f51b5;
             color: white;
         }
+        .banner {
+            text-align: left;
+
+            width: 190px;
+            object-fit: cover;
+            text-align: center;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .left {
+            text-align: left;
+
+
+        }
+
+        .right {
+            text-align: right;
+
+
+        }
+
+        .cabecera {
+            display: flex;
+            margin: 0px;
+        }
+
+        .subtitle {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
+<div class="cabecera">
+        <img src="{{ public_path('banner.jpg') }}" class="banner">
+        <div class="right">
+            <h3 style="margin-bottom:0px;margin-top:0px;">CENTRO NATURISTA F.CH</h3>
+            <span class="subtitle">Chamba Morales Fausto Sebastian</span>
+            <span class="subtitle">Matriz: Sucre s/n y Juan Montalvo</span>
+            <span class="subtitle">Cell.: 0993040644</span>
+        </div>
+    </div>
+
     <header class="title" style="padding-bottom:0px;margin:0px;">
-        <h2 style="text-align:center;margin:0px;">REPORTE FACTURA {{$data['id']}} </h2>
+        <h3 style="text-align:center;margin:0px;">REPORTE DE FACTURA #{{$data['id']}} </h3>
 
     </header>
-<div style="margin: 15px;">
-<span style="display:block;margin-top:0px;text-align:left;">Fecha: {{$data['created_at']}}</span>
-        <span style="display:block;margin-top:5px;text-align:left">Cédula / RUC: {{$data['document']!=null?$data['document']:'-'}}</span>
-        <span style="display:block;margin-top:5px;text-align:left;">Cliente: {{$data['names']!=null?$data['names']:"Consumidor Final"}}</span>
-      
-        <h4 >Detalle:</h4>
+    <div style="margin: 15px;"> 
+        <span style="display:block;margin-top:0px;text-align:left;"><b>Fecha:</b> {{$data['created_at']}}</span>
+        <span style="display:block;margin-top:5px;text-align:left"><b>Cédula / RUC:</b> {{$data['document']!=null?$data['document']:'-'}}</span>
+        <span style="display:block;margin-top:5px;text-align:left;"><b>Cliente / RUC:</b> {{$data['names']!=null?$data['names']:"Consumidor Final"}}</span>
 
-</div>
-       
+
+    </div>
+
 
     <section class="personal_data" style="margin-bottom:30px;">
         <table id="customers">
@@ -100,7 +139,7 @@
                     <th>Producto</th>
                     <th>Cantidad</th>
                     <th>Total</th>
-                   
+
                 </tr>
             </thead>
 
@@ -110,18 +149,18 @@
                     <td>{{ $dt['bar_code'] }}</td>
                     <td>{{ $dt['name'] }}</td>
                     <td>{{ $dt['quantity'] }}</td>
-                    <td>{{ $dt['subtotal'] }}</td>
+                    <td>${{ $dt['subtotal'] }}</td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </section>
-    <span style="text-align:right;display:block;margin-right:10px;">Subtotal: ${{$subtotal}} </span>
-    <span style="text-align:right;display:block;margin-right:10px;margin-top:5px;">IVA: ${{$iva}}</span>
-    <span style="text-align:right;display:block;margin-right:10px;margin-top:5px;">Total: ${{$data['total']}} </span>
+    <span style="text-align:right;display:block;margin-right:15px;">Subtotal: ${{$subtotal}} </span>
+    <span style="text-align:right;display:block;margin-right:15px;margin-top:5px;">IVA: ${{$data['iva']}} </span>
+    <span style="text-align:right;display:block;margin-right:15px;margin-top:5px;">Total: ${{$data['total']}} </span>
 
 
-       
+
 
 
 </body>

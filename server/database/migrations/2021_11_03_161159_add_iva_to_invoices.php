@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIvaFractionToProducts extends Migration
+class AddIvaToInvoices extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddIvaFractionToProducts extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->integer('has_iva')->default(1);
-            $table->integer('fraction');
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->double('iva', 8, 3);
         });
     }
 
@@ -26,9 +25,9 @@ class AddIvaFractionToProducts extends Migration
      */
     public function down()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->integer('has_iva')->default(1);
-            $table->integer('fraction');
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->double('iva', 8, 3);
+
         });
     }
 }

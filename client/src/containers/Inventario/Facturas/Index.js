@@ -99,6 +99,7 @@ export default function Sistemas(props) {
                         ) },
                      
                         { title: "Total", field: "total" },
+                        { title: "IVA", field: "iva" },
 
                         
                         { title: "Registro", field: "created_at", type: "datetime" },
