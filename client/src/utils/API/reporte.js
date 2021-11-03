@@ -2,14 +2,19 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
-export const downloadFiles = (data,store) => {
+export const downloadFiles = (tipo,store,filter) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
    
-  
-    let url = ENTRYPOINT+"reporte";
+    let params = ""
+  if (filter.length != 0) {
+    filter.map((e) => {
+      params += "&" + e.tipo + "=" + e.valor
+    })
+  }
+    let url = ENTRYPOINT+"reporte?tipo="+tipo+params;
     let setting = {
       method: "GET",
-      params:data,
+
       url: url,
       responseType: 'blob',
       headers: {

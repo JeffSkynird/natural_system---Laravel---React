@@ -129,7 +129,7 @@
             <thead>
 
                 <tr>
-                    <th>Código B.s</th>
+                    <th>Código B.</th>
                     <th>Nombre</th>
                     <th>Presentación</th>
                     <th>Categoría</th>
