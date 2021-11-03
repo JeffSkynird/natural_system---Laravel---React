@@ -1,13 +1,14 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT} from '../../config/API'
 const axios = require('axios');
-export const obtenerKpisPanel = (setData,store) => {
+export const obtenerKpisPanel = (params,setData,store) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
 let url = ENTRYPOINT+"kpis"
 let setting = {
   method: "Get",
   url: url,
+  params:params,
   headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,}
 
 };

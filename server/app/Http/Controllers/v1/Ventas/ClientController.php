@@ -6,15 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\Supplier;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function kpis(){
-        $ventas = Invoice::count();
-        $monto = Invoice::sum('total');
-        $clientes = Client::count();
-        $proveedores = Supplier::count();
+    public function kpis(Request $request){
+        $fromDate = $request->input('desde');
+        $tillDate = $request->input('hasta');
+        $ventas = Invoice::whereBetween('created_at',[$fromDate,$tillDate])->count();
+        $monto = Invoice::whereBetween('created_at',[$fromDate,$tillDate])->sum('total');
+        $clientes = Client::whereBetween('created_at',[$fromDate,$tillDate])->count();
+        $proveedores = Supplier::whereBetween('created_at',[$fromDate,$tillDate])->count();
 
         return response()->json([
             "status" => "200",

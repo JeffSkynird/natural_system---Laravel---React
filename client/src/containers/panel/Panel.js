@@ -13,6 +13,7 @@ import EqualizerIcon from '@material-ui/icons/Equalizer';
 import Avatar from '@material-ui/core/Avatar';
 import Initializer from '../../store/Initializer'
 import Tabs from '@material-ui/core/Tabs';
+
 import Tab from '@material-ui/core/Tab';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
@@ -24,6 +25,8 @@ import Crear from './components/Crear'
 import Eliminar from './components/Eliminar'
 import { obtenerTodos as obtenerMetricasSistemas } from '../../utils/API/clientes';
 import Bar from './components/Bar';
+import { utcDate } from '../../utils/Date'
+
 import Box from '@material-ui/core/Box';
 import Tab2 from './components/Tab2';
 import { obtenerTodos as obtenerTodosS } from '../../utils/API/facturas';
@@ -35,6 +38,7 @@ import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
+import FiltroPanel from './components/FiltroPanel';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -151,7 +155,8 @@ export default function Sistemas(props) {
 
     const [data, setData] = React.useState(null)
     const [data0, setData0] = React.useState([])
-
+    const [desde, setDesde] = React.useState(null)
+    const [hasta, setHasta] = React.useState(null)
     const [open, setOpen] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
     const [selected, setSelected] = React.useState(null)
@@ -167,10 +172,26 @@ export default function Sistemas(props) {
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            obtenerKpisPanel(setData, initializer)
-
+            obtenerKpisPanel({desde:utcDate(getFirst()),hasta:utcDate(getLast())},setData, initializer)
+            setDesde(getFirst())
+            setHasta(getLast())
         }
     }, [initializer.usuario])
+    const getFirstLast = () => {
+        return "(" + utcDate(desde) + " hasta " + utcDate(hasta) + ")"
+      }
+    const getFirst = () => {
+        let date = new Date();
+        let primerDia = new Date(date.getFullYear(), date.getMonth(), 1);
+
+        return primerDia
+    }
+    const getLast = () => {
+        let date = new Date();
+
+        let ultimoDia = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        return ultimoDia
+    }
     const carga = () => {
         obtenerKpisPanel(setData, initializer)
         setSelected(null)
@@ -195,120 +216,126 @@ export default function Sistemas(props) {
         })
         return object
     }
+    const filtrarFecha=()=>{
+        obtenerKpisPanel({desde:utcDate(desde),hasta:utcDate(hasta)},setData, initializer)
+
+    }
     return (
         <Grid container spacing={2}>
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
-            <Grid item xs={12} md={12}>
+            <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography variant="h5" >
-                    Dashboard
-                </Typography>
+                    Dashboard <span style={{color:'#4527a0'}}>{getFirstLast()}</span>
+                </Typography> 
+                
+                <FiltroPanel desde={desde} hasta={hasta} setDesde={setDesde} setHasta={setHasta} filtrarFecha={filtrarFecha}/>
             </Grid>
-       
+            
             <Grid item xs={12} md={12} >
                 <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                <Card class={classes.card} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#5e35b1', borderRadius: 12 }}>
-                    <CardContent>
-                        <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#5e35b1', borderRadius: 5, marginBottom: 15 }} >
-                        <IconButton aria-label="show 4 new mails" color="inherit" >
+                    <Grid item xs={12} md={3}>
+                        <Card class={classes.card} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#5e35b1', borderRadius: 12 }}>
+                            <CardContent>
+                                <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#5e35b1', borderRadius: 5, marginBottom: 15 }} >
+                                    <IconButton aria-label="show 4 new mails" color="inherit" >
 
-                            <MoreHorizIcon fontSize="small" />
-                            </IconButton>
+                                        <MoreHorizIcon fontSize="small" />
+                                    </IconButton>
 
-                        </Avatar>
-                        <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#4527a0', borderRadius: 5, marginBottom: 15 }} >
+                                </Avatar>
+                                <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#4527a0', borderRadius: 5, marginBottom: 15 }} >
 
-                            <DescriptionOutlinedIcon />
+                                    <DescriptionOutlinedIcon />
 
-                        </Avatar>
-
-
-                        <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
-                            {data!=null?data.ventas:0}
-                        </Typography>
-                        <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
-                            Número Ventas
-                        </Typography>
-                    </CardContent>
-                </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                <Card class={classes.card2} style={{ width:  '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#1e88e5', borderRadius: 12 }}>
-                    <CardContent>
-                        <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#1e88e5', borderRadius: 5, marginBottom: 15 }} >
-                        <IconButton aria-label="show 4 new mails" color="inherit" >
-
-                            <MoreHorizIcon  fontSize="small" />
-                            </IconButton>
-
-                        </Avatar>
-                        <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#1565c0', borderRadius: 5, marginBottom: 15 }} >
-                            <AttachMoneyIcon />
-                        </Avatar>
+                                </Avatar>
 
 
-                        <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
-                        ${data!=null?data.monto.toFixed(2):0}
-                        </Typography>
-                        <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
-                            Total ventas
-                        </Typography>
-                    </CardContent>
-                </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                <Card class={classes.card} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#5e35b1', borderRadius: 12 }}>
-                    <CardContent>
-                        <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#5e35b1', borderRadius: 5, marginBottom: 15 }} >
-                        <IconButton aria-label="show 4 new mails" color="inherit" >
+                                <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
+                                    {data != null ? data.ventas : 0}
+                                </Typography>
+                                <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
+                                    Número Ventas
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                        <Card class={classes.card2} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#1e88e5', borderRadius: 12 }}>
+                            <CardContent>
+                                <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#1e88e5', borderRadius: 5, marginBottom: 15 }} >
+                                    <IconButton aria-label="show 4 new mails" color="inherit" >
 
-                            <MoreHorizIcon fontSize="small" />
-                            </IconButton>
+                                        <MoreHorizIcon fontSize="small" />
+                                    </IconButton>
 
-                        </Avatar>
-                        <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#4527a0', borderRadius: 5, marginBottom: 15 }} >
-                            <PersonOutlineIcon />
-                        </Avatar>
-
-
-                        <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
-                        {data!=null?data.clientes:0}
-                        </Typography>
-                        <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
-                            Número clientes
-                        </Typography>
-                    </CardContent>
-                </Card>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                <Card class={classes.card} style={{ width:  '100%',height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#1e88e5', borderRadius: 12 }}>
-                    <CardContent>
-                        <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#1e88e5', borderRadius: 5, marginBottom: 15 }} >
-                        <IconButton aria-label="show 4 new mails" color="inherit" >
-
-                            <MoreHorizIcon  fontSize="small" />
-                            </IconButton>
-
-                        </Avatar>
-                        <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#1565c0', borderRadius: 5, marginBottom: 15 }} >
-                            <PeopleOutlineIcon />
-                        </Avatar>
+                                </Avatar>
+                                <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#1565c0', borderRadius: 5, marginBottom: 15 }} >
+                                    <AttachMoneyIcon />
+                                </Avatar>
 
 
-                        <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
-                        {data!=null?data.proveedores:0}
-                        </Typography>
-                        <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
-                            Número proveedores
-                        </Typography>
-                    </CardContent>
-                </Card>
-                   
-                </Grid>
+                                <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
+                                    ${data != null ? data.monto.toFixed(2) : 0}
+                                </Typography>
+                                <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
+                                    Total ventas
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                        <Card class={classes.card} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#5e35b1', borderRadius: 12 }}>
+                            <CardContent>
+                                <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#5e35b1', borderRadius: 5, marginBottom: 15 }} >
+                                    <IconButton aria-label="show 4 new mails" color="inherit" >
+
+                                        <MoreHorizIcon fontSize="small" />
+                                    </IconButton>
+
+                                </Avatar>
+                                <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#4527a0', borderRadius: 5, marginBottom: 15 }} >
+                                    <PersonOutlineIcon />
+                                </Avatar>
+
+
+                                <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
+                                    {data != null ? data.clientes : 0}
+                                </Typography>
+                                <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
+                                    Número clientes
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                        <Card class={classes.card} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#1e88e5', borderRadius: 12 }}>
+                            <CardContent>
+                                <Avatar variant="rounded" style={{ zIndex: 1, height: 30, width: 30, position: 'absolute', top: 15, right: 10, backgroundColor: '#1e88e5', borderRadius: 5, marginBottom: 15 }} >
+                                    <IconButton aria-label="show 4 new mails" color="inherit" >
+
+                                        <MoreHorizIcon fontSize="small" />
+                                    </IconButton>
+
+                                </Avatar>
+                                <Avatar variant="rounded" style={{ marginTop: 5, backgroundColor: '#1565c0', borderRadius: 5, marginBottom: 15 }} >
+                                    <PeopleOutlineIcon />
+                                </Avatar>
+
+
+                                <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
+                                    {data != null ? data.proveedores : 0}
+                                </Typography>
+                                <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
+                                    Número proveedores
+                                </Typography>
+                            </CardContent>
+                        </Card>
+
+                    </Grid>
                 </Grid>
             </Grid>
-      {/*       <Grid item md={12} xs={12}>
+            {/*       <Grid item md={12} xs={12}>
                 <div style={{ marginTop: 15 }} >
                     {
                         labels.length != 0 && values.length != 0 ? (
