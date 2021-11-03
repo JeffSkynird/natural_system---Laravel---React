@@ -31,7 +31,7 @@ export default function Sistemas(props) {
     const [kpis, setKpis] = React.useState({autorizados:0,no_autorizados:0})
 
     const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
-
+    const [totalCompras,setTotalCompras] = React.useState(0)
     const [open, setOpen] = React.useState(false)
     const [open2, setOpen2] = React.useState(false)
     const [open3, setOpen3] = React.useState(false)
@@ -46,7 +46,7 @@ export default function Sistemas(props) {
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
-            obtenerTodos(setData, initializer)
+            obtenerTodos({setTotalCompras,setData}, initializer)
             obtenerStatusOrden(setEstado, initializer)
 
         }
@@ -67,7 +67,7 @@ export default function Sistemas(props) {
         }
     }, [data])
     const carga = () => {
-        obtenerTodos(setData, initializer)
+        obtenerTodos({setTotalCompras,setData}, initializer)
         setSelected(null)
         setSelected2(null)
         setSelected3(null)
@@ -101,7 +101,7 @@ export default function Sistemas(props) {
                         Nuevo
                     </Button>
             </Grid>
-
+            
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
 
                 <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
@@ -119,7 +119,21 @@ export default function Sistemas(props) {
                         </div>
                     </CardContent>
                 </Card>
-               
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                    <CardContent>
+                        <Typography variant="subtitle1" gutterBottom>
+                            Totales
+                        </Typography>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Typography variant="h4" gutterBottom>
+                                ${totalCompras.toFixed(2)}
+                            </Typography>
+                            <Avatar variant="rounded" style={{ backgroundColor: 'rgb(94, 53, 177)', borderRadius: 20 }} >
+                                <DesktopWindowsIcon />
+                            </Avatar>
+                        </div>
+                    </CardContent>
+                </Card>
             </Grid>
     
             <Grid item xs={12}>
@@ -139,6 +153,8 @@ export default function Sistemas(props) {
                           }, */
                         { title: "Número", field: "id" },
                         { title: "Proveedor", field: "supplier" },
+                        { title: "Total", field: "total", type: "currency" },
+
                         { title: "Fecha", field: "created_at", type: "datetime" },
 
 

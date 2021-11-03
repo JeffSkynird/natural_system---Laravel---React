@@ -105,7 +105,8 @@ export default function Iniciar(props) {
                   </IconButton>
                 </InputAdornment>
               }
-              labelWidth={70}
+             
+              label="Contraseña"
             />
           </FormControl>
          

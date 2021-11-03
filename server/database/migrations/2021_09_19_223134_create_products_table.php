@@ -22,6 +22,8 @@ class CreateProductsTable extends Migration
             $table->integer('stock');
             $table->integer('min_stock')->nullable();
             $table->integer('max_stock')->nullable();
+            $table->integer('has_iva')->default(1);
+            $table->integer('fraction');
             $table->foreignId('unity_id')->constrained('unities');
             $table->foreignId('category_id')->constrained('categories');
             $table->boolean('status')->default(1);

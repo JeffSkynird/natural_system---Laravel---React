@@ -21,9 +21,11 @@ class OrderController extends Controller
 
             $data = Order::join('suppliers', 'orders.supplier_id', '=', 'suppliers.id')
                 ->selectRaw('orders.*,suppliers.business_name as supplier')->groupBy('orders.id', 'suppliers.business_name')->get();
+            $totalCompras = Order::sum('total');
             return response()->json([
                 "status" => "200",
                 'data' => $data,
+                'total_compras'=>floatval($totalCompras),
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
@@ -122,6 +124,7 @@ class OrderController extends Controller
             foreach ($data['suppliers'] as $val) {
                 $order = Order::create([
                     'supplier_id' => $val['supplier_id'],
+                    'total'=>$data['total'],
                     'user_id' => 1
 
                 ]);

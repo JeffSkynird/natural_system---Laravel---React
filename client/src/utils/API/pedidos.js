@@ -1,7 +1,7 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
-export const editar= (id,data, store) => {
+export const editar= (id,data, store,   limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -23,14 +23,16 @@ export const editar= (id,data, store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);
+          limpiar()
         }
       })
       .catch((error) => {
         mostrarLoader(false);
-  
+        limpiar()
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
@@ -100,7 +102,7 @@ export const eliminar = (id,store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   }
-export const registrar = (data,store) => {
+export const registrar = (data,store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
     let url = ENTRYPOINT+"orders";
@@ -121,15 +123,18 @@ export const registrar = (data,store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);
+          limpiar()
         }
       })
       .catch((error) => {
         mostrarLoader(false);
   
         mostrarNotificacion({ type: "error", message: error.message });
+        limpiar()
       });
   }
 
@@ -216,8 +221,8 @@ export const obtenerTodos = (setData,store) => {
     .then((res) => {
       let response = res.data
      if(response.type!="error"){
-        setData(response.data)
-     
+        setData.setData(response.data)
+        setData.setTotalCompras(response.total_compras)
 
      }else{
      

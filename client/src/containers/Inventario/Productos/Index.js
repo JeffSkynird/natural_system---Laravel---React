@@ -119,6 +119,13 @@ export default function Sistemas(props) {
                         { title: "Presentación", field: "unity" },
                         { title: "Categoria", field: "category" },
                         { title: "Stock", field: "stock" },
+                        { title: "Fracciones", field: "fraction" },
+                        { title: "Precio", field: "sale_price" },
+
+                        { title: "Grava IVA", field: "has_iva", render: rowData => (
+                            <span>{rowData.has_iva==1?'SI':'NO'}</span>
+                        ), },
+
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 

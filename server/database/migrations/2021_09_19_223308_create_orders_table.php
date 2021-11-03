@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId('supplier_id')->constrained('suppliers');
             $table->enum('status', ['I', 'P','E','A'])->default('I');
+            $table->double('total', 8, 3);
             $table->foreignId('authorized_by')->nullable()->constrained('users');
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('requested_by')->nullable()->constrained('users');

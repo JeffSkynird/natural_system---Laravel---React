@@ -6,7 +6,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { Tooltip } from '@material-ui/core';
+import { InputAdornment, Tooltip } from '@material-ui/core';
 import Initializer from '../../../../store/Initializer'
 import Confirmar from '../../../../components/Confirmar'
 import Slide from '@material-ui/core/Slide';
@@ -31,6 +31,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function CrearN(props) {
     const initializer = React.useContext(Initializer);
     const [open, setOpen] = React.useState(false)
+    const [total, setTotal] = React.useState(0)
 
     const [cantidad, setCantidad] = React.useState("")
     const [proveedor, setProveedor] = React.useState("")
@@ -59,23 +60,32 @@ export default function CrearN(props) {
     const guardar = () => {
 
        if (props.sistema == null) {
-            registrarPedido({ suppliers: validarData(),authorize:autorizar?1:0 }, initializer)
+            registrarPedido({ total:total,suppliers: validarData(),authorize:autorizar?1:0 }, initializer,    props.carga)
             obtenerProductos(setProductosData, initializer)
 
-            limpiar()
+         
         } else {
-            editarPedido(props.sistema.id, { suppliers: validarData(),authorize:autorizar?1:0 }, initializer)
-            limpiar()
+            editarPedido(props.sistema.id, { total:total,suppliers: validarData(),authorize:autorizar?1:0 }, initializer, props.carga)
+            
 
         }
         props.setOpen(false)
-        props.carga() 
+        vaciarCampos()
+    }
+      const vaciarCampos=()=>{
+        props.setSelected(null)
+        setCantidad("")
+        setProveedor("")
+        setProducto([])
+        setProductos([])
+        setTotal(0)
     }
     const limpiar = () => {
         setCantidad("")
         setProveedor("")
         setProducto([])
         setProductos([])
+        setTotal(0)
         props.setSelected(null)
         props.carga()
     }
@@ -173,7 +183,7 @@ export default function CrearN(props) {
             keepMounted
             onClose={() => {
                 props.setOpen(false)
-                limpiar()
+                vaciarCampos()
             }}
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
@@ -263,7 +273,19 @@ export default function CrearN(props) {
                         />
 
                     </Grid>
-                    
+                    <Grid item xs={12} md={12}>    <TextField
+                        variant="outlined"
+                        style={{  width: '100%' }}
+                        type="number"
+                        size="small"
+                        label="Total de la compra"
+                        value={total}
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                          }}
+                        onChange={(e) => setTotal(e.target.value)}
+
+                    /></Grid>
                   
                  
                  <Grid item xs={12} md={12}>
@@ -334,7 +356,10 @@ export default function CrearN(props) {
 
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => props.setOpen(false)} color="default">
+                <Button onClick={() => {
+                    props.setOpen(false)
+                    vaciarCampos()
+                }} color="default">
                     Cancelar
                 </Button>
                 <Button color="primary" onClick={()=>{

@@ -20,7 +20,7 @@ class ClientController extends Controller
             "status" => "200",
             'data'=> [
                 'ventas' => $ventas,
-                'monto' => $monto,
+                'monto' => floatval($monto),
                 'clientes' => $clientes,
                 'proveedores' => $proveedores
             ]

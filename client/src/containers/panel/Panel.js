@@ -149,7 +149,7 @@ export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
     const classes = useStyles();
 
-    const [data, setData] = React.useState([])
+    const [data, setData] = React.useState(null)
     const [data0, setData0] = React.useState([])
 
     const [open, setOpen] = React.useState(false)
@@ -249,7 +249,7 @@ export default function Sistemas(props) {
 
 
                         <Typography variant="h4" style={{ color: 'white', fontSize: '2.125rem' }} >
-                        ${data!=null?data.monto:0}
+                        ${data!=null?data.monto.toFixed(2):0}
                         </Typography>
                         <Typography variant="subtitle1" style={{ color: 'white' }} gutterBottom>
                             Total ventas

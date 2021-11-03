@@ -22,6 +22,8 @@ class Product extends Model
         'sale_price',
         'min_stock',
         'max_stock',
+        'has_iva',
+        'fraction',
         'unity_id',
         'status',
         'category_id',

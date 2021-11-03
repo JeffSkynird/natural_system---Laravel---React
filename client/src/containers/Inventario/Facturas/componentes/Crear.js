@@ -16,7 +16,7 @@ import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../..
 import { obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
 import IconButton from '@material-ui/core/IconButton';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import { Autocomplete } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
 import { registrarUnidad } from '../../../../utils/API/facturas';
@@ -40,6 +40,7 @@ export default function CrearN(props) {
     const [crearCliente, setCrearCliente] = React.useState(false)
 
     const [cantidad, setCantidad] = React.useState("")
+    const [fraction, setFraction] = React.useState("")
 
     const [inventario, setInventario] = React.useState([])
     const [productos, setProductos] = React.useState([])
@@ -49,12 +50,16 @@ export default function CrearN(props) {
     const [bodegaO, setBodegaO] = React.useState('')
     const [bodegaD, setBodegaD] = React.useState('')
     const [productosData, setProductosData] = React.useState([])
-    const [producto, setProducto] = React.useState([])
+    const [producto, setProducto] = React.useState("")
+    const [productoC, setProductoC] = React.useState(null)
 
     const [clientData, setClientData] = React.useState([])
     const [client, setClient] = React.useState("")
 
     const [subTotalV, setSubTotalV] = React.useState(0)
+    const [subTotalVI, setSubTotalVI] = React.useState(0)
+
+    
     React.useEffect(() => {
         if (initializer.usuario != null) {
 
@@ -83,7 +88,7 @@ export default function CrearN(props) {
             return false
         }
 
-            registrarUnidad({client_id:finalConsumer?'':client,final_consumer:finalConsumer?1:0,total:subTotalV+(subTotalV*0.12), data: productos }, initializer)
+            registrarUnidad({client_id:finalConsumer?'':client,final_consumer:finalConsumer?1:0,total:subTotalV+((subTotalV-subTotalVI)*0.12), data: productos }, initializer)
 
             props.setOpen(false)
             obtenerProductos(setProductosData, initializer)
@@ -93,12 +98,12 @@ export default function CrearN(props) {
         
     }
     const limpiar = () => {
-
+        setSubTotalVI(0)
         setCantidad("")
         setSubTotalV(0)
         setClient("")
         setFinalConsumer(false)
-        setProducto([])
+        setProducto("")
         setProductos([])
         setAlmacen([])
         props.setSelected(null)
@@ -134,17 +139,19 @@ export default function CrearN(props) {
         return productos.filter((e) => e.supplier_id == id)
     }
     const quitar = (row) => {
-        console.log()
+        console.log(subTotalVI)
         let id = row.tableData.id
         let t = productos.slice()
-        let tot = subTotalV - row.subtotal
+        let tot = subTotalV-row.subtotal
+        let toti = row.has_iva==0?subTotalVI-row.subtotal:subTotalVI
 
 
         setProductos(t.filter((e, i) => i != id))
         setCantidad('')
 
-        setProducto([])
+        setProducto("")
         setSubTotalV(tot)
+        setSubTotalVI(toti)
     }
 
     const existeEnDetalle=(id)=>{
@@ -196,11 +203,23 @@ export default function CrearN(props) {
 
     }
     const agregar = () => {
-        if (producto.length != 0 != "" && cantidad != "" && cantidad > 0 && cantidad > 0) {
+        if (producto!= "" && cantidad != "" && cantidad > 0 && cantidad > 0) {
             let t = productos.slice()
             let subT = subTotalV
+            let subTSinIva = subTotalVI
             let outStock=false
-            producto.map((e) => {
+            if(!existeEnDetalle(productoC.id)){
+               
+                if((productoC.stock-cantidad)>=0){
+                    t.push({ has_iva:productoC.has_iva,product: productoC.name, bar_code: productoC.bar_code, stock: (productoC.stock-cantidad), product_id: productoC.id, quantity: cantidad, fraction:fraction,price: productoC.sale_price, subtotal: (cantidad * productoC.sale_price) })
+                    subT = subT + (cantidad * productoC.sale_price)
+                    subTSinIva = subTSinIva + (productoC.has_iva==0? (cantidad * productoC.sale_price):0)
+                }else{
+                    outStock=true
+                }
+            }
+          
+            /* producto.map((e) => {
                 if(!existeEnDetalle(e.id)){
                     if((e.stock-cantidad)>=0){
                         t.push({ product: e.name, bar_code: e.bar_code, stock: (e.stock-cantidad), product_id: e.id, quantity: cantidad, price: e.sale_price, subtotal: (cantidad * e.sale_price) })
@@ -212,12 +231,15 @@ export default function CrearN(props) {
                 }
            
 
-            })
+            }) */
             setSubTotalV(subT)
+            setSubTotalVI(subTSinIva)
             setProductos(t)
             setCantidad('')
+            setFraction('')
 
-            setProducto([])
+            setProducto("")
+            setProductoC("")
             if(outStock){
                 initializer.mostrarNotificacion({ type: "warning", message: 'No hay suficiente stock' });
             }else{
@@ -241,6 +263,37 @@ export default function CrearN(props) {
             }
         })
         return object
+    }
+    const cambiarFraccionamiento=(obj,modi,val)=>{
+        console.log(obj)
+        if(obj==null){
+            return 0
+        }
+        if(modi=='cantidad'){
+            if(val>obj.stock){
+                return 0
+            }else{
+                let fr = obj.fraction
+                let t = fr*val
+                return t
+            }
+           
+        }else if(modi=="fraccion"){
+            console.log("valor cambiar"+val)
+            let temp = obj.stock*obj.fraction
+            console.log("valor maximo"+temp)
+            if(val>temp){
+                return 0
+            }else{
+                let decT = (val*1)/obj.fraction
+                console.log("ceil del valor"+decT)
+
+                let t = Math.ceil(decT)
+                console.log("ceil del valor"+decT)
+                return t
+            }
+        }
+
     }
     return (
         <Dialog
@@ -291,7 +344,7 @@ export default function CrearN(props) {
                 <Grid container spacing={2}>
                       
                            { !finalConsumer&&(
-                                <Grid item xs={12} md={4} style={{ display: 'flex',justifyContent:'space-between',alignItems:'center'}}>
+                                <Grid item xs={12} md={6} style={{ display: 'flex',justifyContent:'space-between',alignItems:'center'}}>
                                 <Autocomplete
                         
                                     style={{ width: '100%' }}
@@ -303,6 +356,7 @@ export default function CrearN(props) {
                                         if (newValue != null) {
         
                                             setClient(newValue.id);
+                                      
                                         } else {
         
                                             setClient('')
@@ -323,16 +377,26 @@ export default function CrearN(props) {
                                 
                          
                    
-                    <Grid item xs={12} md={finalConsumer?6:4} style={{ display: 'flex' }}>
+                    <Grid item xs={12} md={finalConsumer?12:6} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
                             size="small"
                             options={productosData}
-                            multiple
-                            value={producto}
+                            value={getName(producto,productosData)}
+                         
                             onChange={(event, newValue) => {
-                                setProducto(newValue);
+                                if (newValue != null) {
+        
+                                    setProducto(newValue.id);
+                                    setProductoC(newValue)
+                                    setCantidad(1)
+                                    setFraction(newValue.fraction)
+                                } else {
+                                    setProductoC(null)
+                                    setProducto('')
+
+                                }
                             }}
                             getOptionLabel={(option) => option.bar_code + " - " + option.name+"- stock: "+option.stock}
                             // prints the selected value
@@ -342,19 +406,44 @@ export default function CrearN(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12}  md={finalConsumer?6:4} >    <TextField
+                    <Grid item xs={12}  md={finalConsumer?6:6} >    <TextField
                         variant="outlined"
                         style={{ width: '100%' }}
-                        type="numeric"
+                        type="number"
                         size="small"
                         label="Cantidad"
                     
                         value={cantidad}
-                        onChange={(e) => setCantidad(e.target.value)}
+                        onChange={(e) => {
+                            setCantidad(e.target.value)
+                            setFraction(cambiarFraccionamiento(productoC,'cantidad',e.target.value))
+                        }}
 
                     /></Grid>
-                
+                <Grid item xs={12}  md={finalConsumer?6:6} >    <TextField
+                        variant="outlined"
+                        style={{ width: '100%' }}
+                        type="number"
+                        size="small"
+                        label="Fracciones"
+                    
+                        value={fraction}
+                        onChange={(e) =>{
+                            setFraction(e.target.value)
+                            setCantidad(cambiarFraccionamiento(productoC,'fraccion',e.target.value))
+                        } }
 
+                    /></Grid>
+                    {
+                        (cantidad==0&&fraction!=0)||(fraction==0&&cantidad!=0)?
+                        <Grid item xs={12} md={12}>
+
+                        <Alert severity="info">El stock no concuerda con el fraccionamiento</Alert>
+                        </Grid>
+                        :null
+                    }
+                
+                    
 
                     <Grid item xs={12} md={12}>
 
@@ -378,6 +467,8 @@ export default function CrearN(props) {
                                 { title: "Precio", field: "price", type: "currency" },
 
                                 { title: "Cantidad", field: "quantity" },
+                                { title: "Fracción", field: "fraction" },
+
                                 { title: "SubTotal", field: "subtotal", type: "currency" },
 
 
@@ -453,7 +544,7 @@ export default function CrearN(props) {
                        
                             size="small"
                             label="Iva"
-                            value={(subTotalV * 0.12).toFixed(2)}
+                            value={((subTotalV-subTotalVI) * 0.12).toFixed(2)}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                               }}
@@ -466,7 +557,7 @@ export default function CrearN(props) {
                         
                             size="small"
                             label="Total"
-                            value={subTotalV + (subTotalV * 0.12)}
+                            value={subTotalV + ((subTotalV-subTotalVI) * 0.12)}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                               }}
