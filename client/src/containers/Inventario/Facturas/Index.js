@@ -121,10 +121,13 @@ export default function Sistemas(props) {
                             tooltip: 'Anular',
 
                             onClick: (event, rowData) => {
-                               
+                                if(rowData.status!='C'){
                                     setConfirmarMensaje(true)
                                     setSelected2(rowData)
-                              
+                                }else{
+                                    initializer.mostrarNotificacion({ type: "warning", message: 'La factura ya está anulada' });
+
+                                }
                           
                             }
                         },
