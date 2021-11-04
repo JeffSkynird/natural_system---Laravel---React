@@ -21,12 +21,30 @@ class UsuarioController extends Controller
             "type" => 'success'
         ]);
     }
+    public function asignRole($id_user,$rol){
+        try{
+   
+
+            $user = User::find($id_user);
+            $user->roles()->detach();
+            $user->assignRole($rol);
+
+            return response([
+                'message'=>'Rol asignado correctamente'
+            ],200);
+        }catch(\Exception $exception){
+            return response([
+                'message'=>$exception->getMessage()
+            ],400);
+        }
+    }
     public function create(UserRequest $request)
     {
         try {
             $params = $request->validated();
             $params['user_id']=Auth::id();
-            User::create($params);
+            $us= User::create($params);
+            $this->asignRole($us->id,$params['rol']);
             return response()->json([
                 "status" => "200",
                 "message" => 'Registro exitoso',
@@ -74,7 +92,7 @@ class UsuarioController extends Controller
                     $user->password=$password;
             }
             $user->save();
-
+            $this->asignRole($id, $request->input('rol'));
             return response()->json([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
@@ -131,6 +149,7 @@ class UsuarioController extends Controller
     public function delete($id)
     {
         $data = User::find($id);
+        $data->roles()->detach();
         $data->delete();
         return response()->json([
             "status" => "200",

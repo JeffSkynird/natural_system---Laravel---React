@@ -125,7 +125,7 @@ export const registrar = (data,store,limpiar) => {
           mostrarNotificacion({ type: "success", message: response.message });
           limpiar()
         } else {
-          mostrarNotificacion({ type: "error", message: response.message });
+          mostrarNotificacion({ type: "error", message: 'Ha ocurrido un error, revise los campos' });
           mostrarLoader(false);
           limpiar()
         }

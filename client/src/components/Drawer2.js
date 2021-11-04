@@ -26,7 +26,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import { useHistory } from "react-router-dom";
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined';
-                    import EmojiTransportationIcon from '@material-ui/icons/EmojiTransportation';
+import EmojiTransportationIcon from '@material-ui/icons/EmojiTransportation';
+import SecurityIcon from '@material-ui/icons/Security';
 import Toolbar from '@material-ui/core/Toolbar';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { PUBLIC_PATH } from '../config/API'
@@ -50,6 +51,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import logo from '../assets/logo2.jpg'
 import { Badge, Box, Button, Grid } from '@material-ui/core';
+import { obtenerPermisosAuth } from '../utils/API/roles';
 
 const drawerWidth = 240;
 
@@ -109,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
     },
     nested: {
         paddingLeft: theme.spacing(4),
-      },
+    },
     avatar: {
         margin: theme.spacing(2),
 
@@ -118,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
 
     },
     drawer: {
-        overflow:'hidden',
+        overflow: 'hidden',
         [theme.breakpoints.up('sm')]: {
             width: drawerWidth,
             flexShrink: 0,
@@ -166,12 +168,16 @@ function ResponsiveDrawer(props) {
     const [file, setFile] = React.useState(null)
 
     const [names, setNames] = React.useState('')
+    const [permisos, setPermisos] = React.useState([])
+
     const initializer = useContext(Initializer);
 
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerUsuario(setInfo, initializer)
+
+            obtenerPermisosAuth(setPermisos, initializer)
         }
     }, [initializer.usuario])
     React.useEffect(() => {
@@ -207,7 +213,7 @@ function ResponsiveDrawer(props) {
 
     const drawer = (
         <div >
-            <div style={{  display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
                 <Avatar size="" className={classes.avatar} src={logo}>
 
                 </Avatar>
@@ -237,75 +243,121 @@ function ResponsiveDrawer(props) {
                         <ListItemIcon style={{ color: 'inherit' }}><DashboardIcon /> </ListItemIcon>
                         <ListItemText primary={'Dashboard'} />
                     </ListItem>
+                    {
+                        permisos.includes('Ventas') && (
+                            <ListItem button onClick={() => props.history.push('/facturas')} style={comprobador('/facturas')}>
+                                <ListItemIcon style={{ color: 'inherit' }}><PostAddIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                                <ListItemText primary={'Ventas'} />
+                            </ListItem>
+                        )
+                    }
+                    {
+                        permisos.includes('Compras') && (
+                            <ListItem button onClick={() => props.history.push('/compras')} style={comprobador('/compras')}>
+                                <ListItemIcon style={{ color: 'inherit' }}>
+                                    <PostAddIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Compras" />
+                            </ListItem>
+                        )
+                    }
+                    {
+                        permisos.includes('Clientes') && (
+                            <ListItem button onClick={() => props.history.push('/clientes')} style={comprobador('/clientes')}>
+                                <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                                <ListItemText primary={'Clientes'} />
+                            </ListItem>
+                        )
+                    }
+                    {
+                        permisos.includes('Inventario') && (
+                            <ListItem button onClick={handleOpenSettings} style={comprobador('/inventario')}>
+                                <ListItemIcon style={{ color: 'inherit' }}><ListIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                                <ListItemText primary={'Inventario'} />
+                                {openCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                            </ListItem>
+                        )
+                    }
+                    {
+                        permisos.includes('Inventario') && (
+                            <Collapse in={openCollapse} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding >
+                                    <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/productos')} >
+                                        <ListItemIcon>
+                                            <PostAddIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Productos" />
+                                    </ListItem>
+                                    <ListItem button className={classes.nested} onClick={() => props.history.push('/inventario/kardex')} >
+                                        <ListItemIcon>
+                                            <AllInboxIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Kardex" />
+                                    </ListItem>
 
-                    <ListItem button onClick={() => props.history.push('/facturas')} style={comprobador('/facturas')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><PostAddIcon  style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Ventas'} />
-                    </ListItem>
-                    <ListItem button  onClick={()=>props.history.push('/compras')}  style={comprobador('/compras')}>
-                                <ListItemIcon style={{ color: 'inherit' }}>
-                                    <PostAddIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Compras" />
-                            </ListItem>
-                    <ListItem button onClick={() => props.history.push('/clientes')} style={comprobador('/clientes')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon  style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Clientes'} />
-                    </ListItem>
-                    <ListItem button onClick={handleOpenSettings} style={comprobador('/inventario')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><ListIcon style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Inventario'} />
-                        {openCollapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    </ListItem>
-                 
-                    <Collapse in={openCollapse} timeout="auto" unmountOnExit>
-                        <List  component="div" disablePadding >
-                        <ListItem button className={classes.nested} onClick={()=>props.history.push('/inventario/productos')} >
-                                <ListItemIcon>
-                                    <PostAddIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Productos" />
-                            </ListItem>
-                            <ListItem button className={classes.nested}  onClick={()=>props.history.push('/inventario/kardex')} >
-                                <ListItemIcon>
-                                    <AllInboxIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Kardex" />
-                            </ListItem>
-                           
-                         
-                          
-                        </List>
-                    </Collapse>
-                  
-                    <ListItem button  onClick={()=>props.history.push('/inventario/ajustes')}>
-                                <ListItemIcon style={{ color: 'inherit' }}>
-                                    <TransformIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Ajuste" />
-                            </ListItem>
+
+
+                                </List>
+                            </Collapse>
+                        )
+                    }
+
+{
+                        permisos.includes('Ajuste') && (
+                            <ListItem button onClick={() => props.history.push('/inventario/ajustes')}>
+                            <ListItemIcon style={{ color: 'inherit' }}>
+                                <TransformIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Ajuste" />
+                        </ListItem>
+                        )
+                    }
+
+{
+                        permisos.includes('Proveedores') && (
+                            <ListItem button onClick={() => props.history.push('/inventario/proveedores')}>
+                            <ListItemIcon style={{ color: 'inherit' }}>
+                                <EmojiTransportationIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Proveedores" />
+                        </ListItem>
+                        )
+                    }
+
+{
+                        permisos.includes('Personal') && (
                               
-                            <ListItem button onClick={()=>props.history.push('/inventario/proveedores')}>
-                                <ListItemIcon style={{ color: 'inherit' }}>
-                                    <EmojiTransportationIcon />
-                                </ListItemIcon>
-                                <ListItemText  primary="Proveedores" />
-                            </ListItem>
                     <ListItem button onClick={() => props.history.push('/personal')} style={comprobador('/personal')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Personal'} />
-                    </ListItem>
-                    <ListItem button onClick={() => props.history.push('/reporte')} style={comprobador('/reporte')}>
-                        <ListItemIcon style={{ color: 'inherit' }}><PrintOutlinedIcon style={{ color: 'inherit' }} /> </ListItemIcon>
-                        <ListItemText primary={'Reporte'} />
-                    </ListItem>
-                   
+                    <ListItemIcon style={{ color: 'inherit' }}><PeopleOutlineIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                    <ListItemText primary={'Personal'} />
+                </ListItem>
+                        )
+                    }
+{
+                        permisos.includes('Roles') && (
+                 
+                            <ListItem button onClick={() => props.history.push('/roles')} style={comprobador('/roles')}>
+                            <ListItemIcon style={{ color: 'inherit' }}><SecurityIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                            <ListItemText primary={'Roles'} />
+                        </ListItem>
+                        )
+                    }
+            {
+                        permisos.includes('Reporte') && (
+                            <ListItem button onClick={() => props.history.push('/reporte')} style={comprobador('/reporte')}>
+                            <ListItemIcon style={{ color: 'inherit' }}><PrintOutlinedIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                            <ListItemText primary={'Reporte'} />
+                        </ListItem>
+                        )
+                    }
+                
+
                 </List>
 
                 <div>
                     <Divider />
                     <List>
-                
+
                         <ListItem button onClick={cerrar}>
                             <ListItemIcon><ExitToAppIcon /> </ListItemIcon>
                             <ListItemText primary={'Salir'} />

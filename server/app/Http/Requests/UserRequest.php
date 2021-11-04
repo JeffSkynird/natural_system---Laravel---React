@@ -64,7 +64,8 @@ class UserRequest extends FormRequest
             'dni'=>'required',
             'names' => 'required',
             'last_names' => 'required',
-            'password' => 'required'
+            'password' => 'required',
+            'rol'=>'required'
             ];
     }
 

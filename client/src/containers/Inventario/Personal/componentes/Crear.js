@@ -9,10 +9,11 @@ import Button from '@material-ui/core/Button';
 import Initializer from '../../../../store/Initializer'
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
-import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
+import { Avatar, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { editar as editarBodega, registrar as registrarBodega } from '../../../../utils/API/usuarios';
 import { obtenerTodos as obtenerZonas } from '../../../../utils/API/zones';
 import { Autocomplete } from '@material-ui/lab';
+import { obtenerRolUsuario, obtenerTodos } from '../../../../utils/API/roles';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -36,12 +37,16 @@ export default function Crear(props) {
     const [stock, setStock] = React.useState("")
     const [clave, setClave] = React.useState("")
     const [apellidos, setApellidos] = React.useState("")
+    const [roles, setRoles] = React.useState([])
+    const [rol, setRol] = React.useState("")
 
     const [descripcion, setDescripcion] = React.useState("")
     React.useEffect(() => {
         if (initializer.usuario != null) {
 
         obtenerZonas(setZoneData,initializer)
+        
+        obtenerTodos(setRoles, initializer)
         }
   
 }, [initializer.usuario])
@@ -52,6 +57,7 @@ export default function Crear(props) {
             setDocumento(props.sistema.dni)
   
             setCorreo(props.sistema.email)
+            obtenerRolUsuario(props.sistema.id,setRol,initializer)
      
 
         }
@@ -62,7 +68,8 @@ export default function Crear(props) {
         'last_names':apellidos,
         'dni': documento,
         'email': correo,
-        'password':clave
+        'password':clave,
+        'rol':rol
    }
         if(props.sistema==null){
             registrarBodega(data,initializer,limpiar)
@@ -80,6 +87,7 @@ export default function Crear(props) {
         setClave("")
         setDireccion("")
         setApellidos("")
+        setRol("")
         setCelular("")
         setCorreo("")
         setTelefono("")
@@ -161,6 +169,29 @@ export default function Crear(props) {
                         onChange={(e) => setClave(e.target.value)}
 
                     /></Grid>
+                    <Grid item xs={12}> 
+                    <FormControl style={{width:'100%'}} variant="outlined" >
+        <InputLabel id="demo-simple-select-filled-label">Rol</InputLabel>
+        <Select
+        
+          labelId="demo-simple-select-filled-label"
+          id="demo-simple-select-filled"
+          value={rol}
+          onChange={(e)=>setRol(e.target.value)}
+          label="Rol"
+        >
+          <MenuItem value="">
+            <em>Seleccione una opción</em>
+          </MenuItem>
+            {
+                roles.map((e)=>(
+                        <MenuItem value={e.name}>{e.name}</MenuItem>
+                ))
+            }
+        </Select>
+      </FormControl>
+      
+      </Grid>
 
                 </Grid>
 

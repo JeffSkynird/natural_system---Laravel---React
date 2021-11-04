@@ -2,7 +2,64 @@ import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT} from '../../config/API'
 const axios = require('axios');
 
+export const obtenerRolUsuario = (id,setData,store) => {
 
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+  let url = ENTRYPOINT+"user/role?user_id="+id
+  let setting = {
+    method: "Get",
+    url: url,
+    headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+  };
+
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data
+     if(response.type!="error"){
+        setData(response.role)
+     
+
+     }else{
+     
+     }
+    })
+    .catch((error) => {
+     
+
+
+    });
+}
+export const obtenerPermisosAuth = (setData,store) => {
+
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+  let url = ENTRYPOINT+"permission/user"
+  let setting = {
+    method: "Get",
+    url: url,
+    headers: { 'Accept': 'application/json',  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+  };
+
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data
+     if(response.type!="error"){
+        setData(response.permisos)
+     
+
+     }else{
+     
+     }
+    })
+    .catch((error) => {
+     
+
+
+    });
+}
 export const obtenerTodos = (setData,store) => {
 
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
@@ -19,7 +76,7 @@ export const obtenerTodos = (setData,store) => {
       .then((res) => {
         let response = res.data
        if(response.type!="error"){
-          setData({data:response.roles,backup:response.roles})
+          setData(response.roles)
        
   
        }else{

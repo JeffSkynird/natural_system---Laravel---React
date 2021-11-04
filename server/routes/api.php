@@ -23,8 +23,25 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('login', 'App\Http\Controllers\v1\Seguridad\AuthController@login');
         Route::post('logout', 'App\Http\Controllers\v1\Seguridad\AuthController@logout')->middleware('auth:api');
     });
+    Route::post('user/asign-role', 'App\Http\Controllers\v1\Seguridad\RoleController@asignRole');
+    Route::post('role/edit', 'App\Http\Controllers\v1\Seguridad\RoleController@editar');
+    Route::delete('role/delete', 'App\Http\Controllers\v1\Seguridad\RoleController@deleteRole');
+    Route::get('user/role', 'App\Http\Controllers\v1\Seguridad\RoleController@getRoleByUser');
+    Route::post('role/asign-multiple', 'App\Http\Controllers\v1\Seguridad\RoleController@asignMultiplePermission');
+    Route::get('roles', 'App\Http\Controllers\v1\Seguridad\RoleController@roles');
+    Route::get('role/permisions', 'App\Http\Controllers\v1\Seguridad\RoleController@getPermisionsByRole');
+    Route::post('role/create', 'App\Http\Controllers\v1\Seguridad\RoleController@create');
+    Route::post('role/asign-one', 'App\Http\Controllers\v1\Seguridad\RoleController@asignOnePermission');
+
+    Route::get('role/permissions', 'App\Http\Controllers\v1\Seguridad\PermisoController@getPermissionsOwn');
+    Route::get('role/permissions/get', 'App\Http\Controllers\v1\Seguridad\PermisoController@getRolPermissions');
+    Route::get('user/permissions', 'App\Http\Controllers\v1\Seguridad\PermisoController@getOwnPermissions');
+    Route::get('permisos', 'App\Http\Controllers\v1\Seguridad\PermisoController@permisos');
+    Route::get('role/deasign-one', 'App\Http\Controllers\v1\Seguridad\PermisoController@revokePermission');
+    Route::post('permission/create', 'App\Http\Controllers\v1\Seguridad\PermisoController@create');
 
     Route::middleware('auth:api')->group(function () {
+        Route::get('permission/user', 'App\Http\Controllers\v1\Seguridad\PermisoController@getPermissionsById');
 
         Route::post('autorize_order/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@autorize');
         Route::put('orders/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@update');
@@ -101,5 +118,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@show');
         Route::get('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@index');
         Route::delete('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@delete');
+        
     });
 });
