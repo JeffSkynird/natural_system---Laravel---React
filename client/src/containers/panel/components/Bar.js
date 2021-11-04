@@ -105,7 +105,7 @@ export default function BarChart(props) {
        
    
 
-        <Chart height={200} width={"100%"} options={options} series={series} type="bar"  />
+        <Chart height={240} width={"100%"} options={options} series={series} type="bar"  />
 
     )
 }
