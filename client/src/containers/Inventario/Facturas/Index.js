@@ -102,9 +102,12 @@ export default function Sistemas(props) {
                             <span >{rowData.final_consumer==1?'Consumidor Final':rowData.names}</span>
                         ) },
                      
-                        { title: "Total", field: "total" },
+                       
                         { title: "IVA", field: "iva" },
-
+                        { title: "Total", field: "total",
+                        render: rowData => (
+                            <span >${rowData.total}</span>
+                        )  },
                         
                         { title: "Registro", field: "created_at", type: "datetime" },
 

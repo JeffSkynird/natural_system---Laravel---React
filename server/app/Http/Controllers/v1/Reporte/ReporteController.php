@@ -30,10 +30,29 @@ class ReporteController extends Controller
         ];
         $data = $this->obtenerData($request->input('tipo'), $filtros);
         if ($data != null) {
-            return $data->download('report.pdf');
+            return $data->stream('reporte.pdf');
         } else {
             return response()->json(['error' => 'No se encontraron datos'], 404);
         }
+    }
+    public function printTicket($id)
+    {
+ 
+   
+        $data  = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
+        ->join('users', 'invoices.user_id', '=', 'users.id')
+        ->where('invoices.id', '=', $id)
+        ->selectRaw('users.dni,invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names');
+        $datbodya  = InvoiceProduct::join('products', 'invoice_products.product_id', '=', 'products.id')
+        ->where('invoice_products.invoice_id', '=',$id)
+        ->selectRaw('products.sale_price,products.name,products.bar_code,invoice_products.quantity,invoice_products.subtotal')->get();
+        $subTotal = InvoiceProduct::where('invoice_id', '=', $id)->sum('subtotal');
+
+        $pdf =  PDF::loadView('ticket', ['data' => $data->first(), 'body' => $datbodya, 'subtotal' => $subTotal]);
+   
+
+        return  $pdf->stream('whateveryourviewname.pdf');
+       
     }
     public function addGeneralCondition($tableRef,$data,$desde,$hasta,$usuario){
         if(!is_null($desde)&&!is_null($hasta)){

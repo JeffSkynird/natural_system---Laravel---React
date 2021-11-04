@@ -15,7 +15,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
-import { Grid, IconButton } from '@material-ui/core';
+import { FormControlLabel, Grid, IconButton, Switch } from '@material-ui/core';
 import { obtenerTodos } from '../../../utils/API/usuarios.js';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
@@ -26,6 +26,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import DateFnsUtils from '@date-io/date-fns';
 import { utcDate } from '../../../utils/Date'
+import PrintIcon from '@material-ui/icons/Print';
 import {
     DatePicker,
     KeyboardDatePicker,
@@ -39,8 +40,8 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import VisibilityOutlinedIcon from '@material-ui/icons/VisibilityOutlined';
-import { downloadFiles } from '../../../utils/API/reporte';
-import {obtenerTodos as obtenerUsuarios} from '../../../utils/API/usuarios'
+import { downloadFiles, printTicket } from '../../../utils/API/reporte';
+import { obtenerTodos as obtenerUsuarios } from '../../../utils/API/usuarios'
 import { Autocomplete } from '@material-ui/lab';
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
@@ -59,6 +60,7 @@ export default function Sistemas(props) {
     const [filtros, setFiltros] = React.useState(false)
     const [user, setUser] = React.useState('')
     const [userData, setUserData] = React.useState([])
+    const [ticket, setTicket] = React.useState(false)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
@@ -93,13 +95,19 @@ export default function Sistemas(props) {
         return tot
     }
     const reporte = () => {
-        let filter=[]
-        if(filtros){
-             filter = [{ tipo: "usuario", valor: user },{ tipo: "numero_factura", valor: filtro },{ tipo: "desde", valor: desde!=null?utcDate(desde):"" }, { tipo: "hasta", valor: hasta!=null?utcDate(hasta):"" },  { tipo: "codigo_barras", valor: barcode }]
+        if (ticket) {
+            printTicket(filtro, initializer)
+        } else {
+            let filter = []
+            if (filtros) {
+                filter = [{ tipo: "usuario", valor: user }, { tipo: "numero_factura", valor: filtro }, { tipo: "desde", valor: desde != null ? utcDate(desde) : "" }, { tipo: "hasta", valor: hasta != null ? utcDate(hasta) : "" }, { tipo: "codigo_barras", valor: barcode }]
+            }
+            downloadFiles(tipo, initializer, filter)
         }
-        downloadFiles(tipo,initializer,filter)
+
     }
-    const getName = (id,data) => {
+
+    const getName = (id, data) => {
         let object = null
         data.map((e) => {
             if (id == e.id) {
@@ -114,6 +122,7 @@ export default function Sistemas(props) {
         setFiltro("")
         setDesde(getFirst())
         setHasta(getLast())
+        setTicket(false)
     }
     return (
         <Grid container spacing={2}>
@@ -145,6 +154,7 @@ export default function Sistemas(props) {
                                             onChange={(e) => {
                                                 setTipo(e.target.value)
                                                 setFiltro("")
+                                                limpiarCampos()
                                             }}
                                             label="Seleccione el reporte"
                                         >
@@ -160,7 +170,7 @@ export default function Sistemas(props) {
                                     </FormControl>
                                     <IconButton aria-label="delete" onClick={() => {
                                         setFiltros(!filtros)
-                                        if((!filtros)==false){
+                                        if ((!filtros) == false) {
                                             limpiarCampos()
                                         }
                                     }}>
@@ -194,7 +204,7 @@ export default function Sistemas(props) {
 
                                                     /></Grid>)
                                                 }
-                                                    {tipo == 'productos' ||tipo=='kardex'? (
+                                                {tipo == 'productos' || tipo == 'kardex' ? (
                                                     <Grid item xs={12}>    <TextField
                                                         variant="outlined"
                                                         size="small"
@@ -204,7 +214,7 @@ export default function Sistemas(props) {
                                                         value={barcode}
                                                         onChange={(e) => setBarcode(e.target.value)}
 
-                                                    /></Grid>):null
+                                                    /></Grid>) : null
                                                 }
                                                 <Grid item md={6} xs={12}>
 
@@ -246,7 +256,7 @@ export default function Sistemas(props) {
                                                             format="yyyy-MM-dd"
                                                             value={hasta}
 
-                                                            onChange={date =>setHasta(date)}
+                                                            onChange={date => setHasta(date)}
                                                         />
 
 
@@ -255,30 +265,45 @@ export default function Sistemas(props) {
 
                                                 </Grid>
                                                 <Grid item xs={12} md={12}>
-                                                 
-                                                        <Autocomplete
-                                                            size="small"
-                                                            style={{ width: '100%' }}
-                                                            options={userData}
-                                                            value={getName(user, userData)}
-                                                            getOptionLabel={(option) => option.dni+" - "+option.names}
-                                                            onChange={(event, value) => {
-                                                                if (value != null) {
 
-                                                                    setUser(value.id)
-                                                                } else {
+                                                    <Autocomplete
+                                                        size="small"
+                                                        style={{ width: '100%' }}
+                                                        options={userData}
+                                                        value={getName(user, userData)}
+                                                        getOptionLabel={(option) => option.dni + " - " + option.names}
+                                                        onChange={(event, value) => {
+                                                            if (value != null) {
 
-                                                                    setUser('')
+                                                                setUser(value.id)
+                                                            } else {
 
-                                                                }
+                                                                setUser('')
 
-                                                            }} // prints the selected value
-                                                            renderInput={params => (
-                                                                <TextField {...params} label="Seleccione un usuario" variant="outlined" fullWidth />
-                                                            )}
-                                                        />
+                                                            }
+
+                                                        }} // prints the selected value
+                                                        renderInput={params => (
+                                                            <TextField {...params} label="Seleccione un usuario" variant="outlined" fullWidth />
+                                                        )}
+                                                    />
 
                                                 </Grid>
+
+
+                                                {tipo == 'facturas' && (
+                                                    <Grid item xs={12}>
+                                                        <FormControlLabel
+                                                            control={<Switch checked={ticket}
+                                                                onChange={() => setTicket(!ticket)} name="checkedA" />}
+                                                            label="Formato Ticket"
+                                                        />
+
+
+                                                    </Grid>)
+                                                }
+
+
                                             </Grid>
                                         </Grid>
 
@@ -288,7 +313,7 @@ export default function Sistemas(props) {
                             </Grid>
                         </CardContent>
                         <CardActions>
-                            <Button variant="contained" disabled={tipo == ""} startIcon={<GetAppOutlinedIcon />} size="small" color="primary" onClick={reporte}>Descargar reporte</Button>
+                            <Button variant="contained" disabled={tipo == ""} startIcon={<PrintIcon />} size="small" color="primary" onClick={reporte}>Imprimir reporte</Button>
                         </CardActions>
                     </Card>
                 </Grid>

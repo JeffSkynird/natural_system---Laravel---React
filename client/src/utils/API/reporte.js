@@ -19,6 +19,7 @@ export const downloadFiles = (tipo,store,filter) => {
       responseType: 'blob',
       headers: {
         Accept: "application/json",
+        Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,
       }
     };
     mostrarLoader(true);
@@ -27,13 +28,55 @@ export const downloadFiles = (tipo,store,filter) => {
       .then((res) => {
         let response = res.data;
         if(res.data.type!="error"){
-          const url = window.URL.createObjectURL(new Blob([response]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'reporte.pdf'); //or any other extension
-          link.target="_blank"
-          document.body.appendChild(link);
-          link.click();
+      
+
+          var _url = window.URL.createObjectURL(new Blob([response], { type: "application/pdf" }));
+          window.open(_url, "_blank").focus(); // window.open + focus
+
+        
+          mostrarLoader(false);
+        
+        }else{
+        
+          mostrarLoader(false);
+          
+        }
+        
+      })
+      .catch((error) => {
+        mostrarLoader(false);
+     
+      });
+  };
+
+
+  export const printTicket = (id,store) => {
+    const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+   
+ 
+    let url = ENTRYPOINT+"print_invoice/"+id;
+    let setting = {
+      method: "GET",
+
+      url: url,
+      responseType: 'blob',
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,
+      }
+    };
+    mostrarLoader(true);
+  
+    axios(setting)
+      .then((res) => {
+        let response = res.data;
+        if(res.data.type!="error"){
+      
+
+          var _url = window.URL.createObjectURL(new Blob([response], { type: "application/pdf" }));
+          window.open(_url, "_blank").focus(); // window.open + focus
+
+        
           mostrarLoader(false);
         
         }else{

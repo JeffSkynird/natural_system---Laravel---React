@@ -39,6 +39,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('permisos', 'App\Http\Controllers\v1\Seguridad\PermisoController@permisos');
     Route::get('role/deasign-one', 'App\Http\Controllers\v1\Seguridad\PermisoController@revokePermission');
     Route::post('permission/create', 'App\Http\Controllers\v1\Seguridad\PermisoController@create');
+    Route::get('print_invoice/{id}', 'App\Http\Controllers\v1\Reporte\ReporteController@printTicket');
 
     Route::middleware('auth:api')->group(function () {
         Route::get('permission/user', 'App\Http\Controllers\v1\Seguridad\PermisoController@getPermissionsById');
@@ -102,6 +103,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('invoices/cancel/{id}', 'App\Http\Controllers\v1\Ventas\InvoiceController@anular');
         Route::get('reporte', 'App\Http\Controllers\v1\Reporte\ReporteController@reporte');
 
+        
         Route::post('unities', 'App\Http\Controllers\v1\Inventario\UnityController@create');
         Route::put('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@update');
         Route::get('unities/{id}', 'App\Http\Controllers\v1\Inventario\UnityController@show');

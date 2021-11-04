@@ -52,6 +52,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import logo from '../assets/logo2.jpg'
 import { Badge, Box, Button, Grid } from '@material-ui/core';
 import { obtenerPermisosAuth } from '../utils/API/roles';
+import { obtenerRol } from '../utils/API/usuarios';
 
 const drawerWidth = 240;
 
@@ -169,6 +170,7 @@ function ResponsiveDrawer(props) {
 
     const [names, setNames] = React.useState('')
     const [permisos, setPermisos] = React.useState([])
+    const [rol, setRol] = React.useState("");
 
     const initializer = useContext(Initializer);
 
@@ -176,6 +178,8 @@ function ResponsiveDrawer(props) {
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerUsuario(setInfo, initializer)
+
+            obtenerRol(JSON.parse(desencriptarJson(initializer.usuario)).user.id,setRol,initializer);
 
             obtenerPermisosAuth(setPermisos, initializer)
         }
@@ -218,7 +222,7 @@ function ResponsiveDrawer(props) {
 
                 </Avatar>
                 <Typography variant="subtitle1" style={{ fontSize: 15, color: '#929396' }}>
-                    Administrador
+                {rol}
                 </Typography>
                 <div style={{
                     width: '150px',
