@@ -19,7 +19,7 @@ class CreateKardexesTable extends Migration
             $table->enum('concept', ['E','S']);
             $table->integer('quantity');
             $table->integer('stock');
-            $table->enum('type', ['A','V','C']);
+            $table->enum('type', ['A','V','AN','C']);
             $table->foreignId('user_id')->constrained('users');
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();

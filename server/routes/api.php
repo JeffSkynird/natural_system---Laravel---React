@@ -99,6 +99,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::get('kpis', 'App\Http\Controllers\v1\Ventas\ClientController@kpis');
         Route::get('kardex', 'App\Http\Controllers\v1\Ventas\KardexController@index');
+        Route::post('invoices/cancel/{id}', 'App\Http\Controllers\v1\Ventas\InvoiceController@anular');
         Route::get('reporte', 'App\Http\Controllers\v1\Reporte\ReporteController@reporte');
 
         Route::post('unities', 'App\Http\Controllers\v1\Inventario\UnityController@create');

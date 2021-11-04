@@ -122,7 +122,7 @@ export default function Sistemas(props) {
                         { title: "Cantidad", field: "quantity" },
                         { title: "Stock", field: "stock" },
                         { title: "Tipo", field: "type" ,render: rowData => (
-                            <span>{rowData.type=='V'?'Venta':(rowData.type=='C'?'Compra':'Ajuste')}</span>
+                            <span>{rowData.type=='V'?'Venta':(rowData.type=='C'?'Compra':(rowData.type=='A'?'Ajuste':'Anulación'))}</span>
                         ), },
                         { title: "Usuario", field: "names" },
                         { title: "Registro", field: "created_at", type: "datetime" },

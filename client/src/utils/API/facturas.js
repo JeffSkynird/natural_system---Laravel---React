@@ -68,6 +68,38 @@ export const eliminarUnidad = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
+  export const anularFactura = (id,store,carga) => {
+    const { usuario, mostrarNotificacion, mostrarLoader } = store;
+    
+    let url = ENTRYPOINT+"invoices/cancel/"+id;
+    let setting = {
+      method: "POST",
+      url: url,
+      headers: { Accept: "application/json",
+      Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,  },
+    };
+    mostrarLoader(true);
+  
+    axios(setting)
+      .then((res) => {
+        let response = res.data;
+        if (response.type != "error") {
+         
+          mostrarLoader(false);
+          mostrarNotificacion({ type: "success", message: response.message });
+          carga()
+        } else {
+          mostrarNotificacion({ type: "error", message: response.message });
+          mostrarLoader(false);
+          carga()
+        }
+      })
+      .catch((error) => {
+        mostrarLoader(false);
+  
+        mostrarNotificacion({ type: "error", message: error.message });
+      });
+  }
 export const registrarUnidad = (data,store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     

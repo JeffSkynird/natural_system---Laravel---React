@@ -17,7 +17,7 @@ class InvoiceController extends Controller
         try {
             $data = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
           
-            ->selectRaw('invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names')->get();
+            ->selectRaw('invoices.status,invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,
@@ -114,7 +114,42 @@ class InvoiceController extends Controller
             ]);
         }
     }
-  
+    public function anular($id)
+    {
+        $data = Invoice::find($id);
+        if( $data->status!='C'){
+            $inv = InvoiceProduct::where('invoice_id',$id)->get();
+            foreach ($inv as $val) {
+               $pro = Product::find($val->product_id);
+               $pro->stock = $pro->stock - $val->quantity;
+               $pro->save();
+    
+               Kardex::create([
+                'product_id' => $val->product_id,
+                'quantity' =>  $val->quantity,
+                'type' => 'AN',
+                'concept' =>'S',
+                'stock'=>$pro->stock,
+                'user_id'=>Auth::id()
+            ]);
+            }
+            InvoiceProduct::where('invoice_id',$id)->delete();
+            $data->status='C';
+            $data->save();
+            return response()->json([
+                "status" => "200",
+                "message" => 'Anulación exitosa',
+                "type" => 'success'
+            ]);
+        }else{
+            return response()->json([
+                "status" => "400",
+                "message" => 'La factura ya está anulada',
+                "type" => 'error'
+            ]);
+        }
+     
+    }
     public function delete($id)
     {
         $data = Invoice::find($id);

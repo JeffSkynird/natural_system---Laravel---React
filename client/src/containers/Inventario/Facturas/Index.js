@@ -12,11 +12,12 @@ import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import Avatar from '@material-ui/core/Avatar';
 import Initializer from '../../../store/Initializer'
+import Confirmar from '../../../components/Confirmar'
 
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { obtenerTodos } from '../../../utils/API/facturas';
+import { obtenerTodos,anularFactura} from '../../../utils/API/facturas';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
 import Filtro from './componentes/Filtro'
@@ -30,6 +31,7 @@ export default function Sistemas(props) {
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
     const [openFilter, setOpenFilter] = React.useState(false)
+    const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
@@ -41,18 +43,16 @@ export default function Sistemas(props) {
         setSelected(null)
         setSelected2(null)
     }
-    const total=()=>{
-        let tot=0
-        data.map((e)=>{
-            tot+=e.evaluaciones
-        })
-        return tot
+    const anular=()=>{
+        anularFactura(selected2.id,initializer,carga)
+
     }
     return (
         <Grid container spacing={2}>
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
             <Filtro setOpen={setOpenFilter} open={openFilter}  />
+            <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={anular} titulo='¿Desea continuar? Se anulará la factura.'/>
 
             <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
                 <Typography variant="h5" >
@@ -87,8 +87,12 @@ export default function Sistemas(props) {
                 <MaterialTable
                     icons={TableIcons}
                     columns={[
+                       
                         { title: "Factura #", field: "id" },
-
+                        { title: "Estado", field: "status",
+                        render: rowData => (
+                            <span >{rowData.status=='A'?'Completada':'Anulada'}</span>
+                        )  },
                         { title: "Documento", field: "document",
                         render: rowData => (
                             <span >{rowData.final_consumer==1?'-':rowData.document}</span>
@@ -111,8 +115,21 @@ export default function Sistemas(props) {
                     }
 
                     localization={LocalizationTable}
+                    actions={[
+                        {
+                            icon: TableIcons.Delete,
+                            tooltip: 'Anular',
 
-                 
+                            onClick: (event, rowData) => {
+                               
+                                    setConfirmarMensaje(true)
+                                    setSelected2(rowData)
+                              
+                          
+                            }
+                        },
+
+                    ]}
 
                     options={{
                         pageSize:10,
