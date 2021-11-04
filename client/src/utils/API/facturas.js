@@ -100,7 +100,7 @@ export const eliminarUnidad = (id,store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   }
-export const registrarUnidad = (data,store) => {
+export const registrarUnidad = (data,store,imprimir) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
     let url = ENTRYPOINT+"invoices";
@@ -121,6 +121,7 @@ export const registrarUnidad = (data,store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          imprimir(response.numero_factura)
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);

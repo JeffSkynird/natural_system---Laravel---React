@@ -30,9 +30,12 @@ import { PersonAddOutlined, PostAddOutlined } from '@material-ui/icons';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import CrearCliente from '../../Clientes/componentes/Crear'
+import { downloadFiles, printTicket } from '../../../../utils/API/reporte';
+
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
+
 export default function CrearN(props) {
     const initializer = React.useContext(Initializer);
     const [open, setOpen] = React.useState(false)
@@ -88,7 +91,7 @@ export default function CrearN(props) {
             return false
         }
 
-            registrarUnidad({iva:(subTotalV-subTotalVI) * 0.12,client_id:finalConsumer?'':client,final_consumer:finalConsumer?1:0,total:subTotalV+((subTotalV-subTotalVI)*0.12), data: productos }, initializer)
+            registrarUnidad({iva:(subTotalV-subTotalVI) * 0.12,client_id:finalConsumer?'':client,final_consumer:finalConsumer?1:0,total:subTotalV+((subTotalV-subTotalVI)*0.12), data: productos }, initializer,imprimir)
 
             props.setOpen(false)
             obtenerProductos(setProductosData, initializer)
@@ -96,6 +99,9 @@ export default function CrearN(props) {
             limpiar()
         
         
+    }
+    const imprimir=(id)=>{
+        printTicket(id, initializer)
     }
     const limpiar = () => {
         setSubTotalVI(0)

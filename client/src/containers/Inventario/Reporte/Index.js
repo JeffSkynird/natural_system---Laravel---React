@@ -162,10 +162,11 @@ export default function Sistemas(props) {
                                                 <em>Seleccione una opción</em>
                                             </MenuItem>
                                             <MenuItem value={'facturas'}>Facturas</MenuItem>
+                                            <MenuItem value={'compras'}>Compras</MenuItem>
                                             <MenuItem value={'kardex'}>Kardex</MenuItem>
                                             <MenuItem value={'clientes'}>Clientes</MenuItem>
                                             <MenuItem value={'productos'}>Productos</MenuItem>
-
+                                 
                                         </Select>
                                     </FormControl>
                                     <IconButton aria-label="delete" onClick={() => {

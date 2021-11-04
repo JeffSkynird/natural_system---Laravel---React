@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Invoice;
 use App\Models\InvoiceProduct;
 use App\Models\Kardex;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use PDF;
@@ -73,6 +74,12 @@ class ReporteController extends Controller
                 $this->addGeneralCondition('',$data,$desde,$hasta,$usuario);
                 return PDF::loadView('clientes', ['data' => $data->get(), 'tipo' => 'clientes']);
                 break;
+            case 'compras':
+                $data  = Order::join('suppliers', 'orders.supplier_id', '=', 'suppliers.id')
+                ->selectRaw("orders.id,suppliers.business_name,orders.total,to_char(orders.created_at,'DD/MM/YYYY') date");
+                $this->addGeneralCondition('orders.',$data,$desde,$hasta,$usuario);
+                return PDF::loadView('compras', ['data' => $data->get()]);
+                break;
             case 'productos':
                 $data = Product::join('unities', 'products.unity_id', '=', 'unities.id')
                     ->join('categories', 'products.category_id', '=', 'categories.id')
@@ -101,8 +108,9 @@ class ReporteController extends Controller
                     $data  = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
                         ->selectRaw('invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names');
                     $this->addGeneralCondition('invoices.',$data,$desde,$hasta,$usuario);
+                   
 
-                    return PDF::loadView('facturas', ['data' => $data->get(), 'tipo' => 'facturas']);
+                    return PDF::loadView('facturas', ['data' => $data->get(), 'total'=>$data->sum('invoices.total'),'tipo' => 'facturas']);
                 }
 
 

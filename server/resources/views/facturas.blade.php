@@ -76,7 +76,7 @@
         .banner {
             text-align: left;
 
-            width: 190px;
+            width: 250px;
             object-fit: cover;
             text-align: center;
             display: block;
@@ -123,6 +123,7 @@
 
     </header>
     <p style="font-weight:bold;text-align:left;margin-top:5px;  font-size:17px; margin: 10px;">Total registros: {{count($data )}}</p>
+    <p style="font-weight:bold;text-align:left;margin-top:5px;  font-size:17px; margin: 10px;">Total de compras: ${{$total}}</p>
 
     <section class="personal_data" style="margin-bottom:30px;">
         <table id="customers">

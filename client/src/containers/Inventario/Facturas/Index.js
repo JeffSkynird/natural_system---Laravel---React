@@ -91,7 +91,7 @@ export default function Sistemas(props) {
                         { title: "Factura #", field: "id" },
                         { title: "Estado", field: "status",
                         render: rowData => (
-                            <span >{rowData.status=='A'?'Completada':'Anulada'}</span>
+                            <span >{rowData.status=='A'?'Emitida':'Anulada'}</span>
                         )  },
                         { title: "Documento", field: "document",
                         render: rowData => (

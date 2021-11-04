@@ -77,7 +77,7 @@
         .banner {
             text-align: left;
 
-            width: 190px;
+            width: 250px;
             object-fit: cover;
             text-align: center;
             display: block;

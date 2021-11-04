@@ -76,6 +76,7 @@ class InvoiceController extends Controller
             }
             return response()->json([
                 "status" => "200",
+                "numero_factura" => $inv->id,
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
@@ -121,14 +122,14 @@ class InvoiceController extends Controller
             $inv = InvoiceProduct::where('invoice_id',$id)->get();
             foreach ($inv as $val) {
                $pro = Product::find($val->product_id);
-               $pro->stock = $pro->stock - $val->quantity;
+               $pro->stock = $pro->stock + $val->quantity;
                $pro->save();
     
                Kardex::create([
                 'product_id' => $val->product_id,
                 'quantity' =>  $val->quantity,
                 'type' => 'AN',
-                'concept' =>'S',
+                'concept' =>'E',
                 'stock'=>$pro->stock,
                 'user_id'=>Auth::id()
             ]);

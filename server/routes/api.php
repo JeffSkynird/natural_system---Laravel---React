@@ -41,6 +41,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('permission/create', 'App\Http\Controllers\v1\Seguridad\PermisoController@create');
     Route::get('print_invoice/{id}', 'App\Http\Controllers\v1\Reporte\ReporteController@printTicket');
 
+    Route::get('sales/last_months', 'App\Http\Controllers\v1\Reporte\DashboardController@salesLastMonth');
+
     Route::middleware('auth:api')->group(function () {
         Route::get('permission/user', 'App\Http\Controllers\v1\Seguridad\PermisoController@getPermissionsById');
 

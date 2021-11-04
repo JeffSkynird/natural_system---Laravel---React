@@ -39,6 +39,7 @@ import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import FiltroPanel from './components/FiltroPanel';
+import { ObtenerGrafico1 } from '../../utils/API/reporte';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -168,11 +169,12 @@ export default function Sistemas(props) {
     const [value, setValue] = React.useState(0);
     const [sistemas, setSistemas] = React.useState([])
     const [sistema, setSistema] = React.useState('')
-    const [data1, setData1] = React.useState([])
+    const [data1, setData1] = React.useState({ventas:[],cantidad:[],meses:[]})
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerKpisPanel({desde:utcDate(getFirst()),hasta:utcDate(getLast())},setData, initializer)
+            ObtenerGrafico1(setData1,initializer)
             setDesde(getFirst())
             setHasta(getLast())
         }
@@ -335,15 +337,14 @@ export default function Sistemas(props) {
                     </Grid>
                 </Grid>
             </Grid>
-            {/*       <Grid item md={12} xs={12}>
+                <Grid item md={12} xs={12}>
                 <div style={{ marginTop: 15 }} >
                     {
-                        labels.length != 0 && values.length != 0 ? (
-                            <Bar values={values} labels={labels} />
+                        data1.ventas.length != 0 && data1.cantidad.length != 0 && data1.meses.length != 0 ? (
+                            <Bar monto={data1.ventas} cantidad={data1.cantidad} meses={data1.meses} text="Ventas de los últimos 6 meses"/>
                         )
                             :
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-
                                 <img src={noValue} width={150} height={150} alt="" srcset="" />
                                 <p>No hay registros</p>
                             </div>
@@ -352,6 +353,7 @@ export default function Sistemas(props) {
 
 
             </Grid>
+              {/* 
             <Grid item md={6} xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
 
                 {

@@ -50,6 +50,38 @@ export const downloadFiles = (tipo,store,filter) => {
   };
 
 
+
+  export const ObtenerGrafico1 = (setData,store) => {
+    const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+ 
+  let url = ENTRYPOINT+"sales/last_months"
+  let setting = {
+    method: "Get",
+    url: url,
+    headers: { 'Accept': 'application/json',
+    Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+  };
+
+
+  axios(setting)
+    .then((res) => {
+      let response = res.data
+     if(response.type!="error"){
+        setData(response.data)
+     
+
+     }else{
+     
+     }
+    })
+    .catch((error) => {
+     
+
+
+    });
+}
   export const printTicket = (id,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
    

@@ -76,7 +76,7 @@
         .banner {
             text-align: left;
 
-            width: 190px;
+            width: 250px;
             object-fit: cover;
             text-align: center;
             display: block;
@@ -148,7 +148,7 @@
                     <td>{{ $dt['concept']=='E'?'Entrada':'Salida'  }}</td>
                     <td>{{ $dt['quantity'] }}</td>
                     <td>{{ $dt['stock'] }}</td>
-                    <td>{{$dt['type']=='V'?'Venta':($dt['type']=='C'?'Compra':'Ajuste') }}</td>
+                    <td>{{$dt['type']=='V'?'Venta':($dt['type']=='C'?'Compra':($dt['type']=='A'?'Ajuste':'Anulación')) }}</td>
                 </tr>
                 @endforeach
             </tbody>

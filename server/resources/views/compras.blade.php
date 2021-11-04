@@ -67,8 +67,8 @@
         }
 
         #customers th {
-            /*    padding-top: 12px;
-            padding-bottom: 12px; */
+            padding-top: 12px;
+            padding-bottom: 12px;
             text-align: left;
             background-color: #3f51b5;
             color: white;
@@ -117,48 +117,40 @@
         </div>
     </div>
 
+
     <header class="title" style="padding-bottom:0px;margin:0px;">
-        <h3 style="text-align:center;margin:0px;">REPORTE DE FACTURA #{{$data['id']}} </h3>
+        <h3 style="text-align:center;margin:0px;">REPORTE DE COMPRAS</h3>
 
     </header>
-    <div style="margin: 15px;"> 
-        <span style="display:block;margin-top:0px;text-align:left;"><b>Fecha:</b> {{$data['created_at']}}</span>
-        <span style="display:block;margin-top:5px;text-align:left"><b>Cédula / RUC:</b> {{$data['document']!=null?$data['document']:'-'}}</span>
-        <span style="display:block;margin-top:5px;text-align:left;"><b>Cliente / RUC:</b> {{$data['names']!=null?$data['names']:"Consumidor Final"}}</span>
-
-
-    </div>
-
+    <p style="font-weight:bold;text-align:left;margin-top:5px;  font-size:17px; margin: 10px;">Total registros: {{count($data )}}</p>
 
     <section class="personal_data" style="margin-bottom:30px;">
         <table id="customers">
             <thead>
 
                 <tr>
-                    <th>Codigo B.</th>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
+                    <th>#</th>
+
+                    <th>Proveedor</th>
                     <th>Total</th>
+                    <th>Fecha</th>
 
                 </tr>
             </thead>
 
             <tbody>
-                @foreach ($body as $dt)
+                @foreach ($data as $dt)
                 <tr style="background-color:#E5E5E5;">
-                    <td>{{ $dt['bar_code'] }}</td>
-                    <td>{{ $dt['name'] }}</td>
-                    <td>{{ $dt['quantity'] }}</td>
-                    <td>${{ $dt['subtotal'] }}</td>
+                <td>{{ $dt['id'] }}</td>
+                    <td>{{ $dt['business_name'] }}</td>
+                    <td>${{ $dt['total'] }}</td>
+                    <td>{{ $dt['date'] }}</td>
+
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </section>
-    <span style="text-align:right;display:block;margin-right:15px;">Subtotal: ${{$subtotal}} </span>
-    <span style="text-align:right;display:block;margin-right:15px;margin-top:5px;">IVA: ${{$data['iva']}} </span>
-    <span style="text-align:right;display:block;margin-right:15px;margin-top:5px;">Total: ${{$data['total']}} </span>
-
 
 
 

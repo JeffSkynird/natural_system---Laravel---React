@@ -18,6 +18,7 @@ class CreateInvoicesTable extends Migration
             $table->foreignId('client_id')->nullable()->constrained('clients');
             $table->integer('final_consumer')->default(0);
             $table->double('total', 8, 3);
+            $table->double('iva', 8, 3);
             $table->enum('status', ['P','C','A'])->default('A');
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
