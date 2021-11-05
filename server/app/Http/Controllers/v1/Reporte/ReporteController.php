@@ -118,7 +118,7 @@ class ReporteController extends Controller
             case 'kardex':
                 $data = Kardex::join('products', 'kardexes.product_id', '=', 'products.id')
                     ->join('users', 'kardexes.user_id', '=', 'users.id')
-                    ->selectRaw('products.id,products.name,products.bar_code,kardexes.concept,kardexes.quantity,kardexes.stock,kardexes.type,users.names,users.last_names,kardexes.created_at');
+                    ->selectRaw('kardexes.stock*products.fraction total_fraction,products.id,products.name,products.bar_code,kardexes.concept,kardexes.quantity,kardexes.stock,kardexes.type,users.names,users.last_names,kardexes.created_at');
                     $this->addGeneralCondition('kardexes.',$data,$desde,$hasta,$usuario);
                     if(!is_null($filtro['barcode'])){
                         $data->where('products.bar_code', $filtro['barcode']);

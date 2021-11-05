@@ -43,6 +43,10 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::get('sales/last_months', 'App\Http\Controllers\v1\Reporte\DashboardController@salesLastMonth');
 
+    Route::get('splits', 'App\Http\Controllers\v1\Ventas\CashController@splits');
+
+    
+    
     Route::middleware('auth:api')->group(function () {
         Route::get('permission/user', 'App\Http\Controllers\v1\Seguridad\PermisoController@getPermissionsById');
 
@@ -104,6 +108,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('kardex', 'App\Http\Controllers\v1\Ventas\KardexController@index');
         Route::post('invoices/cancel/{id}', 'App\Http\Controllers\v1\Ventas\InvoiceController@anular');
         Route::get('reporte', 'App\Http\Controllers\v1\Reporte\ReporteController@reporte');
+        Route::post('cash', 'App\Http\Controllers\v1\Ventas\CashController@create');
+        Route::post('cash_close', 'App\Http\Controllers\v1\Ventas\CashController@close');
+        Route::get('cash_is_open', 'App\Http\Controllers\v1\Ventas\CashController@cashIsOpen');
 
         
         Route::post('unities', 'App\Http\Controllers\v1\Inventario\UnityController@create');

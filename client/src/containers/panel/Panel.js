@@ -40,6 +40,8 @@ import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import FiltroPanel from './components/FiltroPanel';
 import { ObtenerGrafico1 } from '../../utils/API/reporte';
+import { estaAbiertaCaja } from '../../utils/API/cajas';
+import { Alert } from '@material-ui/lab';
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
 
@@ -170,10 +172,13 @@ export default function Sistemas(props) {
     const [sistemas, setSistemas] = React.useState([])
     const [sistema, setSistema] = React.useState('')
     const [data1, setData1] = React.useState({ventas:[],cantidad:[],meses:[]})
+    const [cajaAbierta, setCajaAbierta] = React.useState(null)
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerKpisPanel({desde:utcDate(getFirst()),hasta:utcDate(getLast())},setData, initializer)
+            estaAbiertaCaja(setCajaAbierta, initializer,false)
+
             ObtenerGrafico1(setData1,initializer)
             setDesde(getFirst())
             setHasta(getLast())
@@ -236,6 +241,9 @@ export default function Sistemas(props) {
             
             <Grid item xs={12} md={12} >
                 <Grid container spacing={2}>
+                <Grid item xs={12} md={12}>
+                        <Alert severity="info">Caja: {cajaAbierta==0?'No abierta':(cajaAbierta=='A'?'Abierta':'Cerrada')}</Alert>
+                    </Grid>
                     <Grid item xs={12} md={3}>
                         <Card class={classes.card} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#5e35b1', borderRadius: 12 }}>
                             <CardContent>

@@ -13,7 +13,7 @@ class KardexController extends Controller
         try {
             $data = Kardex::join('products', 'kardexes.product_id', '=', 'products.id')
             ->join('users', 'kardexes.user_id', '=', 'users.id')
-            ->selectRaw('products.id,products.name,products.bar_code,kardexes.concept,kardexes.quantity,kardexes.stock,kardexes.type,users.names,users.last_names,kardexes.created_at')->get();
+            ->selectRaw('kardexes.stock*products.fraction total_fraction,products.id,products.name,products.bar_code,kardexes.concept,kardexes.quantity,kardexes.stock,kardexes.type,users.names,users.last_names,kardexes.created_at')->get();
             $kp1 = Kardex::where('concept','=','E')->count();
             $kp2 = Kardex::where('concept','=','S')->count();
             return response()->json([

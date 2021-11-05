@@ -18,9 +18,8 @@ class DashboardController extends Controller
                 DB::raw('sum(total) as sums'),
                 DB::raw("to_char(created_at,'TMMonth YYYY') as months"),
                 DB::raw('count(id) as count'),
-                'created_at'
-            )->orderBy('created_at','DESC')->groupBy('months','created_at')->where('status','A')->take(6)->get();
-
+                DB::raw('max(created_at) as createdAt')
+            )->orderBy(DB::raw('createdAt'))->groupBy('months')->where('status','A')->take(6)->get();
             $meses =array();
             $cantidad =array();
             $ventas =array();

@@ -13,29 +13,39 @@ import EqualizerIcon from '@material-ui/icons/Equalizer';
 import Avatar from '@material-ui/core/Avatar';
 import Initializer from '../../../store/Initializer'
 import Confirmar from '../../../components/Confirmar'
-
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { obtenerTodos,anularFactura} from '../../../utils/API/facturas';
+import { obtenerTodos, anularFactura } from '../../../utils/API/facturas';
 import Crear from './componentes/Crear'
 import Eliminar from './componentes/Eliminar'
+import AbrirCaja from './componentes/AbrirCaja'
+
 import Filtro from './componentes/Filtro'
+import { Alert } from '@material-ui/lab';
+import { estaAbiertaCaja } from '../../../utils/API/cajas';
 
 export default function Sistemas(props) {
     const initializer = React.useContext(Initializer);
 
     const [data, setData] = React.useState([])
     const [open, setOpen] = React.useState(false)
+    const [openCaja, setOpenCaja] = React.useState(false)
+
     const [open2, setOpen2] = React.useState(false)
     const [selected, setSelected] = React.useState(null)
     const [selected2, setSelected2] = React.useState(null)
     const [openFilter, setOpenFilter] = React.useState(false)
     const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
 
+    const [cajaAbierta, setCajaAbierta] = React.useState(null)
+
+
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerTodos(setData, initializer)
+            estaAbiertaCaja(setCajaAbierta, initializer,true)
         }
     }, [initializer.usuario])
     const carga = () => {
@@ -43,29 +53,56 @@ export default function Sistemas(props) {
         setSelected(null)
         setSelected2(null)
     }
-    const anular=()=>{
-        anularFactura(selected2.id,initializer,carga)
+    const anular = () => {
+        anularFactura(selected2.id, initializer, carga)
 
     }
+   const consultarCaja=()=>{
+    estaAbiertaCaja(setCajaAbierta, initializer)
+
+   }
     return (
         <Grid container spacing={2}>
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
             <Eliminar sistema={selected2} setOpen={setOpen2} open={open2} carga={carga} />
-            <Filtro setOpen={setOpenFilter} open={openFilter}  />
-            <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={anular} titulo='¿Desea continuar? Se anulará la factura.'/>
+            <AbrirCaja  setOpen={setOpenCaja} open={openCaja} carga={consultarCaja} />
 
-            <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
+            <Filtro setOpen={setOpenFilter} open={openFilter} />
+            <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={anular} titulo='¿Desea continuar? Se anulará la factura.' />
+           
+
+            <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h5" >
                     Facturas
                 </Typography>
-                <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
-                        Nuevo
+                {
+                     cajaAbierta==0||cajaAbierta=='C' ?
+                     <Button disabled={cajaAbierta=='C'} onClick={() =>  setOpenCaja(true)} startIcon={<OpenInBrowserIcon />} variant="outlined" color="primary">
+                        Abrir Caja
                     </Button>
+                    
+                        :
+                      null
+                }
+                {
+                    cajaAbierta=='A' ?
+                    <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
+                    Nuevo
+                </Button>
+                    :null
+                }
             </Grid>
+            {
+                cajaAbierta==0 ||cajaAbierta=='C'?
+                    <Grid item xs={12} md={12}>
+                        <Alert severity="warning">{cajaAbierta==0?'No ha abierto la caja aún':'Ya ha cerrado la caja hoy'}</Alert>
+                    </Grid> : null
+
+            }
 
             <Grid item xs={12} md={12} style={{ display: 'flex', marginTop: 10 }}>
 
-                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5,borderRadius:12,borderColor: 'rgba(0, 0, 0, 0.12)',borderWidth:1,borderStyle: 'solid'}} elevation={0}>
+                <Card style={{ width: 300, height: 120, marginRight: 20, marginBottom: 5, borderRadius: 12, borderColor: 'rgba(0, 0, 0, 0.12)', borderWidth: 1, borderStyle: 'solid' }} elevation={0}>
                     <CardContent>
                         <Typography variant="subtitle1" gutterBottom>
                             Totales
@@ -80,35 +117,43 @@ export default function Sistemas(props) {
                         </div>
                     </CardContent>
                 </Card>
-               
+
             </Grid>
-      
+
             <Grid item xs={12}>
                 <MaterialTable
                     icons={TableIcons}
                     columns={[
-                       
+
                         { title: "Factura #", field: "id" },
-                        { title: "Estado", field: "status",
-                        render: rowData => (
-                            <span >{rowData.status=='A'?'Emitida':'Anulada'}</span>
-                        )  },
-                        { title: "Documento", field: "document",
-                        render: rowData => (
-                            <span >{rowData.final_consumer==1?'-':rowData.document}</span>
-                        )  },
-                        { title: "Cliente", field: "names",
-                        render: rowData => (
-                            <span >{rowData.final_consumer==1?'Consumidor Final':rowData.names}</span>
-                        ) },
-                     
-                       
+                        {
+                            title: "Estado", field: "status",
+                            render: rowData => (
+                                <span >{rowData.status == 'A' ? 'Emitida' : 'Anulada'}</span>
+                            )
+                        },
+                        {
+                            title: "Documento", field: "document",
+                            render: rowData => (
+                                <span >{rowData.final_consumer == 1 ? '-' : rowData.document}</span>
+                            )
+                        },
+                        {
+                            title: "Cliente", field: "names",
+                            render: rowData => (
+                                <span >{rowData.final_consumer == 1 ? 'Consumidor Final' : rowData.names}</span>
+                            )
+                        },
+
+
                         { title: "IVA", field: "iva" },
-                        { title: "Total", field: "total",
-                        render: rowData => (
-                            <span >${rowData.total}</span>
-                        )  },
-                        
+                        {
+                            title: "Total", field: "total",
+                            render: rowData => (
+                                <span >${rowData.total}</span>
+                            )
+                        },
+
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 
@@ -124,24 +169,24 @@ export default function Sistemas(props) {
                             tooltip: 'Anular',
 
                             onClick: (event, rowData) => {
-                                if(rowData.status!='C'){
+                                if (rowData.status != 'C') {
                                     setConfirmarMensaje(true)
                                     setSelected2(rowData)
-                                }else{
+                                } else {
                                     initializer.mostrarNotificacion({ type: "warning", message: 'La factura ya está anulada' });
 
                                 }
-                          
+
                             }
                         },
 
                     ]}
 
                     options={{
-                        pageSize:10,
+                        pageSize: 10,
                         showTitle: false,
                         actionsColumnIndex: -1,
-                      
+
                         maxBodyHeight: 350,
                         padding: 'dense',
                         headerStyle: {

@@ -133,6 +133,7 @@
                     <th>Código B.</th>
                     <th>Concepto</th>
                     <th>Cantidad</th>
+                    <th>Fracciones</th>
                     <th>Stock</th>
                     <th>Tipo</th>
                 </tr>
@@ -147,6 +148,8 @@
                     <td>{{ $dt['bar_code'] }}</td>
                     <td>{{ $dt['concept']=='E'?'Entrada':'Salida'  }}</td>
                     <td>{{ $dt['quantity'] }}</td>
+                    <td>{{ $dt['total_fraction'] }}</td>
+
                     <td>{{ $dt['stock'] }}</td>
                     <td>{{$dt['type']=='V'?'Venta':($dt['type']=='C'?'Compra':($dt['type']=='A'?'Ajuste':'Anulación')) }}</td>
                 </tr>

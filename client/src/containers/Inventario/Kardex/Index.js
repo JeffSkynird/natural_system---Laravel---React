@@ -120,6 +120,7 @@ export default function Sistemas(props) {
                             <span>{rowData.concept=='E'?'Entrada':'Salida'}</span>
                         ), },
                         { title: "Cantidad", field: "quantity" },
+                        { title: "Fracciones", field: "total_fraction" },
                         { title: "Stock", field: "stock" },
                         { title: "Tipo", field: "type" ,render: rowData => (
                             <span>{rowData.type=='V'?'Venta':(rowData.type=='C'?'Compra':(rowData.type=='A'?'Ajuste':'Anulación'))}</span>

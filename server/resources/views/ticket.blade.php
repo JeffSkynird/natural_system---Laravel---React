@@ -137,15 +137,17 @@
 
         <div id="mid">
             <div class="info">
-                <span style="display:block;margin-top:0px;text-align:left;">Fecha: {{$data['created_at']}}</span>
+              
                 <div style=" display: flex;margin-top:0px;padding-top:0px;">
                     <div style="display:block;text-align:left; width: auto;">
+                        <span style="display:block;">Fecha: {{$data['created_at']}}</span>
                         <span style="display:block;">Caja: Principal</span>
                         <span style="display:block;">RUC/CI: {{$data['document']!=null?$data['document']:'9999999999'}}</span>
                         <span style="display:block;">Nombre: {{$data['names']!=null?$data['names']:"Consumidor Final"}}</span>
 
                     </div>
-                    <div style="display:block;text-align:right;">
+                    <div style="display:block;text-align:right;height:10px;">
+                        <span style="display:block;">Número: {{$data['id']}}</span>
                         <span>Usuario: {{$data['dni']}}</span>
                     </div>
                 </div>
