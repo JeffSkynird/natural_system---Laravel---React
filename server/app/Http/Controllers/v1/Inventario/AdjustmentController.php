@@ -48,7 +48,7 @@ class AdjustmentController extends Controller
                $ord = Product::find($val['product_id']);
                if($ord!=null){
                    if($val['reason_id']==1){
-                       $ord->stock = intval($ord->stock) + intval($val['quantity']);
+                       $ord->stock = doubleval($ord->stock) + doubleval($val['quantity']);
                        $ord->save();
                        Kardex::create([
                         'product_id' => $val['product_id'],
@@ -60,7 +60,7 @@ class AdjustmentController extends Controller
                     ]);
                    }else{
                        if($ord->stock!=0){
-                            $ord->stock = intval($ord->stock) - intval($val['quantity']);
+                            $ord->stock = doubleval($ord->stock) - doubleval($val['quantity']);
                             $ord->save();
                             Kardex::create([
                                 'product_id' => $val['product_id'],

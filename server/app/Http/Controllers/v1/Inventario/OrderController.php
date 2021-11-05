@@ -45,7 +45,7 @@ class OrderController extends Controller
             'product_id' => $product
         ]);
         $pr = Product::find($product);
-        $pr->stock =intval($pr->stock)+intval($quantity);
+        $pr->stock =doubleval($pr->stock)+doubleval($quantity);
         $pr->save();
         Kardex::create([
             'product_id' => $product,
