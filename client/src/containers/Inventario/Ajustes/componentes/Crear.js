@@ -16,7 +16,7 @@ import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../..
 import { obtenerTodos as obtenerProductos } from '../../../../utils/API/sistemas';
 import Crear from '../../Productos/componentes/Crear'
 
-import { Autocomplete } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 import MaterialTable from 'material-table';
 import { LocalizationTable, TableIcons } from '../../../../utils/table';
 import { registrarUnidad } from '../../../../utils/API/ajustes';
@@ -40,7 +40,10 @@ export default function Crearn(props) {
     const [bodegaO, setBodegaO] = React.useState('')
     const [bodegaD, setBodegaD] = React.useState('')
     const [productosData, setProductosData] = React.useState([])
-    const [producto, setProducto] = React.useState([])
+    const [producto, setProducto] = React.useState('')
+    const [productoC, setProductoC] = React.useState(null)
+    const [fraction, setFraction] = React.useState("")
+
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerRazones(setRazonData, initializer)
@@ -71,7 +74,9 @@ export default function Crearn(props) {
       
         setCantidad("")
         setRazon("")
-        setProducto([])
+        setProducto('')
+        setProductoC(null)
+
         setProductos([])
         setAlmacen([])
         props.setSelected(null)
@@ -113,8 +118,11 @@ export default function Crearn(props) {
 
         setProductos(t.filter((e,i) =>i!=id))
         setCantidad('')
+        setFraction('')
         setRazon('')
-        setProducto([])
+        setProducto('')
+        setProductoC(null)
+
     }
 
 
@@ -176,27 +184,28 @@ export default function Crearn(props) {
         return exs
     }
     const agregar=() => {
-        if(producto.length!=0!=""&&razon!=""&&cantidad!=""&&cantidad>0&&cantidad>0){
+        if(producto!=""&&razon!=""&&cantidad!=""&&cantidad>0&&cantidad>0){
             let outStock=false
             let t = productos.slice()
-            producto.map((e)=>{
-                if(!existeEnDetalle(e.id)){
+           
+                if(!existeEnDetalle(productoC.id)){
                 if(razon==2){
-                    if((e.stock-cantidad)>=0){
-                        t.push({product:e.name,bar_code:e.bar_code,stock:e.stock,product_id:e.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                    if((productoC.stock-cantidad)>=0){
+                        t.push({product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
                         }else{
                             outStock=true
                         }
                 }else{
-                    t.push({product:e.name,bar_code:e.bar_code,stock:e.stock,product_id:e.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                    t.push({product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
 
                 }
             }
-            })
+         
             setProductos(t)
             setCantidad('')
-  
-            setProducto([])
+            setFraction('')
+            setProducto('')
+            setProductoC(null)
             if(outStock){
                 initializer.mostrarNotificacion({ type: "warning", message: 'No hay suficiente stock' });
             }
@@ -215,7 +224,36 @@ export default function Crearn(props) {
         })
         return object
     }
-    
+    const cambiarFraccionamiento = (obj, modi, val) => {
+        console.log(obj)
+        if (obj == null) {
+            return 0
+        }
+        if (modi == 'cantidad') {
+            if (val > obj.stock) {
+                return 0
+            } else {
+                let fr = obj.fraction
+                let t = fr * val
+                return t
+            }
+
+        } else if (modi == "fraccion") {
+            console.log("valor cambiar" + val)
+            let temp = obj.stock * obj.fraction
+            console.log("valor maximo" + temp)
+            if (val > temp) {
+                return 0
+            } else {
+                let decT = (val * 1) / obj.fraction
+               
+
+             
+                return decT
+            }
+        }
+
+    }
     return (
         <Dialog
         fullWidth
@@ -240,7 +278,7 @@ export default function Crearn(props) {
                     Seleccione los productos y cantidades a ajustar
                 </DialogContentText>
                 <Grid container spacing={2}>
-                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
+                <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
@@ -267,26 +305,36 @@ export default function Crearn(props) {
                         />
 
                     </Grid>
-                <Grid item xs={12} md={4} style={{ display: 'flex' }}>
+                    <Grid item xs={12} md={6} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
                             size="small"
                             options={productosData}
-                            multiple
-                            value={producto}
+                            value={getName(producto, productosData)}
+
                             onChange={(event, newValue) => {
-                                setProducto(newValue);
-                              }}
-                            getOptionLabel={(option) => option.bar_code+" - "+option.name+" - stock: "+option.stock}
-                         // prints the selected value
+                                if (newValue != null) {
+
+                                    setProducto(newValue.id);
+                                    setProductoC(newValue)
+                                    setCantidad(1)
+                                    setFraction(newValue.fraction)
+                                } else {
+                                    setProductoC(null)
+                                    setProducto('')
+
+                                }
+                            }}
+                            getOptionLabel={(option) => option.bar_code + " - " + option.name + "- stock: " + option.stock}
+                            // prints the selected value
                             renderInput={params => (
-                                <TextField    variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
+                                <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
                             )}
                         />
 
                     </Grid>
-                    <Grid item xs={4}>    <TextField
+                    <Grid item xs={12} md={ productoC!=null?(productoC.fraction!=0?6:12):12}>    <TextField
                         variant="outlined"
                         style={{  width: '100%' }}
                         type="number"
@@ -294,10 +342,51 @@ export default function Crearn(props) {
                         label="Cantidad"
                         min="0"
                         value={cantidad}
-                        onChange={(e) => setCantidad(e.target.value)}
+                        onChange={(e) => {
+                            setCantidad(e.target.value)
+                            if(productoC!=null){
+                                if (productoC.fraction != 0) {
+                                    setFraction(cambiarFraccionamiento(productoC, 'cantidad', e.target.value))
+    
+                                }
+                            }
+                           
+                        }}
 
                     /></Grid>
-                  
+                  {
+                        productoC!=null?
+                        productoC.fraction != 0 ?
+                            <Grid item xs={12} md={6} >    <TextField
+                                variant="outlined"
+                                style={{ width: '100%' }}
+                             
+                                size="small"
+                                label="Fracciones"
+
+                                value={fraction}
+                                onChange={(e) => {
+                                    const re = /^[0-9\b]+$/;
+
+                                    if (e.target.value === "" || re.test(e.target.value)) {
+                                    setFraction(e.target.value)
+                                    setCantidad(cambiarFraccionamiento(productoC, 'fraccion', e.target.value).toFixed(3)*1)
+
+                                    }
+                                }}
+
+                            /></Grid>
+                            : null :null
+                    }
+
+                    {
+                        ((cantidad == 0 && fraction != 0) || (fraction == 0 && cantidad != 0)) && (productoC!=null?(productoC.fraction != 0?true:false):false) ?
+                            <Grid item xs={12} md={12}>
+
+                                <Alert severity="info">No hay stock suficiente</Alert>
+                            </Grid>
+                            : null
+                    }
                  
                  <Grid item xs={12} md={12}>
 

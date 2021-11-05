@@ -17,7 +17,7 @@ class CreateKardexesTable extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->enum('concept', ['E','S']);
-            $table->integer('quantity');
+            $table->double('quantity', 8, 3);
             $table->integer('stock');
             $table->enum('type', ['A','V','AN','C']);
             $table->foreignId('user_id')->constrained('users');

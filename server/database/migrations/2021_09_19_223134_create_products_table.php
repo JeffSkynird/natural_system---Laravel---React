@@ -19,9 +19,9 @@ class CreateProductsTable extends Migration
             $table->string('name');
             $table->string('image')->nullable();
             $table->text('description')->nullable();
-            $table->integer('stock');
-            $table->integer('min_stock')->nullable();
-            $table->integer('max_stock')->nullable();
+            $table->double('stock', 8, 3);
+            $table->double('min_stock', 8, 3)->nullable();
+            $table->double('max_stock', 8, 3)->nullable();
             $table->integer('has_iva')->default(1);
             $table->integer('fraction');
             $table->double('list_price', 8, 3)->default(0);

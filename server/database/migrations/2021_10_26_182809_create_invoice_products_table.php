@@ -17,7 +17,7 @@ class CreateInvoiceProductsTable extends Migration
             $table->id();
             $table->foreignId('invoice_id')->constrained('invoices');
             $table->foreignId('product_id')->constrained('products');
-            $table->integer('quantity');
+            $table->double('quantity', 8, 3);
             $table->double('subtotal', 8, 3);
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();

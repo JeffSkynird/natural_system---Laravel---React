@@ -19,7 +19,7 @@ class CreateAdjustmentsTable extends Migration
             $table->foreignId('product_id')->constrained('products');
             $table->foreignId('warehouse_id')->nullable()->constrained('warehouses');
             $table->foreignId('reason_id')->constrained('reasons');
-            $table->integer('quantity');
+            $table->double('quantity', 8, 3);
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->foreignId('user_id')->constrained('users');

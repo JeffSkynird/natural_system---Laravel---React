@@ -42,7 +42,7 @@ export default function Crear(props) {
     const [stockMax, setStockMax] = React.useState("")
 
     const [hasIva, setHasIva] = React.useState(true)
-    const [fraction, setFraction] = React.useState(1)
+    const [fraction, setFraction] = React.useState("")
     const [descripcion, setDescripcion] = React.useState("")
     React.useEffect(() => {
         if (initializer.usuario != null) {
@@ -107,9 +107,9 @@ export default function Crear(props) {
             'unity_id': unity,
             'url': image,
             'has_iva':hasIva?1:0,
-            'fraction': fraction
+            'fraction': fraction!="" ? fraction : 0,
         }
-        if(validaciones(data)){
+  
             if (props.sistema == null) {
                 registrarSistema(data, initializer)
                 limpiar()
@@ -124,7 +124,7 @@ export default function Crear(props) {
                 }
             }
             props.setOpen(false)
-        }
+      
     }
     const cerrarModal=()=>{
         props.setSelected(null)

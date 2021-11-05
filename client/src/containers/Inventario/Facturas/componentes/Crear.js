@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Initializer from '../../../../store/Initializer'
 import Confirmar from '../../../../components/Confirmar'
 import Slide from '@material-ui/core/Slide';
-import { Checkbox,  Grid, InputAdornment, Tooltip } from '@material-ui/core';
+import { Checkbox, Grid, InputAdornment, Tooltip } from '@material-ui/core';
 import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido, obtenerInventarioOrden, guardarAlmacen } from '../../../../utils/API/pedidos';
 import { obtenerTodos as obtenerRazones } from '../../../../utils/API/razones';
 import { obtenerInventario, obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
@@ -62,7 +62,7 @@ export default function CrearN(props) {
     const [subTotalV, setSubTotalV] = React.useState(0)
     const [subTotalVI, setSubTotalVI] = React.useState(0)
 
-    
+
     React.useEffect(() => {
         if (initializer.usuario != null) {
 
@@ -82,25 +82,25 @@ export default function CrearN(props) {
         }
     }, [props.sistema, props.open])
     const guardar = () => {
-        if(finalConsumer==false&&client==""){
+        if (finalConsumer == false && client == "") {
             initializer.mostrarNotificacion({ type: "warning", message: 'Seleccione un cliente' });
             return false
         }
-        if(subTotalV==0){
+        if (subTotalV == 0) {
             initializer.mostrarNotificacion({ type: "warning", message: 'No puede hacer una factura por valor 0' });
             return false
         }
 
-            registrarUnidad({iva:(subTotalV-subTotalVI) * 0.12,client_id:finalConsumer?'':client,final_consumer:finalConsumer?1:0,total:subTotalV+((subTotalV-subTotalVI)*0.12), data: productos }, initializer,imprimir)
+        registrarUnidad({ iva: (subTotalV - subTotalVI) * 0.12, client_id: finalConsumer ? '' : client, final_consumer: finalConsumer ? 1 : 0, total: subTotalV + ((subTotalV - subTotalVI) * 0.12), data: productos }, initializer, imprimir)
 
-            props.setOpen(false)
-            obtenerProductos(setProductosData, initializer)
+        props.setOpen(false)
+        obtenerProductos(setProductosData, initializer)
 
-            limpiar()
-        
-        
+        limpiar()
+
+
     }
-    const imprimir=(id)=>{
+    const imprimir = (id) => {
         printTicket(id, initializer)
     }
     const limpiar = () => {
@@ -148,8 +148,8 @@ export default function CrearN(props) {
         console.log(subTotalVI)
         let id = row.tableData.id
         let t = productos.slice()
-        let tot = subTotalV-row.subtotal
-        let toti = row.has_iva==0?subTotalVI-row.subtotal:subTotalVI
+        let tot = subTotalV - row.subtotal
+        let toti = row.has_iva == 0 ? subTotalVI - row.subtotal : subTotalVI
 
 
         setProductos(t.filter((e, i) => i != id))
@@ -160,12 +160,12 @@ export default function CrearN(props) {
         setSubTotalVI(toti)
     }
 
-    const existeEnDetalle=(id)=>{
+    const existeEnDetalle = (id) => {
         let exs = false
-        productos.map((e)=>{
-          if(e.product_id==id){
-              exs=true
-          }  
+        productos.map((e) => {
+            if (e.product_id == id) {
+                exs = true
+            }
         })
         return exs
     }
@@ -209,22 +209,22 @@ export default function CrearN(props) {
 
     }
     const agregar = () => {
-        if (producto!= "" && cantidad != "" && cantidad > 0 && cantidad > 0) {
+        if (producto != "" && cantidad != "" && cantidad > 0 && cantidad > 0) {
             let t = productos.slice()
             let subT = subTotalV
             let subTSinIva = subTotalVI
-            let outStock=false
-            if(!existeEnDetalle(productoC.id)){
-               
-                if((productoC.stock-cantidad)>=0){
-                    t.push({ has_iva:productoC.has_iva,product: productoC.name, bar_code: productoC.bar_code, stock: (productoC.stock-cantidad), product_id: productoC.id, quantity: cantidad, fraction:fraction,price: productoC.sale_price, subtotal: (cantidad * productoC.sale_price) })
+            let outStock = false
+            if (!existeEnDetalle(productoC.id)) {
+
+                if ((productoC.stock - cantidad) >= 0) {
+                    t.push({ has_iva: productoC.has_iva, product: productoC.name, bar_code: productoC.bar_code, stock: (productoC.stock - cantidad), product_id: productoC.id, quantity: cantidad, fraction: fraction, price: productoC.sale_price, subtotal: (cantidad * productoC.sale_price) })
                     subT = subT + (cantidad * productoC.sale_price)
-                    subTSinIva = subTSinIva + (productoC.has_iva==0? (cantidad * productoC.sale_price):0)
-                }else{
-                    outStock=true
+                    subTSinIva = subTSinIva + (productoC.has_iva == 0 ? (cantidad * productoC.sale_price) : 0)
+                } else {
+                    outStock = true
                 }
             }
-          
+
             /* producto.map((e) => {
                 if(!existeEnDetalle(e.id)){
                     if((e.stock-cantidad)>=0){
@@ -241,19 +241,20 @@ export default function CrearN(props) {
             setSubTotalV(subT)
             setSubTotalVI(subTSinIva)
             setProductos(t)
+            
             setCantidad('')
             setFraction('')
 
             setProducto("")
-            setProductoC("")
-            if(outStock){
+            setProductoC(null)
+            if (outStock) {
                 initializer.mostrarNotificacion({ type: "warning", message: 'No hay suficiente stock' });
-            }else{
-                if(t.length==0){
+            } else {
+                if (t.length == 0) {
                     initializer.mostrarNotificacion({ type: "warning", message: 'Producto ya agregado' });
-         }
+                }
             }
-           
+
         } else {
             initializer.mostrarNotificacion({ type: "warning", message: 'No deje campos vacíos' });
 
@@ -270,33 +271,32 @@ export default function CrearN(props) {
         })
         return object
     }
-    const cambiarFraccionamiento=(obj,modi,val)=>{
+    const cambiarFraccionamiento = (obj, modi, val) => {
         console.log(obj)
-        if(obj==null){
+        if (obj == null) {
             return 0
         }
-        if(modi=='cantidad'){
-            if(val>obj.stock){
+        if (modi == 'cantidad') {
+            if (val > obj.stock) {
                 return 0
-            }else{
+            } else {
                 let fr = obj.fraction
-                let t = fr*val
+                let t = fr * val
                 return t
             }
-           
-        }else if(modi=="fraccion"){
-            console.log("valor cambiar"+val)
-            let temp = obj.stock*obj.fraction
-            console.log("valor maximo"+temp)
-            if(val>temp){
-                return 0
-            }else{
-                let decT = (val*1)/obj.fraction
-                console.log("ceil del valor"+decT)
 
-                let t = Math.ceil(decT)
-                console.log("ceil del valor"+decT)
-                return t
+        } else if (modi == "fraccion") {
+            console.log("valor cambiar" + val)
+            let temp = obj.stock * obj.fraction
+            console.log("valor maximo" + temp)
+            if (val > temp) {
+                return 0
+            } else {
+                let decT = (val * 1) / obj.fraction
+               
+
+             
+                return decT
             }
         }
 
@@ -316,84 +316,84 @@ export default function CrearN(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-        
-  <CrearCliente sistema={null} setSelected={()=>null} setOpen={setCrearCliente} open={crearCliente} carga={()=>{
-                  obtenerClientes(setClientData, initializer)
 
-}} />
+            <CrearCliente sistema={null} setSelected={() => null} setOpen={setCrearCliente} open={crearCliente} carga={() => {
+                obtenerClientes(setClientData, initializer)
+
+            }} />
 
             <DialogTitle id="alert-dialog-slide-title" >
-                
-                <span>Factura</span> 
-           
-                </DialogTitle>
+
+                <span>Factura</span>
+
+            </DialogTitle>
             <DialogContent >
-            <DialogContentText id="alert-dialog-slide-description" style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                <DialogContentText id="alert-dialog-slide-description" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     Seleccione el cliente y productos a facturar
-                    <div style={{display:'flex'}}>
-             
-                <Tooltip title="Crear cliente">
-                <IconButton aria-label="add_proveedor" onClick={()=>setCrearCliente(true)}>
-                    <PersonAddOutlined />
-                </IconButton>
-                </Tooltip>
-                <Tooltip title={!finalConsumer?"Consumidor final":"Cliente"}>
-                <IconButton aria-label="cambiar" onClick={()=>setFinalConsumer(!finalConsumer)}>
-                   { finalConsumer?<AccountBoxIcon />:<SupervisedUserCircleIcon />}
-                </IconButton>
-                </Tooltip>
-                
-                </div>
-             
-                  
+                    <div style={{ display: 'flex' }}>
+
+                        <Tooltip title="Crear cliente">
+                            <IconButton aria-label="add_proveedor" onClick={() => setCrearCliente(true)}>
+                                <PersonAddOutlined />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={!finalConsumer ? "Consumidor final" : "Cliente"}>
+                            <IconButton aria-label="cambiar" onClick={() => setFinalConsumer(!finalConsumer)}>
+                                {finalConsumer ? <AccountBoxIcon /> : <SupervisedUserCircleIcon />}
+                            </IconButton>
+                        </Tooltip>
+
+                    </div>
+
+
                 </DialogContentText>
                 <Grid container spacing={2}>
-                      
-                           { !finalConsumer&&(
-                                <Grid item xs={12} md={6} style={{ display: 'flex',justifyContent:'space-between',alignItems:'center'}}>
-                                <Autocomplete
-                        
-                                    style={{ width: '100%' }}
-                                    size="small"
-                                    options={clientData}
-                                    
-                                    value={getName3(client)}
-                                    onChange={(event, newValue) => {
-                                        if (newValue != null) {
-        
-                                            setClient(newValue.id);
-                                      
-                                        } else {
-        
-                                            setClient('')
-        
-                                        }
-        
-                                    }}
-                                    getOptionLabel={(option) => option.document + " - " + option.names}
-                                    // prints the selected value
-                                    renderInput={params => (
-                                        <TextField variant="outlined" {...params} label="Seleccione un cliente" variant="outlined" fullWidth  />
-                                    )}
-                                />
-                             
-                            </Grid>
-                            )
+
+                    {!finalConsumer && (
+                        <Grid item xs={12} md={6} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Autocomplete
+
+                                style={{ width: '100%' }}
+                                size="small"
+                                options={clientData}
+
+                                value={getName3(client)}
+                                onChange={(event, newValue) => {
+                                    if (newValue != null) {
+
+                                        setClient(newValue.id);
+
+                                    } else {
+
+                                        setClient('')
+
                                     }
-                                
-                         
-                   
-                    <Grid item xs={12} md={finalConsumer?12:6} style={{ display: 'flex' }}>
+
+                                }}
+                                getOptionLabel={(option) => option.document + " - " + option.names}
+                                // prints the selected value
+                                renderInput={params => (
+                                    <TextField variant="outlined" {...params} label="Seleccione un cliente" variant="outlined" fullWidth />
+                                )}
+                            />
+
+                        </Grid>
+                    )
+                    }
+
+
+
+                    <Grid item xs={12} md={finalConsumer ? 12 : 6} style={{ display: 'flex' }}>
                         <Autocomplete
 
                             style={{ width: '100%' }}
                             size="small"
                             options={productosData}
-                            value={getName(producto,productosData)}
-                         
+                            value={getName(producto, productosData)}
+
                             onChange={(event, newValue) => {
                                 if (newValue != null) {
-        
+
                                     setProducto(newValue.id);
                                     setProductoC(newValue)
                                     setCantidad(1)
@@ -404,7 +404,7 @@ export default function CrearN(props) {
 
                                 }
                             }}
-                            getOptionLabel={(option) => option.bar_code + " - " + option.name+"- stock: "+option.stock}
+                            getOptionLabel={(option) => option.bar_code + " - " + option.name + "- stock: " + option.stock}
                             // prints the selected value
                             renderInput={params => (
                                 <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
@@ -412,44 +412,61 @@ export default function CrearN(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12}  md={finalConsumer?6:6} >    <TextField
+                    <Grid item xs={12} md={ productoC!=null?(productoC.fraction!=0?6:12):12} >    <TextField
                         variant="outlined"
                         style={{ width: '100%' }}
                         type="number"
                         size="small"
                         label="Cantidad"
-                    
+
                         value={cantidad}
                         onChange={(e) => {
                             setCantidad(e.target.value)
-                            setFraction(cambiarFraccionamiento(productoC,'cantidad',e.target.value))
+                            if(productoC!=null){
+                                if (productoC.fraction != 0) {
+                                    setFraction(cambiarFraccionamiento(productoC, 'cantidad', e.target.value))
+    
+                                }
+                            }
+                           
                         }}
 
                     /></Grid>
-                <Grid item xs={12}  md={finalConsumer?6:6} >    <TextField
-                        variant="outlined"
-                        style={{ width: '100%' }}
-                        type="number"
-                        size="small"
-                        label="Fracciones"
-                    
-                        value={fraction}
-                        onChange={(e) =>{
-                            setFraction(e.target.value)
-                            setCantidad(cambiarFraccionamiento(productoC,'fraccion',e.target.value))
-                        } }
-
-                    /></Grid>
                     {
-                        (cantidad==0&&fraction!=0)||(fraction==0&&cantidad!=0)?
-                        <Grid item xs={12} md={12}>
+                        productoC!=null?
+                        productoC.fraction != 0 ?
+                            <Grid item xs={12} md={finalConsumer ? 6 : 6} >    <TextField
+                                variant="outlined"
+                                style={{ width: '100%' }}
+                             
+                                size="small"
+                                label="Fracciones"
 
-                        <Alert severity="info">El stock no concuerda con el fraccionamiento</Alert>
-                        </Grid>
-                        :null
+                                value={fraction}
+                                onChange={(e) => {
+                                    const re = /^[0-9\b]+$/;
+
+                                    if (e.target.value === "" || re.test(e.target.value)) {
+                                    setFraction(e.target.value)
+                                    setCantidad(cambiarFraccionamiento(productoC, 'fraccion', e.target.value).toFixed(3)*1)
+
+                                    }
+                                }}
+
+                            /></Grid>
+                            : null :null
                     }
-                
-                    
+
+                    {
+                        ((cantidad == 0 && fraction != 0) || (fraction == 0 && cantidad != 0)) && (productoC!=null?(productoC.fraction != 0?true:false):false) ?
+                            <Grid item xs={12} md={12}>
+
+                                <Alert severity="info">No hay stock suficiente</Alert>
+                            </Grid>
+                            : null
+                    }
+
+
 
                     <Grid item xs={12} md={12}>
 
@@ -473,7 +490,6 @@ export default function CrearN(props) {
                                 { title: "Precio", field: "price", type: "currency" },
 
                                 { title: "Cantidad", field: "quantity" },
-                                { title: "Fracción", field: "fraction" },
 
                                 { title: "SubTotal", field: "subtotal", type: "currency" },
 
@@ -504,8 +520,8 @@ export default function CrearN(props) {
                                 }
                             }]}
                             components={{
-                                Container: props => <Paper {...props} elevation={0}/>
-                           }}
+                                Container: props => <Paper {...props} elevation={0} />
+                            }}
 
                             options={{
                                 pageSize: 10,
@@ -515,7 +531,7 @@ export default function CrearN(props) {
                                 actionsColumnIndex: -1,
                                 width: '100%',
                                 maxBodyHeight: 200,
-                                
+
                                 padding: 'dense',
                                 headerStyle: {
                                     textAlign: 'left'
@@ -531,45 +547,45 @@ export default function CrearN(props) {
 
                         />
                     </Grid>
-                    <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'flex-end'}} >
+                    <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'flex-end' }} >
                         <TextField
                             variant="outlined"
-                        
+
                             size="small"
                             label="SubTotal"
                             value={subTotalV}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                              }}
+                            }}
                         />
-                        
+
                     </Grid>
-                    <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'flex-end'}} >
-                    <TextField
+                    <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                        <TextField
                             variant="outlined"
-                       
+
                             size="small"
                             label="Iva"
-                            value={((subTotalV-subTotalVI) * 0.12).toFixed(2)}
+                            value={((subTotalV - subTotalVI) * 0.12).toFixed(2)}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                              }}
+                            }}
                         />
-                         
-                </Grid>
-                    <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'flex-end'}} >
-                    <TextField
+
+                    </Grid>
+                    <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                        <TextField
                             variant="outlined"
-                        
+
                             size="small"
                             label="Total"
-                            value={subTotalV + ((subTotalV-subTotalVI) * 0.12)}
+                            value={subTotalV + ((subTotalV - subTotalVI) * 0.12)}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                              }}
+                            }}
                         />
-                         
-                </Grid>
+
+                    </Grid>
                 </Grid>
 
             </DialogContent>
