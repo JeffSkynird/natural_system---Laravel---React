@@ -230,7 +230,7 @@ export default function Crearn(props) {
             return 0
         }
         if (modi == 'cantidad') {
-            if (val > obj.stock) {
+            if (val > obj.stock&&razon==2) {
                 return 0
             } else {
                 let fr = obj.fraction
@@ -242,7 +242,7 @@ export default function Crearn(props) {
             console.log("valor cambiar" + val)
             let temp = obj.stock * obj.fraction
             console.log("valor maximo" + temp)
-            if (val > temp) {
+            if (val > temp&&razon==2) {
                 return 0
             } else {
                 let decT = (val * 1) / obj.fraction
