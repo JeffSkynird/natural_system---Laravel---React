@@ -22,6 +22,7 @@ class CreateCashesTable extends Migration
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();
             $table->timestamps();
+            $table->timestamp('closed_at')->nullable();
         });
     }
 
