@@ -68,7 +68,7 @@ export const editar= (id,data, store,   limpiar) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-export const eliminar = (id,store) => {
+export const eliminar = (id,store,carga) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
   
     let url = ENTRYPOINT+"users/"+id;
@@ -90,6 +90,7 @@ export const eliminar = (id,store) => {
         if(res.data.type!="error"){
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          carga()
         }else{
         
           mostrarLoader(false);

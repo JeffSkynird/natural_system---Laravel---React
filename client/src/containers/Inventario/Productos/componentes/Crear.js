@@ -111,12 +111,12 @@ export default function Crear(props) {
         }
   
             if (props.sistema == null) {
-                registrarSistema(data, initializer)
-                limpiar()
-                props.carga()
+                registrarSistema(data, initializer,limpiar)
+                
+               
             } else {
-                editarSistema(props.sistema.id, data, initializer)
-                limpiar()
+                editarSistema(props.sistema.id, data, initializer,limpiar)
+                
                 subir()
 
                 if (image == null) {

@@ -17,9 +17,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function Crear(props) {
     const initializer = React.useContext(Initializer);
     const guardar=()=>{
-        eliminarSistema(props.sistema.id,initializer)
+        eliminarSistema(props.sistema.id,initializer,props.carga)
         props.setOpen(false)
-        props.carga()
+        
     }
     return (
         <Dialog

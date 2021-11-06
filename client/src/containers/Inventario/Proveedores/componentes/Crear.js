@@ -54,12 +54,12 @@ export default function Crear(props) {
         'cellphone': celular,
         'email': correo}
         if(props.sistema==null){
-            registrarProveedor(data,initializer)
-            limpiar()
-            props.carga()
+            registrarProveedor(data,initializer,limpiar)
+            
+          
         }else{
-            editarProveedor(props.sistema.id,data,initializer)
-            limpiar()
+            editarProveedor(props.sistema.id,data,initializer,limpiar)
+            
             subir()
             if(logo==null){
                 props.carga()

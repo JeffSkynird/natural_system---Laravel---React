@@ -63,12 +63,8 @@ export default function Crearn(props) {
         }
     }, [props.sistema,props.open])
     const guardar = () => {
-      
-        registrarUnidad({data:productos},initializer)
-    
+        registrarUnidad({data:productos},initializer,limpiar)
         props.setOpen(false)
-    
-        limpiar()
     }
     const limpiar = () => {
       

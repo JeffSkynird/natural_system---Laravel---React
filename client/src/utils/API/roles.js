@@ -149,7 +149,7 @@ export const obtenerTodos = (setData,store) => {
       });
   }
   
-  export const crearRol = (data, store,       asignarP )=> {
+  export const crearRol = (data, store,       asignarP ,limpiar)=> {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -170,6 +170,7 @@ export const obtenerTodos = (setData,store) => {
             asignarP();
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);
@@ -181,7 +182,7 @@ export const obtenerTodos = (setData,store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-  export const editarRol = (data, asignarP,store )=> {
+  export const editarRol = (data, asignarP,store,limpiar )=> {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -203,7 +204,7 @@ export const obtenerTodos = (setData,store) => {
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
           asignarP()
-    
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);

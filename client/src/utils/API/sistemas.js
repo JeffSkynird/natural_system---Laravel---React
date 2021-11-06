@@ -34,7 +34,7 @@ for ( var key in data ) {
 }
 
 
-export const editarSistema = (id,data, store) => {
+export const editarSistema = (id,data, store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -56,6 +56,7 @@ export const editarSistema = (id,data, store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);
@@ -67,7 +68,7 @@ export const editarSistema = (id,data, store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-export const eliminarSistema = (id,store) => {
+export const eliminarSistema = (id,store,carga) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
   
     let url = ENTRYPOINT+"products/"+id;
@@ -89,6 +90,7 @@ export const eliminarSistema = (id,store) => {
         if(res.data.type!="error"){
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          carga()
         }else{
         
           mostrarLoader(false);
@@ -101,7 +103,7 @@ export const eliminarSistema = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
-export const registrarSistema = (data,store) => {
+export const registrarSistema = (data,store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     var resp = new FormData()
     for ( var key in data ) {
@@ -125,6 +127,7 @@ export const registrarSistema = (data,store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);

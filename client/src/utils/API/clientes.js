@@ -1,7 +1,7 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
-export const editar= (id,data, store) => {
+export const editar= (id,data, store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -20,7 +20,7 @@ export const editar= (id,data, store) => {
       .then((res) => {
         let response = res.data;
         if (response.type != "error") {
-         
+          limpiar()
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
         } else {
@@ -34,7 +34,7 @@ export const editar= (id,data, store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-export const eliminar = (id,store) => {
+export const eliminar = (id,store,carga) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
   
     let url = ENTRYPOINT+"clients/"+id;
@@ -56,6 +56,7 @@ export const eliminar = (id,store) => {
         if(res.data.type!="error"){
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          carga()
         }else{
         
           mostrarLoader(false);
@@ -68,7 +69,7 @@ export const eliminar = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
-export const registrar = (data,store) => {
+export const registrar = (data,store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
     let url = ENTRYPOINT+"clients";
@@ -89,6 +90,7 @@ export const registrar = (data,store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);

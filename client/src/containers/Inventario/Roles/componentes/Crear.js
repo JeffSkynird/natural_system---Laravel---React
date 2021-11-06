@@ -71,19 +71,19 @@ export default function Crear(props) {
             'nombre': nombre,
         }
         if (props.sistema == null) {
-            crearRol(data, initializer,asignarP)
-            limpiar()
-            props.carga()
+            crearRol(data, initializer,asignarP,limpiar)
+            
+           
         } else {
             editarRol({
                 id:props.sistema.id,
                 rol: props.sistema.name,
                 name: nombre,
                 
-            },   asignarP, initializer);
+            },   asignarP, initializer,limpiar);
          
     
-            limpiar()
+         
 
         }
         props.setOpen(false)

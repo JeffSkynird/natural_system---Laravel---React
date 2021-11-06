@@ -1,7 +1,7 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
-export const editar= (id,data, store) => {
+export const editar= (id,data, store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -23,6 +23,7 @@ export const editar= (id,data, store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);
@@ -34,7 +35,7 @@ export const editar= (id,data, store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-export const eliminar = (id,store) => {
+export const eliminar = (id,store,carga) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
   
     let url = ENTRYPOINT+"suppliers/"+id;
@@ -56,6 +57,7 @@ export const eliminar = (id,store) => {
         if(res.data.type!="error"){
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          carga()
         }else{
         
           mostrarLoader(false);
@@ -98,7 +100,7 @@ for ( var key in data ) {
 
     });
 }
-export const registrar = (data,store) => {
+export const registrar = (data,store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     var resp = new FormData()
     for ( var key in data ) {
@@ -122,6 +124,7 @@ export const registrar = (data,store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);

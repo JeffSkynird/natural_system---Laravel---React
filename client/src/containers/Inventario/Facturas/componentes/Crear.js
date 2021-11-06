@@ -91,12 +91,12 @@ export default function CrearN(props) {
             return false
         }
 
-        registrarUnidad({ iva: (subTotalV - subTotalVI) * 0.12, client_id: finalConsumer ? '' : client, final_consumer: finalConsumer ? 1 : 0, total: subTotalV + ((subTotalV - subTotalVI) * 0.12), data: productos }, initializer, imprimir)
+        registrarUnidad({ iva: (subTotalV - subTotalVI) * 0.12, client_id: finalConsumer ? '' : client, final_consumer: finalConsumer ? 1 : 0, total: subTotalV + ((subTotalV - subTotalVI) * 0.12), data: productos }, initializer,limpiar, imprimir)
 
         props.setOpen(false)
         obtenerProductos(setProductosData, initializer)
 
-        limpiar()
+    
 
 
     }

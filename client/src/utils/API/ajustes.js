@@ -68,7 +68,7 @@ export const eliminarUnidad = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
-export const registrarUnidad = (data,store) => {
+export const registrarUnidad = (data,store,limpiar) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
     let url = ENTRYPOINT+"adjustments";
@@ -89,6 +89,7 @@ export const registrarUnidad = (data,store) => {
          
           mostrarLoader(false);
           mostrarNotificacion({ type: "success", message: response.message });
+          limpiar()
         } else {
           mostrarNotificacion({ type: "error", message: response.message });
           mostrarLoader(false);
