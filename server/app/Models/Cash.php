@@ -15,6 +15,7 @@ class Cash extends Model
         'user_id',
         'ip',
         'terminal',
-        'user_id'
+        'user_id',
+        'closed_at'
     ];
 }

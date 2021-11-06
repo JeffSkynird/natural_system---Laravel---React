@@ -17,7 +17,7 @@ import Confirmar from '../../../components/Confirmar'
 import { LocalizationTable, TableIcons, removeAccent } from '../../../utils/table.js'
 import MaterialTable from "material-table";
 import { Grid } from '@material-ui/core';
-import { autorizarOrden, cambiarEstado, obtenerStatusOrden, obtenerTodos } from '../../../utils/API/pedidos.js';
+import { anularCompra, autorizarOrden, cambiarEstado, obtenerStatusOrden, obtenerTodos } from '../../../utils/API/pedidos.js';
 import Crear from './componentes/Crear'
 import EstadoOrden from './componentes/EstadoOrden'
 import Asignar from './componentes/Asignar'
@@ -85,9 +85,14 @@ export default function Sistemas(props) {
             cambiarEstado({order:id,status:'E'}, initializer,carga)
             
     }
+    const anular = () => {
+        anularCompra(selected3, initializer, carga)
+
+    }
+    
     return (
         <Grid container spacing={2}>
-         <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={autorizar} titulo='¿Desea continuar? Se autorizará la orden.'/>
+         <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={anular} titulo='¿Desea continuar? Se anulará la orden.'/>
          <EstadoOrden sistema={selected4} setSelected={setSelected4} setOpen={setOpen3} open={open3} carga={carga} />
          <Asignar sistema={selected5} setSelected={setSelected5} setOpen={setOpen4} open={open4} carga={carga} />
 
@@ -141,16 +146,16 @@ export default function Sistemas(props) {
                     icons={TableIcons}
                     columns={[
                 
-                    /*     {
+                        {
                             title: 'Estado',
                             field: 'status',
                             render: rowData =>{
-                               let est= estado.filter(item=>item.id==rowData.status)
+                             
                                 return  (
-                                    <span>{est.length!=0?est[0].name:rowData.status}</span> 
+                                    <span>{rowData.status=='A'?'Emitida':'Anulada'}</span> 
                                 )
                             },
-                          }, */
+                          }, 
                         { title: "Número", field: "id" },
                         { title: "Proveedor", field: "supplier" },
                         { title: "Total", field: "total", type: "currency" },
@@ -166,37 +171,10 @@ export default function Sistemas(props) {
 
                     localization={LocalizationTable}
 
-                  /*   actions={[
-                        {
-                            icon: TableIcons.Edit,
-                            tooltip: 'Editar',
+                    actions={[
+                        
 
-                            onClick: (event, rowData) => {
-                                if(rowData.status!='E'){
-                                    setSelected(rowData)
-                                    setOpen(true)
-                                }else{
-                                    initializer.mostrarNotificacion({ type: "warning", message: 'No se puede editar una compra confirmada' });
-
-                                }
-                          
-                            }
-                        },
-
-                        {
-                            icon: TableIcons.Check,
-                            tooltip: 'Confirmar compra',
-                       
-                            onClick: (event, rowData) => {
-                                if(rowData.status!='E'){
-                                    cambiarEstadoE(rowData.id)
-                                }else{
-                                    initializer.mostrarNotificacion({ type: "warning", message: 'La compra ya ha sido confirmada' });     
-                                }
-                                
-
-                            }
-                        },
+                        
                      
                         {
                             icon: TableIcons.Delete,
@@ -204,16 +182,16 @@ export default function Sistemas(props) {
 
                             onClick: (event, rowData) => {
                                 if(rowData.status!="E"){
-                                    setSelected2(rowData)
-                                    setOpen2(true)
+                                    setSelected3(rowData.id)
+                                    setConfirmarMensaje(true)
                                 }else{
-                                    initializer.mostrarNotificacion({ type: "warning", message: 'No se puede eliminar un pedido entregado' });     
+                                    initializer.mostrarNotificacion({ type: "warning", message: 'Compra ya anulada' });     
  
                                 }
                             
                             }
                         },
-                    ]} */
+                    ]} 
 
                     options={{
                         pageSize:10,

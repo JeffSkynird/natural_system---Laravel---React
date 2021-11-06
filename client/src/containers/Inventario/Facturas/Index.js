@@ -76,8 +76,8 @@ export default function Sistemas(props) {
                     Facturas
                 </Typography>
                 {
-                     cajaAbierta==0||cajaAbierta=='C' ?
-                     <Button disabled={cajaAbierta=='C'} onClick={() =>  setOpenCaja(true)} startIcon={<OpenInBrowserIcon />} variant="outlined" color="primary">
+                     cajaAbierta==0 ?
+                     <Button  onClick={() =>  setOpenCaja(true)} startIcon={<OpenInBrowserIcon />} variant="outlined" color="primary">
                         Abrir Caja
                     </Button>
                     
@@ -85,7 +85,7 @@ export default function Sistemas(props) {
                       null
                 }
                 {
-                    cajaAbierta=='A' ?
+                    cajaAbierta==1 ?
                     <Button onClick={() => setOpen(true)} startIcon={<AddIcon />} variant="contained" color="primary">
                     Nuevo
                 </Button>
@@ -93,9 +93,9 @@ export default function Sistemas(props) {
                 }
             </Grid>
             {
-                cajaAbierta==0 ||cajaAbierta=='C'?
+                cajaAbierta==0?
                     <Grid item xs={12} md={12}>
-                        <Alert severity="warning">{cajaAbierta==0?'No ha abierto la caja aún':'Ya ha cerrado la caja hoy'}</Alert>
+                        <Alert severity="warning">No ha abierto la caja aún</Alert>
                     </Grid> : null
 
             }
@@ -170,8 +170,14 @@ export default function Sistemas(props) {
 
                             onClick: (event, rowData) => {
                                 if (rowData.status != 'C') {
-                                    setConfirmarMensaje(true)
-                                    setSelected2(rowData)
+                                    if(cajaAbierta!='C'){
+                                        setConfirmarMensaje(true)
+                                        setSelected2(rowData)
+                                    }else{
+                                        initializer.mostrarNotificacion({ type: "warning", message: 'La caja ya esta cerrada' });
+
+                                    }
+                                 
                                 } else {
                                     initializer.mostrarNotificacion({ type: "warning", message: 'La factura ya está anulada' });
 

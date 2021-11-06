@@ -404,7 +404,7 @@ export default function CrearN(props) {
 
                                 }
                             }}
-                            getOptionLabel={(option) => option.bar_code + " - " + option.name + "- stock: " + option.stock}
+                            getOptionLabel={(option) => option.bar_code + " - " + option.name + "- stock: " + option.stock + (option.fraction!=0? " - fraccion: " + (option.stock*option.fraction):"")}
                             // prints the selected value
                             renderInput={params => (
                                 <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />

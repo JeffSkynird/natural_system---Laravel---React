@@ -43,10 +43,9 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::get('sales/last_months', 'App\Http\Controllers\v1\Reporte\DashboardController@salesLastMonth');
 
-    Route::get('splits', 'App\Http\Controllers\v1\Ventas\CashController@splits');
 
     
-    
+
     Route::middleware('auth:api')->group(function () {
         Route::get('permission/user', 'App\Http\Controllers\v1\Seguridad\PermisoController@getPermissionsById');
 
@@ -111,6 +110,14 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('cash', 'App\Http\Controllers\v1\Ventas\CashController@create');
         Route::post('cash_close', 'App\Http\Controllers\v1\Ventas\CashController@close');
         Route::get('cash_is_open', 'App\Http\Controllers\v1\Ventas\CashController@cashIsOpen');
+        Route::get('cash', 'App\Http\Controllers\v1\Ventas\CashController@index');
+        Route::get('splits', 'App\Http\Controllers\v1\Ventas\CashController@splits');
+        Route::post('splits', 'App\Http\Controllers\v1\Ventas\CashController@saveSplit');
+        Route::get('sales_purchases', 'App\Http\Controllers\v1\Reporte\DashboardController@salesPurchases');
+        Route::get('sales_cash', 'App\Http\Controllers\v1\Reporte\DashboardController@salesCash');
+
+        Route::get('splits/{id}', 'App\Http\Controllers\v1\Ventas\CashController@show');
+        Route::post('orders/cancel/{id}', 'App\Http\Controllers\v1\Inventario\OrderController@anular');
 
         
         Route::post('unities', 'App\Http\Controllers\v1\Inventario\UnityController@create');

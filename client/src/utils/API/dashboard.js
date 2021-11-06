@@ -1,6 +1,75 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT} from '../../config/API'
 const axios = require('axios');
+export const obtenerComprasYVentas = (setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"sales_purchases"
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+mostrarLoader(true)
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+      if(response.type!="error"){
+          setData(response.data)
+      
+          mostrarLoader(false)
+
+      }else{
+       
+          mostrarLoader(false)
+
+      }
+  })
+  .catch((error) => {
+   
+      mostrarLoader(false)
+
+  });
+}
+
+export const obtenerVentasCaja = (setData,store) => {
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+
+let url = ENTRYPOINT+"sales_cash"
+let setting = {
+  method: "Get",
+  url: url,
+  headers: { 'Accept': 'application/json',
+  Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token, }
+
+};
+mostrarLoader(true)
+
+axios(setting)
+  .then((res) => {
+    let response = res.data
+      if(response.type!="error"){
+          setData(response.data)
+      
+          mostrarLoader(false)
+
+      }else{
+       
+          mostrarLoader(false)
+
+      }
+  })
+  .catch((error) => {
+   
+      mostrarLoader(false)
+
+  });
+}
 export const obtenerKpisPanel = (params,setData,store) => {
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 

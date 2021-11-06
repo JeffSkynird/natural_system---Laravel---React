@@ -48,7 +48,7 @@ import Facturas from './containers/Inventario/Facturas/Index'
 import Kardex from './containers/Inventario/Kardex/Index'
 import Reporte from './containers/Inventario/Reporte/Index'
 import Roles from './containers/Inventario/Roles/Index'
-
+import Cajas from './containers/Inventario/Cajas/Index'
 import { indigo } from '@material-ui/core/colors';
 
 function Alert(props) {
@@ -196,6 +196,7 @@ export default function App(props) {
                   <Route exact path="/inventario/kardex" component={Kardex} />
                   <Route exact path="/reporte" component={Reporte} />
                   <Route exact path="/roles" component={Roles} />
+                  <Route exact path="/cajas" component={Cajas} />
 
                   
                   <Route render={() => <Redirect to="/panel" />} />

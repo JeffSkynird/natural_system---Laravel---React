@@ -25,6 +25,9 @@ import Crear from './components/Crear'
 import Eliminar from './components/Eliminar'
 import { obtenerTodos as obtenerMetricasSistemas } from '../../utils/API/clientes';
 import Bar from './components/Bar';
+import BarVertical from './components/BarVertical';
+import PieChart from './components/PieChart';
+
 import { utcDate } from '../../utils/Date'
 
 import Box from '@material-ui/core/Box';
@@ -33,7 +36,7 @@ import { obtenerTodos as obtenerTodosS } from '../../utils/API/facturas';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Radio from './components/Radio';
 import noValue from '../../assets/noValue.svg'
-import { obtenerKpisPanel } from '../../utils/API/dashboard';
+import { obtenerComprasYVentas, obtenerKpisPanel, obtenerVentasCaja } from '../../utils/API/dashboard';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
@@ -173,12 +176,16 @@ export default function Sistemas(props) {
     const [sistema, setSistema] = React.useState('')
     const [data1, setData1] = React.useState({ventas:[],cantidad:[],meses:[]})
     const [cajaAbierta, setCajaAbierta] = React.useState(null)
+    const [comprasVentas, setComprasVentas] = React.useState({ventas:[],compras:[]})
+    const [cajaVenta, setCajaVenta] = React.useState({factura:[],caja:[]})
 
     React.useEffect(() => {
         if (initializer.usuario != null) {
             obtenerKpisPanel({desde:utcDate(getFirst()),hasta:utcDate(getLast())},setData, initializer)
             estaAbiertaCaja(setCajaAbierta, initializer,false)
+            obtenerComprasYVentas(setComprasVentas,initializer)
 
+            obtenerVentasCaja(setCajaVenta,initializer)
             ObtenerGrafico1(setData1,initializer)
             setDesde(getFirst())
             setHasta(getLast())
@@ -242,7 +249,7 @@ export default function Sistemas(props) {
             <Grid item xs={12} md={12} >
                 <Grid container spacing={2}>
                 <Grid item xs={12} md={12}>
-                        <Alert severity="info">Caja: {cajaAbierta==0?'No abierta':(cajaAbierta=='A'?'Abierta':'Cerrada')}</Alert>
+                        <Alert severity="info">Caja: {cajaAbierta==0?'Cerrada':'Abierta'}</Alert>
                     </Grid>
                     <Grid item xs={12} md={3}>
                         <Card class={classes.card} style={{ width: '100%', height: 157, marginRight: 20, marginBottom: 5, backgroundColor: '#5e35b1', borderRadius: 12 }}>
@@ -351,6 +358,40 @@ export default function Sistemas(props) {
                         data1.ventas.length != 0 && data1.cantidad.length != 0 && data1.meses.length != 0 ? (
                             <Bar monto={data1.ventas} cantidad={data1.cantidad} meses={data1.meses} text="Ventas de los últimos 6 meses"/>
                         )
+                            :
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <img src={noValue} width={150} height={150} alt="" srcset="" />
+                                <p>No hay registros</p>
+                            </div>
+                    }
+                </div>
+
+
+            </Grid>
+            <Grid item md={6} xs={12}>
+                <div style={{ marginTop: 15 }} >
+
+                {
+                        cajaVenta.factura != 0 && cajaVenta.caja != 0 ? (
+                            <BarVertical factura={cajaVenta.factura} caja={cajaVenta.caja} text="Ventas/Caja de hoy"/>
+                            )
+                            :
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <img src={noValue} width={150} height={150} alt="" srcset="" />
+                                <p>No hay registros</p>
+                            </div>
+                    }
+                </div>
+
+
+            </Grid>
+            <Grid item md={6} xs={12}>
+                <div style={{ marginTop: 15 }} >
+                
+                {
+                        comprasVentas.ventas != 0 && comprasVentas.compras != 0 ? (
+                            <PieChart ventas={comprasVentas.ventas} compras={comprasVentas.compras} text="Compras/Ventas de los 3 meses"/>
+                            )
                             :
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                 <img src={noValue} width={150} height={150} alt="" srcset="" />

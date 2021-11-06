@@ -166,6 +166,8 @@ export default function Sistemas(props) {
                                             <MenuItem value={'kardex'}>Kardex</MenuItem>
                                             <MenuItem value={'clientes'}>Clientes</MenuItem>
                                             <MenuItem value={'productos'}>Productos</MenuItem>
+                                            <MenuItem value={'caja'}>Caja</MenuItem>
+
                                  
                                         </Select>
                                     </FormControl>

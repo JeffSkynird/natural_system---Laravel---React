@@ -25,7 +25,7 @@ class OrderController extends Controller
             return response()->json([
                 "status" => "200",
                 'data' => $data,
-                'total_compras'=>floatval($totalCompras),
+                'total_compras' => floatval($totalCompras),
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
@@ -45,17 +45,70 @@ class OrderController extends Controller
             'product_id' => $product
         ]);
         $pr = Product::find($product);
-        $pr->stock =doubleval($pr->stock)+doubleval($quantity);
+        $pr->stock = doubleval($pr->stock) + doubleval($quantity);
         $pr->save();
         Kardex::create([
             'product_id' => $product,
             'quantity' => $quantity,
             'type' => 'C',
-            'concept' =>'E',
-            'stock'=>$pr->stock,
-            'user_id'=>Auth::id()
+            'concept' => 'E',
+            'stock' => $pr->stock,
+            'user_id' => Auth::id()
         ]);
-     
+    }
+    public function validarExistencia($data)
+    {
+        $anulacion = false;
+        foreach ($data as $val) {
+            $pro = Product::find($val->product_id);
+            if (($pro->stock - $val->quantity) < 0) {
+                $anulacion = true;
+            }
+        }
+        return $anulacion;
+    }
+    public function anular($id)
+    {
+        $data = Order::find($id);
+        if ($data->status != 'C') {
+            $inv = OrderProduct::where('order_id', $id)->get();
+            if($this->validarExistencia($inv)){
+                return response()->json([
+                    "status" => "500",
+                    "message" => 'No se puede anular, productos no tienen suficiente existencia',
+                    "type" => 'error'
+                ]);
+            }
+            foreach ($inv as $val) {
+                $pro = Product::find($val->product_id);
+                $pro->stock = $pro->stock - $val->quantity;
+                $pro->save();
+
+                Kardex::create([
+                    'product_id' => $val->product_id,
+                    'quantity' =>  $val->quantity,
+                    'type' => 'AN',
+                    'concept' => 'S',
+                    'stock' => $pro->stock,
+                    'user_id' => Auth::id()
+                ]);
+            }
+
+            OrderProduct::where('order_id', $id)->delete();
+            $data->status = 'E';
+            $data->save();
+            return response()->json([
+                "status" => "200",
+                "message" => 'Anulación exitosa',
+                "type" => 'success'
+            ]);
+        } else {
+            return response()->json([
+                "status" => "400",
+                "message" => 'La compra ya está anulada',
+                "type" => 'error'
+            ]);
+        }
     }
     public function obtenerDetallePedido($id)
     {
@@ -91,16 +144,15 @@ class OrderController extends Controller
                     ['inventory_id', '=', $val['inventory_id']],
                     ['order_id', '=', $id],
                 ])->first();
-                if(!is_null($w)){
+                if (!is_null($w)) {
                     $w->warehouse_id = $val['warehouse_id'];
                     $w->save();
                     //GUARDADO ALMACEN PRODUCTOS
                     WarehouseProduct::create([
-                        'warehouse_id'=>$val['warehouse_id'],
-                        'inventory_id'=>$val['inventory_id']
+                        'warehouse_id' => $val['warehouse_id'],
+                        'inventory_id' => $val['inventory_id']
                     ]);
                 }
-              
             }
 
             return response()->json([
@@ -123,8 +175,9 @@ class OrderController extends Controller
             foreach ($data['suppliers'] as $val) {
                 $order = Order::create([
                     'supplier_id' => $val['supplier_id'],
-                    'total'=>$data['total'],
-                    'user_id' => Auth::id()
+                    'total' => $data['total'],
+                    'user_id' => Auth::id(),
+                    'status' => 'A'
 
                 ]);
                 foreach ($val['products'] as $val2) {
@@ -212,14 +265,14 @@ class OrderController extends Controller
     {
         try {
             $order = $id;
-           /*  $data = WarehouseOrder::join('inventories', 'warehouse_orders.inventory_id', '=', 'inventories.id')
+            /*  $data = WarehouseOrder::join('inventories', 'warehouse_orders.inventory_id', '=', 'inventories.id')
                 ->join('products', 'inventories.product_id', '=', 'products.id')
                 ->where([
                     ['order_id', '=', $order],
                     ['warehouse_orders.warehouse_id', '=', null],
                 ])
                 ->selectRaw('inventories.id as inventory_id,products.id as product_id,products.name,inventories.jp_code,inventories.supplier_code')->get(); */
-                $data = OrderProduct::join('products', 'order_products.product_id', '=', 'products.id')
+            $data = OrderProduct::join('products', 'order_products.product_id', '=', 'products.id')
                 ->where([
                     ['order_id', '=', $order],
                     ['order_products.is_stored', '=', 0],

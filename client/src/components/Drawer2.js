@@ -265,6 +265,17 @@ function ResponsiveDrawer(props) {
                             </ListItem>
                         )
                     }
+                     {
+                        permisos.includes('Caja') && (
+                            <ListItem button onClick={() => props.history.push('/cajas')} style={comprobador('/cajas')}>
+                            <ListItemIcon style={{ color: 'inherit' }}>
+                                <AllInboxIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Caja" />
+                        </ListItem>
+                        )
+                    }
+                  
                     {
                         permisos.includes('Clientes') && (
                             <ListItem button onClick={() => props.history.push('/clientes')} style={comprobador('/clientes')}>
@@ -273,6 +284,7 @@ function ResponsiveDrawer(props) {
                             </ListItem>
                         )
                     }
+                       
                     {
                         permisos.includes('Inventario') && (
                             <ListItem button onClick={handleOpenSettings} style={comprobador('/inventario')}>
@@ -282,6 +294,8 @@ function ResponsiveDrawer(props) {
                             </ListItem>
                         )
                     }
+                  
+                       
                     {
                         permisos.includes('Inventario') && (
                             <Collapse in={openCollapse} timeout="auto" unmountOnExit>
