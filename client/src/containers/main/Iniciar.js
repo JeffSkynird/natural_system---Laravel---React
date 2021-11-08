@@ -51,6 +51,12 @@ export default function Iniciar(props) {
   const [showPassword, setShowPassword] = React.useState(false)
   const [correo, setCorreo] = React.useState("")
   const [clave, setClave] = React.useState("")
+  React.useEffect(() => {
+    if(initializer.usuario!=null){
+      window.location.href ='/panel'
+    }
+
+  }, [initializer.usuario])
   const entrar = () => {
     iniciarSesion(correo, clave, initializer)
   }
