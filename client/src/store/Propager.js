@@ -24,6 +24,8 @@ export default function Propager(props) {
                
             }
          
+        }else{
+            window.location.href="/panel"
         }
     },[])
 
