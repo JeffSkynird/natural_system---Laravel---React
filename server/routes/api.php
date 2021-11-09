@@ -138,5 +138,19 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('reasons', 'App\Http\Controllers\v1\Inventario\ReasonController@index');
         Route::delete('reasons/{id}', 'App\Http\Controllers\v1\Inventario\ReasonController@delete');
         
+        Route::post('zones', 'App\Http\Controllers\v1\Ubicacion\ZoneController@create');
+        Route::put('zones/{id}', 'App\Http\Controllers\v1\Ubicacion\ZoneController@update');
+        Route::get('zones/{id}', 'App\Http\Controllers\v1\Ubicacion\ZoneController@show');
+        Route::get('zones', 'App\Http\Controllers\v1\Ubicacion\ZoneController@index');
+        Route::delete('zones/{id}', 'App\Http\Controllers\v1\Ubicacion\ZoneController@delete');
+       
+        Route::get('cities', 'App\Http\Controllers\v1\Ubicacion\CityController@index');
+   
+
+        Route::post('warehouses', 'App\Http\Controllers\v1\Inventario\WarehouseController@create');
+        Route::put('warehouses/{id}', 'App\Http\Controllers\v1\Inventario\WarehouseController@update');
+        Route::get('warehouses/{id}', 'App\Http\Controllers\v1\Inventario\WarehouseController@show');
+        Route::get('warehouses', 'App\Http\Controllers\v1\Inventario\WarehouseController@index');
+        Route::delete('warehouses/{id}', 'App\Http\Controllers\v1\Inventario\WarehouseController@delete');
     });
 });

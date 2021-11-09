@@ -14,10 +14,10 @@ class AdjustmentController extends Controller
     public function index()
     {
         try {
-            $data = Adjustment::all();
+        
             $data = Adjustment::join('products', 'adjustments.product_id', '=', 'products.id')
             ->join('reasons', 'adjustments.reason_id', '=', 'reasons.id')
-            ->selectRaw('products.name,products.bar_code,products.stock,adjustments.quantity as quantity,reasons.name as reason,adjustments.created_at')->get();
+            ->selectRaw('products.name,products.bar_code,products.stock,products.fraction,adjustments.quantity as quantity,reasons.name as reason,adjustments.created_at')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,

@@ -51,6 +51,13 @@ export default function Sistemas(props) {
         })
         return tot
     }
+    const obtenerFraccionUnidades=(cantidad,fraccion)=>{
+        let frac = ((cantidad % 1)*fraccion).toFixed(1)*1
+        let unity =cantidad-(cantidad % 1)
+
+        return {unity,frac}
+
+    }
     return (
         <Grid container spacing={2}>
             <Grid item xs={12} md={12} style={{display:'flex',justifyContent:'space-between'}}>
@@ -115,13 +122,22 @@ export default function Sistemas(props) {
                     columns={[
                       
                         { title: "Producto", field: "name" },
-                        { title: "Código de Barras", field: "bar_code" },
                         { title: "Concepto", field: "concept",render: rowData => (
                             <span>{rowData.concept=='E'?'Entrada':'Salida'}</span>
                         ), },
-                        { title: "Cantidad", field: "quantity" },
-                        { title: "Fracciones", field: "total_fraction" },
-                        { title: "Stock", field: "stock" },
+                
+                        { title: "Mov. Unidades", field: "quantity" ,render: rowData => (
+                            <span>{obtenerFraccionUnidades(rowData.quantity,rowData.fraction).unity}</span>
+                        ), },
+                        { title: "Mov. Fracciones", field: "quantity" ,render: rowData => (
+                            <span>{obtenerFraccionUnidades(rowData.quantity,rowData.fraction).frac}</span>
+                        ), },
+                        { title: "Saldo unidad", field: "stock" ,render: rowData => (
+                            <span>{obtenerFraccionUnidades(rowData.stock,rowData.fraction).unity}</span>
+                        ), },
+                        { title: "Saldo fracción", field: "fraction" ,render: rowData => (
+                            <span>{obtenerFraccionUnidades(rowData.stock,rowData.fraction).frac}</span>
+                        ), },
                         { title: "Tipo", field: "type" ,render: rowData => (
                             <span>{rowData.type=='V'?'Venta':(rowData.type=='C'?'Compra':(rowData.type=='A'?'Ajuste':'Anulación'))}</span>
                         ), },

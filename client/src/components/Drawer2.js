@@ -44,11 +44,11 @@ import TransformIcon from '@material-ui/icons/Transform';
 import DesktopWindowsIcon from '@material-ui/icons/DesktopWindows';
 import { cerrarSesion, obtenerUsuario } from '../utils/API/auth';
 import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
-
+import MapIcon from '@material-ui/icons/Map';
 import { useLocation, Switch } from 'react-router-dom';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
-
+import RoomIcon from '@material-ui/icons/Room';
 import logo from '../assets/logo2.jpg'
 import { Badge, Box, Button, Grid } from '@material-ui/core';
 import { obtenerPermisosAuth } from '../utils/API/roles';
@@ -160,6 +160,7 @@ function ResponsiveDrawer(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [openCollapse, setOpenCollapse] = React.useState(false);
+    const [openCollapse2, setOpenCollapse2] = React.useState(false);
 
 
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -319,10 +320,9 @@ function ResponsiveDrawer(props) {
                             </Collapse>
                         )
                     }
-
 {
                         permisos.includes('Ajuste') && (
-                            <ListItem button onClick={() => props.history.push('/inventario/ajustes')}>
+                            <ListItem button onClick={() => props.history.push('/inventario/ajustes')}  style={comprobador('/inventario/ajustes')}>
                             <ListItemIcon style={{ color: 'inherit' }}>
                                 <TransformIcon />
                             </ListItemIcon>
@@ -333,7 +333,7 @@ function ResponsiveDrawer(props) {
 
 {
                         permisos.includes('Proveedores') && (
-                            <ListItem button onClick={() => props.history.push('/inventario/proveedores')}>
+                            <ListItem button onClick={() => props.history.push('/inventario/proveedores')} style={comprobador('/inventario/proveedores')}>
                             <ListItemIcon style={{ color: 'inherit' }}>
                                 <EmojiTransportationIcon />
                             </ListItemIcon>
@@ -341,6 +341,42 @@ function ResponsiveDrawer(props) {
                         </ListItem>
                         )
                     }
+
+                     {
+                        permisos.includes('Laboratorios') && (
+              
+                                        <ListItem button  onClick={() => props.history.push('/laboratorios')} style={comprobador('/laboratorios')}>
+                                    <ListItemIcon style={{ color: 'inherit' }}>
+                                        <StoreIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Laboratorios" />
+                                </ListItem>
+                            )}
+                        {
+                        permisos.includes('Ubicaciones') && (
+                            <ListItem button onClick={()=>setOpenCollapse2(!openCollapse2)}  style={comprobador('/ubicaciones')}>
+                                <ListItemIcon style={{ color: 'inherit' }}><MapIcon style={{ color: 'inherit' }} /> </ListItemIcon>
+                                <ListItemText primary={'Ubicaciones'} />
+                                {openCollapse2 ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                            </ListItem>
+                        )
+                    }      
+                    {
+                        permisos.includes('Ubicaciones') && (
+                            <Collapse in={openCollapse2} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding >
+                                <ListItem button className={classes.nested} onClick={() => props.history.push('/zonas')} >
+                                        <ListItemIcon>
+                                            <RoomIcon />
+                                        </ListItemIcon>
+                                        <ListItemText primary="Zonas" />
+                                    </ListItem>
+                                </List>
+                            </Collapse>
+                        )
+                    }
+                          
+               
 
 {
                         permisos.includes('Personal') && (

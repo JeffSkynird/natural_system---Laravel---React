@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use PDF;
 
 class ReporteController extends Controller
@@ -43,6 +44,17 @@ class ReporteController extends Controller
             return response()->json(['error' => 'No se encontraron datos'], 404);
         }
     }
+    public function obtenerFraccionUnidades($cantidad,$fraccion){
+
+
+        $frac = number_format(((fmod($cantidad, 1))*$fraccion),1)*1;
+        $unity =$cantidad-(fmod($cantidad, 1));
+
+        return [
+            'unity'=>$unity,
+            'frac'=>$frac];
+
+    }
     public function printTicket($id)
     {
 
@@ -50,13 +62,21 @@ class ReporteController extends Controller
         $data  = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
             ->join('users', 'invoices.user_id', '=', 'users.id')
             ->where('invoices.id', '=', $id)
-            ->selectRaw('users.dni,users.last_names,invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names');
+            ->selectRaw('invoices.discount,users.dni,users.last_names,invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names');
         $datbodya  = InvoiceProduct::join('products', 'invoice_products.product_id', '=', 'products.id')
             ->where('invoice_products.invoice_id', '=', $id)
-            ->selectRaw('products.sale_price,products.name,products.bar_code,invoice_products.quantity,invoice_products.subtotal')->get();
+            ->selectRaw('products.sale_price,products.name,products.fraction,products.bar_code,invoice_products.quantity,invoice_products.subtotal')->get();
+
+            $ar = array();
+            foreach ($datbodya as $value) {
+                $value->unidad_fraccion =  "[".$this->obtenerFraccionUnidades($value->quantity,$value->fraction)['unity']."]  [".$this->obtenerFraccionUnidades($value->quantity,$value->fraction)['frac']."]";
+                array_push($ar,$value);
+            }
+
+       
         $subTotal = InvoiceProduct::where('invoice_id', '=', $id)->sum('subtotal');
 
-        $pdf =  PDF::loadView('ticket', ['data' => $data->first(), 'body' => $datbodya, 'subtotal' => $subTotal]);
+        $pdf =  PDF::loadView('ticket', ['data' => $data->first(), 'body' => $ar, 'subtotal' => $subTotal]);
 
 
         return  $pdf->stream('whateveryourviewname.pdf');

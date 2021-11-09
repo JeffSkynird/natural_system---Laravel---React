@@ -166,7 +166,7 @@
                             <h2>Producto</h2>
                         </td>
                         <td class="Hours">
-                            <h2>Cantidad</h2>
+                            <h2>[U]  [F]</h2>
                         </td>
                         <td class="Rate">
                             <h2>P.V.P.</h2>
@@ -186,7 +186,7 @@
                         </td>
 
                         <td class="tableitem">
-                            <p class="itemtext"> {{ $dt['quantity'] }}</p>
+                            <p class="itemtext"> {{ $dt['unidad_fraccion'] }}</p>
                         </td>
                         <td class="tableitem">
                             <p class="itemtext"> {{ $dt['sale_price'] }}</p>
@@ -205,6 +205,7 @@
 
 
         <span style=" margin-top:10px; font-size: .6em;text-align:right;display:block;">SUB-TOTAL: {{$subtotal}} </span>
+        <span style=" margin-top:10px; font-size: .6em;text-align:right;display:block;">DESCUENTO: {{$data['discount']}} </span>
         <span style=" font-size: .6em;text-align:right;display:block;margin-top:5px;">IVA 12%: {{$data['iva']}} </span>
         <span style=" font-size: .6em;text-align:right;display:block;margin-top:5px;">VALOR A PAGAR: {{$data['total']}} </span>
         <!--End Table-->

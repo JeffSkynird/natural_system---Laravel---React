@@ -14,6 +14,7 @@ class Invoice extends Model
         'iva',
         'status',
         'ip',
+        'discount',
         'final_consumer',
         'terminal',
         'user_id'

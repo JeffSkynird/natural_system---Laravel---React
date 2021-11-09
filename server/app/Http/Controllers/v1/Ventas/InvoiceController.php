@@ -46,12 +46,14 @@ class InvoiceController extends Controller
         $finalConsumer = $request->input('final_consumer');
         $total = $request->input('total');
         $iva = $request->input('iva');
+        $discount = $request->input('discount');
 
         try {
             $inv= Invoice::create([
                 'client_id' => $clientId,
                 'final_consumer' => $finalConsumer,
                 'total'=> $total,
+                'discount'=> $discount,
                 'iva'=>$iva,
                 'status'=>'A',
                 'user_id'=>Auth::id()

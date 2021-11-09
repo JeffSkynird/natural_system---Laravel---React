@@ -1,767 +1,182 @@
-import React, { Component, useContext } from "react";
-import Drawer from "@material-ui/core/Drawer";
-import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import SettingsIcon from '@material-ui/icons/Settings';
-import DoneAllIcon from '@material-ui/icons/DoneAll';
-import Menu from "@material-ui/icons/Menu";
-import IconButton from "@material-ui/core/IconButton";
-import Link from "@material-ui/core/Link";
-import Settings from "@material-ui/icons/Settings";
-import AnnouncementIcon from '@material-ui/icons/Announcement';
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import PhoneForwardedIcon from '@material-ui/icons/PhoneForwarded';
-import ViewDayIcon from '@material-ui/icons/ViewDay';
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import InfoIcon from '@material-ui/icons/Info';
-import HomeIcon from '@material-ui/icons/Home';
-import Collapse from "@material-ui/core/Collapse";
-import PublicIcon from "@material-ui/icons/Public";
-import GroupOutlinedIcon from "@material-ui/icons/GroupOutlined";
-import HomeWorkOutlinedIcon from "@material-ui/icons/HomeWorkOutlined";
-import PermContactCalendarOutlinedIcon from "@material-ui/icons/PermContactCalendarOutlined";
-import LocationCityIcon from "@material-ui/icons/LocationCity";
-import MailOutlineIcon from "@material-ui/icons/MailOutline";
-import GroupAddOutlinedIcon from "@material-ui/icons/GroupAddOutlined";
-import PersonAddDisabledOutlinedIcon from "@material-ui/icons/PersonAddDisabledOutlined";
-import PlaceOutlinedIcon from "@material-ui/icons/PlaceOutlined";
-import AccountBoxOutlinedIcon from "@material-ui/icons/AccountBoxOutlined";
-import FormatListNumberedRtlIcon from "@material-ui/icons/FormatListNumberedRtl";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link as RouterLink } from "react-router-dom";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import PersonalVideoOutlinedIcon from "@material-ui/icons/PersonalVideoOutlined";
-import SettingsOutlinedIcon from "@material-ui/icons/SettingsOutlined";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import PaymentIcon from "@material-ui/icons/Payment";
-import ReceiptIcon from "@material-ui/icons/Receipt";
-import Initializer from "../store/Initializer";
-import { encriptarJson, desencriptarJson } from "../utils/security";
-import { obtenerPermiso } from '../utils/API/managers.js'
-import { cerrarSesion } from '../utils/API/auth'
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ListAltIcon from '@material-ui/icons/ListAlt';
-import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
-import { play } from '../utils/sound'
-export default function TemporaryDrawer(props) {
-  const initializer = useContext(Initializer);
-  const classes = useStyles();
-  const [state, setState] = React.useState({
-    left: false,
-  });
-  const [open, setOpen] = React.useState(false);
-  const [tipo, setTipo] = React.useState("client");
-  const [pago, setPago] = React.useState(null);
-  const [permiso, setPermiso] = React.useState([]);
+import React from 'react';
+import clsx from 'clsx';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import Drawer from '@material-ui/core/Drawer';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import MailIcon from '@material-ui/icons/Mail';
 
-  React.useEffect(() => {
-    if (initializer.usuario != null) {
-      setTipo(JSON.parse(desencriptarJson(initializer.usuario)).user.type_user);
-      if (
-        JSON.parse(desencriptarJson(initializer.usuario)).user.position != null
-      ) {
-        setPago(
-          JSON.parse(desencriptarJson(initializer.usuario)).user.position
-        );
-      }
-      obtenerPermiso(setPermiso, initializer);
-    }
-  }, [initializer.usuario]);
-
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
-    play(initializer.playSound, 'click')
-  };
-
-  const [open2, setOpen2] = React.useState(false);
-  const [open3, setOpen3] = React.useState(false);
-  const [open4, setOpen4] = React.useState(false);
-  const [open5, setOpen5] = React.useState(false);
-  const [open6, setOpen6] = React.useState(false);
-  const [open7, setOpen7] = React.useState(false);
-  const [open8, setOpen8] = React.useState(false);
-  const [open9, setOpen9] = React.useState(false);
-  const [open10, setOpen10] = React.useState(false);
-
-  const handleClick = () => {
-    setOpen2(!open2);
-  };
-  const logout = () => {
-    cerrarSesion(initializer)
-
-
-    props.history.push('/login');
-  }
-  const existe = (e) => {
-    let existe = false;
-    permiso.slice().map((e2) => {
-      if (e == e2) {
-        existe = true
-      }
-
-    })
-    return existe
-  };
-  const list = (anchor) => (
-    <div
-      style={{
-        width: 250,
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-      }}
-      role="presentation"
-      //onClick={         toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List
-        dense={true}
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            General
-          </ListSubheader>
-        }
-      >
-        {
-          existe('Interesados') ?
-            <div>
-              <ListItem button onClick={handleClick}>
-                <ListItemIcon>
-                  <GroupOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Interesados" />
-                {open2 ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse in={open2} timeout="auto" unmountOnExit>
-                <List dense={true} component="div" disablePadding>
-                  <Link
-                    underline="none"
-                    component={RouterLink}
-                    to="/clientes"
-                    onClick={() => {
-                      setState({ left: false });
-                    }}
-                    color="inherit"
-                  >
-                    <ListItem button className={classes.nested}>
-                      <ListItemIcon>
-                        <GroupAddOutlinedIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Interesados" />
-                    </ListItem>
-                  </Link>
-
-                  {/*   <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <GroupOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Aprobados" />
-              </ListItem> */}
-
-                  {/* <Link
-              underline="none"
-              component={RouterLink}
-              to="/negados"
-              onClick={() => {
-                setState({ left: false });
-              }}
-              color="inherit"
-            >
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <PersonAddDisabledOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Negados" />
-              </ListItem>
-            </Link>
-            <Link
-              underline="none"
-              component={RouterLink}
-              to="/validados"
-              onClick={() => {
-                setState({ left: false });
-              }}
-              color="inherit"
-            >
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  <AccountBoxOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary="Validados" />
-              </ListItem>
-            </Link>
-           */}
-                </List>
-              </Collapse>
-            </div>
-
-            :
-            null
-        }
-        {existe('InteresadosNoValidos') ? (
-          <Link
-            underline="none"
-            component={RouterLink}
-            to="/clientes_no_validos"
-            onClick={() => setState({ left: false })}
-            color="inherit"
-          >
-            <ListItem button>
-              <ListItemIcon>
-                {" "}
-                <PersonAddDisabledOutlinedIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="Interesados No Validos" />
-            </ListItem>
-          </Link>
-        ) : null}
-
-
-        {existe('Agenda') && tipo != "manager" ? (
-
-
-          <div>
-            <ListItem button onClick={() => setOpen5(!open5)}>
-              <ListItemIcon>
-                <FormatListNumberedRtlIcon />
-              </ListItemIcon>
-              <ListItemText primary="Citas / Llamadas" />
-              {open5 ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={open5} timeout="auto" unmountOnExit>
-              <List dense={true} component="div" disablePadding>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/agenda"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <CalendarTodayIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Agenda" />
-                  </ListItem>
-                </Link>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/citations"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <PhoneForwardedIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Historial" />
-                  </ListItem>
-                </Link>
-
-
-              </List>
-
-            </Collapse>
-          </div>
-        ) : null}
-        {existe('Gestion de metas') ? (
-          <Link
-            underline="none"
-            component={RouterLink}
-            to="/goals_config"
-            onClick={() => setState({ left: false })}
-            color="inherit"
-          >
-            <ListItem button>
-              <ListItemIcon>
-                {" "}
-                <SettingsIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="Gestión de metas" />
-            </ListItem>
-          </Link>
-        ) : null}
-        {1==2&&existe('Precalificador') ? (
-
-          <div>
-            <ListItem button onClick={() => setOpen5(!open5)}>
-              <ListItemIcon>
-                <FormatListNumberedRtlIcon />
-              </ListItemIcon>
-              <ListItemText primary="Precalificador" />
-              {open5 ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={open5} timeout="auto" unmountOnExit>
-              <List dense={true} component="div" disablePadding>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/precalificador/opciones"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <SettingsOutlinedIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Ajustes" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Collapse>
-          </div>
-        ) : null}
-        {existe('Grupos/KPIS') ? (
-          <div>
-
-
-            <ListItem button onClick={() => setOpen6(!open6)}>
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary="Grupos y KPI" />
-              {open6 ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={open6} timeout="auto" unmountOnExit>
-              <List dense={true} component="div" disablePadding>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/grupos"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <GroupOutlinedIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Grupos" />
-                  </ListItem>
-                </Link>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/kpis"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <FormatListNumberedRtlIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="KPI" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Collapse>
-          </div>
-        ) : null}
-
-      </List>
-
-      <List
-        dense={true}
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            Administración
-            </ListSubheader>
-        }
-      >
-        {existe('Asesores') ? (
-          <Link
-            underline="none"
-            component={RouterLink}
-            to="/asesores"
-            onClick={() => setState({ left: false })}
-            color="inherit"
-          >
-            <ListItem button>
-              <ListItemIcon>
-                {" "}
-                <PermContactCalendarOutlinedIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="Asesores" />
-            </ListItem>
-          </Link>
-        ) : null}
-        {existe('Supervisores') ? (
-          <Link
-            underline="none"
-            component={RouterLink}
-            to="/supervisores"
-            onClick={() => setState({ left: false })}
-            color="inherit"
-          >
-            <ListItem button>
-              <ListItemIcon>
-                {" "}
-                <PermContactCalendarOutlinedIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="Supervisores" />
-            </ListItem>
-          </Link>
-        ) : null}
-    
-{/* {existe('Productos')&& (
-      <div>
-        <ListItem button onClick={() => setOpen10(!open10)}>
-          <ListItemIcon>
-            <HomeWorkOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText primary="Productos" />
-          {open10 ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={open10} timeout="auto" unmountOnExit>
-          <List dense={true} component="div" disablePadding>
-            <Link
-              underline="none"
-              component={RouterLink}
-              to="/proyectos"
-              onClick={() => setState({ left: false })}
-              color="inherit"
-            >
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  {" "}
-                  <HomeWorkOutlinedIcon />{" "}
-                </ListItemIcon>
-                <ListItemText primary="Proyectos" />
-              </ListItem>
-            </Link>
-            <Link
-              underline="none"
-              component={RouterLink}
-              to="/villas"
-              onClick={() => setState({ left: false })}
-              color="inherit"
-            >
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  {" "}
-                  <HomeIcon />{" "}
-                </ListItemIcon>
-                <ListItemText primary="Villas" />
-              </ListItem>
-            </Link>
-          </List>
-        </Collapse>
-
-      </div>
-      )} */}
-
-{/* 
-        {existe('Ubicacion') ? (
-          <div>
-            <ListItem button onClick={() => setOpen3(!open3)}>
-              <ListItemIcon>
-                <PlaceOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Ubicación" />
-              {open3 ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={open3} timeout="auto" unmountOnExit>
-              <List dense={true} component="div" disablePadding>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/ciudades"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <LocationCityIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Cantones" />
-                  </ListItem>
-                </Link>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/provincias"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <PublicIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Provincias" />
-                  </ListItem>
-                </Link>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/paises"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <PublicIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Paises" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Collapse>
-
-          </div>
-
-        ) : null} */}
-        {existe('Sistema') ? (
-          <div>
-            <ListItem button onClick={() => setOpen4(!open4)}>
-              <ListItemIcon>
-                <PersonalVideoOutlinedIcon />
-              </ListItemIcon>
-              <ListItemText primary="Sistema" />
-              {open4 ? <ExpandLess /> : <ExpandMore />}
-            </ListItem>
-            <Collapse in={open4} timeout="auto" unmountOnExit>
-              <List dense={true} component="div" disablePadding>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/email_templates"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <MailOutlineIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Plantilla de mensajes" />
-                  </ListItem>
-                </Link>
-                <Link
-                  underline="none"
-                  component={RouterLink}
-                  to="/sgi_logs"
-                  onClick={() => setState({ left: false })}
-                  color="inherit"
-                >
-                  <ListItem button className={classes.nested}>
-                    <ListItemIcon>
-                      {" "}
-                      <ListAltIcon />{" "}
-                    </ListItemIcon>
-                    <ListItemText primary="Logs" />
-                  </ListItem>
-                </Link>
-              </List>
-            </Collapse>
-
-          </div>
-
-        ) : null}
-
-
-
-      </List>
-
-      {existe('Eventos')&& (
-      <div>
-        <ListItem button onClick={() => setOpen9(!open9)}>
-          <ListItemIcon>
-            <AnnouncementIcon />
-          </ListItemIcon>
-          <ListItemText primary="Eventos" />
-          {open9 ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={open9} timeout="auto" unmountOnExit>
-          <List dense={true} component="div" disablePadding>
-            <Link
-              underline="none"
-              component={RouterLink}
-              to="/noticias"
-              onClick={() => setState({ left: false })}
-              color="inherit"
-            >
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  {" "}
-                  <NotificationsIcon />{" "}
-                </ListItemIcon>
-                <ListItemText primary="Noticias" />
-              </ListItem>
-            </Link>
-            <Link
-              underline="none"
-              component={RouterLink}
-              to="/promociones"
-              onClick={() => setState({ left: false })}
-              color="inherit"
-            >
-              <ListItem button className={classes.nested}>
-                <ListItemIcon>
-                  {" "}
-                  <InfoIcon />{" "}
-                </ListItemIcon>
-                <ListItemText primary="Promociones" />
-              </ListItem>
-            </Link>
-          </List>
-        </Collapse>
-
-      </div>
-      )}
-
-      {existe('Pagos') ? (
-        <div>
-          <ListItem button onClick={() => setOpen7(!open7)}>
-            <ListItemIcon>
-              <PaymentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Pagos" />
-            {open7 ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={open7} timeout="auto" unmountOnExit>
-            <List dense={true} component="div" disablePadding>
-
-              <Link
-                underline="none"
-                component={RouterLink}
-                to="/pagos"
-                onClick={() => setState({ left: false })}
-                color="inherit"
-              >
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    {" "}
-                    <PaymentIcon />{" "}
-                  </ListItemIcon>
-                  <ListItemText primary="Pagos" />
-                </ListItem>
-              </Link>
-              <Link
-                underline="none"
-                component={RouterLink}
-                to="/reservas"
-                onClick={() => setState({ left: false })}
-                color="inherit"
-              >
-                <ListItem button className={classes.nested}>
-                  <ListItemIcon>
-                    {" "}
-                    <ReceiptIcon />{" "}
-                  </ListItemIcon>
-                  <ListItemText primary="Reservas" />
-                </ListItem>
-              </Link>
-
-
-            </List>
-          </Collapse>
-
-        </div>
-      ) : null}
-      {
-        existe('Usuarios') ? (
-          <Link
-            underline="none"
-            component={RouterLink}
-            to="/managers"
-            onClick={() => setState({ left: false })}
-            color="inherit"
-          >
-            <ListItem button>
-              <ListItemIcon>
-                {" "}
-                <AccountBoxOutlinedIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="Usuarios" />
-            </ListItem>
-          </Link>
-
-        ) : null}
-
-      {
-        existe('Roles') ? (
-          <Link
-            underline="none"
-            component={RouterLink}
-            to="/roles"
-            onClick={() => setState({ left: false })}
-            color="inherit"
-          >
-            <ListItem button>
-              <ListItemIcon>
-                {" "}
-                <AccountBoxOutlinedIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="Roles" />
-            </ListItem>
-          </Link>
-        ) : null}
-
-
-      <ListItem button onClick={logout}>
-        <ListItemIcon>
-          {" "}
-          <ExitToAppIcon />{" "}
-        </ListItemIcon>
-        <ListItemText primary="Salir" />
-      </ListItem>
-
-    </div>
-  );
-
-  return (
-    <div>
-      {
-        <React.Fragment>
-          <IconButton
-            onClick={toggleDrawer("left", true)}
-            color="inherit"
-            edge="start"
-            aria-label="delete"
-            size="medium"
-          >
-            <Menu fontSize="inherit" />
-          </IconButton>
-          <Drawer
-            anchor={"left"}
-            open={state["left"]}
-            onClose={toggleDrawer("left", false)}
-          >
-            {list("left")}
-          </Drawer>
-        </React.Fragment>
-      }
-    </div>
-  );
-}
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    display: 'flex',
   },
-  nested: {
-    paddingLeft: theme.spacing(4),
+  appBar: {
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  hide: {
+    display: 'none',
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
   },
 }));
+
+export default function PersistentDrawerLeft() {
+  const classes = useStyles();
+  const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div className={classes.root}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            Persistent drawer
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        className={classes.drawer}
+        variant="persistent"
+        anchor="left"
+        open={open}
+        classes={{
+          paper: classes.drawerPaper,
+        }}
+      >
+        <div className={classes.drawerHeader}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem button key={text}>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            <ListItem button key={text}>
+              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: open,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Typography paragraph>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+          ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
+          facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
+          gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
+          donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
+          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
+          Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
+          imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
+          arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
+          donec massa sapien faucibus et molestie ac.
+        </Typography>
+        <Typography paragraph>
+          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
+          facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
+          tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
+          consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
+          vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
+          hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
+          tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
+          nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
+          accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
+        </Typography>
+      </main>
+    </div>
+  );
+}

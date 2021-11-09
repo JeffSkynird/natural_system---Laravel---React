@@ -14,6 +14,7 @@ import Slide from '@material-ui/core/Slide';
 import { Avatar, Checkbox, FormControlLabel, Grid, IconButton, InputAdornment } from '@material-ui/core';
 import { editarSistema, registrarSistema, subirFoto } from '../../../../utils/API/sistemas';
 import { obtenerTodos as obtenerCategorias } from '../../../../utils/API/categories';
+import { obtenerTodos as obtenerTodosBodegas } from '../../../../utils/API/bodegas';
 
 import { obtenerTodos as obtenerUnidades } from '../../../../utils/API/unidades';
 import { Autocomplete } from '@material-ui/lab';
@@ -44,10 +45,16 @@ export default function Crear(props) {
     const [hasIva, setHasIva] = React.useState(true)
     const [fraction, setFraction] = React.useState("")
     const [descripcion, setDescripcion] = React.useState("")
+
+    const [bodegaData, setBodegaData] = React.useState([])
+    const [bodega, setBodega] = React.useState('')
+     
+
     React.useEffect(() => {
         if (initializer.usuario != null) {
 
             obtenerCategorias(setCategoryData, initializer)
+            obtenerTodosBodegas(setBodegaData, initializer)
 
             obtenerUnidades(setUnityData, initializer)
         }
@@ -68,6 +75,7 @@ export default function Crear(props) {
             setDescripcion(props.sistema.description)
             setFraction(props.sistema.fraction)
             setHasIva(props.sistema.has_iva)
+            setBodega(props.sistema.warehouse_id)
 
         }
     }, [props.sistema])
@@ -108,6 +116,7 @@ export default function Crear(props) {
             'url': image,
             'has_iva':hasIva?1:0,
             'fraction': fraction!="" ? fraction : 0,
+            'warehouse_id':bodega
         }
   
             if (props.sistema == null) {
@@ -133,6 +142,7 @@ export default function Crear(props) {
         setSupplirCode("")
         setListPrice("")
         setSalePrice("")
+        setBodega("")
 
         setSerie("")
         setImage(null)
@@ -170,6 +180,15 @@ export default function Crear(props) {
     const getName = (id) => {
         let object = null
         unityData.map((e) => {
+            if (id == e.id) {
+                object = { ...e }
+            }
+        })
+        return object
+    }
+    const getName3 = (id) => {
+        let object = null
+        bodegaData.map((e) => {
             if (id == e.id) {
                 object = { ...e }
             }
@@ -284,7 +303,19 @@ export default function Crear(props) {
                         onChange={(e) => setDescripcion(e.target.value)}
 
                     /></Grid>
+   <Grid item xs={12}>  <TextField
+                        variant="outlined"
 
+                        style={{ width: '100%' }}
+                        type="number"
+                        label="Precio de compra"
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                        }}
+                        value={listPrice}
+                        onChange={(e) => setListPrice(e.target.value)}
+
+                    /></Grid>
                     <Grid item xs={12}>  <TextField
                         variant="outlined"
 
@@ -298,7 +329,30 @@ export default function Crear(props) {
                         onChange={(e) => setSalePrice(e.target.value)}
 
                     /></Grid>
-                  
+                        <Grid item xs={12} md={12} style={{ display: 'flex' }}>
+                        <Autocomplete
+
+                            style={{ width: '100%' }}
+                            options={bodegaData}
+                            value={getName3(bodega,bodegaData)}
+                            getOptionLabel={(option) => option.name}
+                            onChange={(event, value) => {
+                                if (value != null) {
+
+                                    setBodega(value.id)
+                                } else {
+
+                                    setBodega('')
+
+                                }
+
+                            }} // prints the selected value
+                            renderInput={params => (
+                                <TextField {...params} label="Seleccione un laboratorio" variant="outlined" fullWidth />
+                            )}
+                        />
+
+                    </Grid>
                     <Grid item xs={12}>  <TextField
                         variant="outlined"
 

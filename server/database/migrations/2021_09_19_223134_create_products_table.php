@@ -28,6 +28,7 @@ class CreateProductsTable extends Migration
             $table->double('sale_price', 8, 3)->default(0);
             $table->foreignId('unity_id')->constrained('unities');
             $table->foreignId('category_id')->constrained('categories');
+            $table->foreignId('warehouse_id')->nullable()->constrained('warehouses');
             $table->boolean('status')->default(1);
             $table->string('ip')->nullable();
             $table->string('terminal')->nullable();

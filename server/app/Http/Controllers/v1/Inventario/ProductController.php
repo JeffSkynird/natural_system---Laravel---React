@@ -28,7 +28,8 @@ class ProductController extends Controller
   
             $data = Product::join('unities', 'products.unity_id', '=', 'unities.id')
             ->join('categories', 'products.category_id', '=', 'categories.id')
-    ->select('products.*','unities.name as unity','categories.name as category')->orderBy('id','desc')->get();
+            ->leftjoin('warehouses', 'products.warehouse_id', '=', 'warehouses.id')
+    ->select('warehouses.name as warehouse','warehouses.id as warehouse_id','products.*','unities.name as unity','categories.name as category')->orderBy('id','desc')->get();
             return response()->json([
                 "status" => "200",
                 'data'=>$data,

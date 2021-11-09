@@ -1,7 +1,7 @@
 import {encriptarJson,desencriptarJson} from '../security'
 import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
-export const editarUnidad= (id,data, store) => {
+export const editar= (id,data, store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
    
  
@@ -34,7 +34,7 @@ export const editarUnidad= (id,data, store) => {
         mostrarNotificacion({ type: "error", message: error.message });
       });
   };
-export const eliminarUnidad = (id,store) => {
+export const eliminar = (id,store) => {
     const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
   
     let url = ENTRYPOINT+"zones/"+id;
@@ -68,7 +68,7 @@ export const eliminarUnidad = (id,store) => {
         mostrarNotificacion({ type: "success", message: error.message });
       });
   };
-export const registrarUnidad = (data,store) => {
+export const registrar = (data,store) => {
     const { usuario, mostrarNotificacion, mostrarLoader } = store;
     
     let url = ENTRYPOINT+"zones";

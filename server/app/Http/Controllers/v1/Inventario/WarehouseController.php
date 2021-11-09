@@ -7,6 +7,7 @@ use App\Models\Warehouse;
 use App\Models\WarehouseProduct;
 use Illuminate\Http\Request;
 use DB;
+use Illuminate\Support\Facades\Auth;
 
 class WarehouseController extends Controller
 {
@@ -35,6 +36,7 @@ class WarehouseController extends Controller
     public function create(Request $request)
     {
         try {
+            $request['user_id']=Auth::id();
             Warehouse::create($request->all());
             return response()->json([
                 "status" => "200",

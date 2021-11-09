@@ -91,8 +91,6 @@ export default function Sistemas(props) {
                         { title: "Nombre", field: "name" },
                         { title: "Descripción", field: "description" },
                         { title: "Zona", field: "zone" },
-                        { title: "Productos", field: "products" },
-
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 

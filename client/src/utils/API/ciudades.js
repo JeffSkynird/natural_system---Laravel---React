@@ -3,15 +3,18 @@ import {ENTRYPOINT,LARAVEL_SGI} from '../../config/API'
 const axios = require('axios');
 
 
-export const obtenerTodos = (setData) => {
+export const obtenerTodos = (setData,store) => {
 
- 
-  let url = LARAVEL_SGI+"ciudades"
+  const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
+
+  let url = LARAVEL_SGI+"cities"
   let setting = {
     method: "Get",
     url: url,
-    headers: { 'Accept': 'application/json', }
-
+    headers: {
+      Accept: "application/json",
+      Authorization: "Bearer " + JSON.parse(desencriptarJson(usuario)).token,
+    },
   };
 
 
@@ -19,7 +22,7 @@ export const obtenerTodos = (setData) => {
     .then((res) => {
       let response = res.data
      if(response.type!="error"){
-        setData({data:response.ciudades,backup:response.ciudades})
+        setData(response.data)
      
 
      }else{

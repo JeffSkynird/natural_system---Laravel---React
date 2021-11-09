@@ -185,14 +185,18 @@ export default function Crearn(props) {
             let t = productos.slice()
            
                 if(!existeEnDetalle(productoC.id)){
+                    let frac = ((cantidad % 1)*productoC.fraction).toFixed(1)*1
+                   
+                    let unity =cantidad-(cantidad % 1)
+               
                 if(razon==2){
                     if((productoC.stock-cantidad)>=0){
-                        t.push({product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                        t.push({unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
                         }else{
                             outStock=true
                         }
                 }else{
-                    t.push({product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                    t.push({unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
 
                 }
             }
@@ -248,6 +252,13 @@ export default function Crearn(props) {
                 return decT
             }
         }
+
+    }
+    const obtenerFraccionUnidades=(cantidad,fraccion)=>{
+        let frac = ((cantidad % 1)*fraccion).toFixed(1)*1
+        let unity =cantidad-(cantidad % 1)
+
+        return {unity,frac}
 
     }
     return (
@@ -322,7 +333,7 @@ export default function Crearn(props) {
 
                                 }
                             }}
-                            getOptionLabel={(option) => option.bar_code + " - " + option.name + "- stock: " + option.stock}
+                            getOptionLabel={(option) => option.bar_code + " - " + option.name + " - unidades: " +obtenerFraccionUnidades(option.stock,option.fraction).unity+ (option.fraction!=0?(" - fracciones: "+obtenerFraccionUnidades(option.stock,option.fraction).frac):"")}
                             // prints the selected value
                             renderInput={params => (
                                 <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
@@ -401,9 +412,8 @@ export default function Crearn(props) {
                             ),
                           },
                         { title: "Código de Barras", field: "bar_code" },
-                        { title: "Stock", field: "stock" },
-
-                        { title: "Cantidad", field: "quantity" },
+                        { title: "Unidades", field: "unity", editable: 'never' },
+                        { title: "Fracciones", field: "fraction", editable: 'never' },
                         { title: "Tipo", field: "reason" }
 
                 

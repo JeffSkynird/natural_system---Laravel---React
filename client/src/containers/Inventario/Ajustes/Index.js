@@ -48,6 +48,13 @@ export default function Sistemas(props) {
         })
         return tot
     }
+    const obtenerFraccionUnidades=(cantidad,fraccion)=>{
+        let frac = ((cantidad % 1)*fraccion).toFixed(1)*1
+        let unity =cantidad-(cantidad % 1)
+
+        return {unity,frac}
+
+    }
     return (
         <Grid container spacing={2}>
             <Crear sistema={selected} setSelected={setSelected} setOpen={setOpen} open={open} carga={carga} />
@@ -90,11 +97,16 @@ export default function Sistemas(props) {
                       
                         { title: "Nombre", field: "name" },
                         { title: "Codigo de Barras", field: "bar_code" },
-                        { title: "Ajuste", field: "quantity" },
-                        { title: "Stock", field: "stock" },
+                
+                        { title: "Ajuste unidad", field: "quantity" ,render: rowData => (
+                            <span>{obtenerFraccionUnidades(rowData.quantity,rowData.fraction).unity}</span>
+                        ), },
+                        { title: "Ajuste fracción", field: "quantity" ,render: rowData => (
+                            <span>{obtenerFraccionUnidades(rowData.quantity,rowData.fraction).frac}</span>
+                        ), },
                         { title: "Tipo", field: "reason" },
 
-                        
+                     
                         { title: "Registro", field: "created_at", type: "datetime" },
 
 

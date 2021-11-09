@@ -10,8 +10,8 @@ import Initializer from '../../../../store/Initializer'
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import Slide from '@material-ui/core/Slide';
 import { Avatar, Grid, IconButton, InputAdornment } from '@material-ui/core';
-import { editar as editarBodega, registrar as registrarBodega } from '../../../../utils/API/bodegas';
-import { obtenerTodos as obtenerZonas } from '../../../../utils/API/zones';
+import { editar as editarBodega, registrar as registrarBodega } from '../../../../utils/API/zones';
+import { obtenerTodos as obtenerCiudades } from '../../../../utils/API/ciudades';
 import { Autocomplete } from '@material-ui/lab';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -32,26 +32,27 @@ export default function Crear(props) {
     const [stockMin, setStockMin] = React.useState("")
     const [stockMax, setStockMax] = React.useState("")
 
-    const [descripcion, setDescripcion] = React.useState("")
+
+    const [city, setCity] = React.useState("")
+    const [cityData, setCityData] = React.useState([])
+
     React.useEffect(() => {
         if (initializer.usuario != null) {
 
-        obtenerZonas(setZoneData,initializer)
+            obtenerCiudades(setCityData,initializer)
         }
   
 }, [initializer.usuario])
     React.useEffect(()=>{
         if(props.sistema!=null){
             setNombre(props.sistema.name)
-            setZone(props.sistema.zone_id)
-            setDescripcion(props.sistema.description)
+            setCity(props.sistema.city_id)
         }
     },[props.sistema])
     const guardar=()=>{
         let data={ 
         'name': nombre,
-        'description': descripcion,
-        'zone_id': zone}
+        'city_id': city}
         if(props.sistema==null){
             registrarBodega(data,initializer)
             limpiar()
@@ -67,15 +68,13 @@ export default function Crear(props) {
         setNombre("")
            
 
-            setZone("")
-
-            setDescripcion("")
+        setCity("")
         props.setSelected(null)
         props.carga()
     }
     const getName = (id) => {
         let object = null
-        zoneData.map((e) => {
+        cityData.map((e) => {
             if (id == e.id) {
                 object = { ...e }
             }
@@ -94,10 +93,10 @@ export default function Crear(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
-            <DialogTitle id="alert-dialog-slide-title">Laboratorios</DialogTitle>
+            <DialogTitle id="alert-dialog-slide-title">Zonas</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-slide-description">
-                   {props.sistema!=null?"Formulario de edición de laboratorios": "Formulario de creación de laboratorios"}
+                   {props.sistema!=null?"Formulario de edición de zonas": "Formulario de creación de zonas"}
                 </DialogContentText>
             
                 <Grid container spacing={2}>
@@ -110,47 +109,33 @@ export default function Crear(props) {
                         onChange={(e) => setNombre(e.target.value)}
 
                     /></Grid>
+                   
                   
                     
                      <Grid item xs={12} md={12} style={{ display: 'flex' }}>
                         <Autocomplete
                       
                             style={{ width: '100%'}}
-                                options={zoneData}
-                                value={getName(zone)}
+                                options={cityData}
+                                value={getName(city)}
                                 getOptionLabel={(option) => option.name}
                                 onChange={(event, value) => {
                                     if (value != null) {
 
-                                        setZone(value.id)
+                                        setCity(value.id)
                                     } else {
 
-                                        setZone('')
+                                        setCity('')
 
                                     }
 
                                 }} // prints the selected value
                                 renderInput={params => (
-                                    <TextField {...params} label="Seleccione una zona" variant="outlined" fullWidth />
+                                    <TextField {...params} label="Seleccione una ciudad" variant="outlined" fullWidth />
                                 )}
                             />
                            
                         </Grid>
-                    
-                    <Grid item xs={12}>  <TextField
-                        variant="outlined"
-
-                        style={{ width:'100%' }}
-                                    
-                        label="Descripción"
-
-                        value={descripcion}
-                        onChange={(e) => setDescripcion(e.target.value)}
-
-                    /></Grid>
-
-
-
                 </Grid>
 
             </DialogContent>

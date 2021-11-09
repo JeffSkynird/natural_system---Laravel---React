@@ -24,6 +24,7 @@ class Product extends Model
         'max_stock',
         'has_iva',
         'fraction',
+        'warehouse_id',
         'unity_id',
         'status',
         'category_id',

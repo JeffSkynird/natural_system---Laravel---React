@@ -61,6 +61,7 @@ export default function CrearN(props) {
 
     const [subTotalV, setSubTotalV] = React.useState(0)
     const [subTotalVI, setSubTotalVI] = React.useState(0)
+    const [discount, setDiscount] = React.useState(0)
 
 
     React.useEffect(() => {
@@ -91,12 +92,12 @@ export default function CrearN(props) {
             return false
         }
 
-        registrarUnidad({ iva: (subTotalV - subTotalVI) * 0.12, client_id: finalConsumer ? '' : client, final_consumer: finalConsumer ? 1 : 0, total: subTotalV + ((subTotalV - subTotalVI) * 0.12), data: productos }, initializer,limpiar, imprimir)
+        registrarUnidad({discount:discount, iva: (subTotalV - subTotalVI) * 0.12, client_id: finalConsumer ? '' : client, final_consumer: finalConsumer ? 1 : 0, total: subTotalV + ((subTotalV - subTotalVI) * 0.12), data: productos }, initializer, limpiar, imprimir)
 
         props.setOpen(false)
         obtenerProductos(setProductosData, initializer)
 
-    
+
 
 
     }
@@ -110,6 +111,7 @@ export default function CrearN(props) {
         setClient("")
         setFinalConsumer(false)
         setProducto("")
+        setDiscount(0)
         setProductos([])
         setAlmacen([])
         props.setSelected(null)
@@ -150,11 +152,11 @@ export default function CrearN(props) {
         let t = productos.slice()
         let tot = subTotalV - row.subtotal
         let toti = row.has_iva == 0 ? subTotalVI - row.subtotal : subTotalVI
-
+        let dsc = discount-row.hasOwnProperty('discount')?row.discount:0
 
         setProductos(t.filter((e, i) => i != id))
         setCantidad('')
-
+        setDiscount(dsc)
         setProducto("")
         setSubTotalV(tot)
         setSubTotalVI(toti)
@@ -208,6 +210,14 @@ export default function CrearN(props) {
         }
 
     }
+    
+    const obtenerFraccionUnidades=(cantidad,fraccion)=>{
+        let frac = ((cantidad % 1)*fraccion).toFixed(1)*1
+        let unity =cantidad-(cantidad % 1)
+
+        return {unity,frac}
+
+    }
     const agregar = () => {
         if (producto != "" && cantidad != "" && cantidad > 0 && cantidad > 0) {
             let t = productos.slice()
@@ -217,9 +227,15 @@ export default function CrearN(props) {
             if (!existeEnDetalle(productoC.id)) {
 
                 if ((productoC.stock - cantidad) >= 0) {
-                    t.push({ has_iva: productoC.has_iva, product: productoC.name, bar_code: productoC.bar_code, stock: (productoC.stock - cantidad), product_id: productoC.id, quantity: cantidad, fraction: fraction, price: productoC.sale_price, subtotal: (cantidad * productoC.sale_price) })
+                   
+                    let frac = ((cantidad % 1)*productoC.fraction).toFixed(1)*1
+                   
+                    let unity =cantidad-(cantidad % 1)
+               
+                    t.push({ unity:unity, warehouse: productoC.warehouse, has_iva: productoC.has_iva, product: productoC.name, bar_code: productoC.bar_code, stock: (productoC.stock - cantidad), product_id: productoC.id, quantity: cantidad, fraction: frac, price: productoC.sale_price, subtotal: (cantidad * productoC.sale_price) })
                     subT = subT + (cantidad * productoC.sale_price)
                     subTSinIva = subTSinIva + (productoC.has_iva == 0 ? (cantidad * productoC.sale_price) : 0)
+
                 } else {
                     outStock = true
                 }
@@ -239,9 +255,10 @@ export default function CrearN(props) {
 
             }) */
             setSubTotalV(subT)
+
             setSubTotalVI(subTSinIva)
             setProductos(t)
-            
+
             setCantidad('')
             setFraction('')
 
@@ -293,9 +310,9 @@ export default function CrearN(props) {
                 return 0
             } else {
                 let decT = (val * 1) / obj.fraction
-               
 
-             
+
+
                 return decT
             }
         }
@@ -404,7 +421,7 @@ export default function CrearN(props) {
 
                                 }
                             }}
-                            getOptionLabel={(option) => option.bar_code + " - " + option.name + "- stock: " + option.stock + (option.fraction!=0? " - fraccion: " + (option.stock*option.fraction):"")}
+                            getOptionLabel={(option) => option.bar_code + " - " + option.name + "- Unidad: " + obtenerFraccionUnidades(option.stock,option.fraction).unity + (option.fraction != 0 ? " - fraccion: " + obtenerFraccionUnidades(option.stock,option.fraction).frac : "")}
                             // prints the selected value
                             renderInput={params => (
                                 <TextField variant="outlined" {...params} label="Seleccione un producto" variant="outlined" fullWidth />
@@ -412,7 +429,7 @@ export default function CrearN(props) {
                         />
 
                     </Grid>
-                    <Grid item xs={12} md={ productoC!=null?(productoC.fraction!=0?6:12):12} >    <TextField
+                    <Grid item xs={12} md={productoC != null ? (productoC.fraction != 0 ? 6 : 12) : 12} >    <TextField
                         variant="outlined"
                         style={{ width: '100%' }}
                         type="number"
@@ -422,43 +439,43 @@ export default function CrearN(props) {
                         value={cantidad}
                         onChange={(e) => {
                             setCantidad(e.target.value)
-                            if(productoC!=null){
+                            if (productoC != null) {
                                 if (productoC.fraction != 0) {
                                     setFraction(cambiarFraccionamiento(productoC, 'cantidad', e.target.value))
-    
+
                                 }
                             }
-                           
+
                         }}
 
                     /></Grid>
                     {
-                        productoC!=null?
-                        productoC.fraction != 0 ?
-                            <Grid item xs={12} md={finalConsumer ? 6 : 6} >    <TextField
-                                variant="outlined"
-                                style={{ width: '100%' }}
-                             
-                                size="small"
-                                label="Fracciones"
+                        productoC != null ?
+                            productoC.fraction != 0 ?
+                                <Grid item xs={12} md={finalConsumer ? 6 : 6} >    <TextField
+                                    variant="outlined"
+                                    style={{ width: '100%' }}
 
-                                value={fraction}
-                                onChange={(e) => {
-                                    const re = /^[0-9\b]+$/;
+                                    size="small"
+                                    label="Fracciones"
 
-                                    if (e.target.value === "" || re.test(e.target.value)) {
-                                    setFraction(e.target.value)
-                                    setCantidad(cambiarFraccionamiento(productoC, 'fraccion', e.target.value).toFixed(3)*1)
+                                    value={fraction}
+                                    onChange={(e) => {
+                                        const re = /^[0-9\b]+$/;
 
-                                    }
-                                }}
+                                        if (e.target.value === "" || re.test(e.target.value)) {
+                                            setFraction(e.target.value)
+                                            setCantidad(cambiarFraccionamiento(productoC, 'fraccion', e.target.value).toFixed(3) * 1)
 
-                            /></Grid>
-                            : null :null
+                                        }
+                                    }}
+
+                                /></Grid>
+                                : null : null
                     }
 
                     {
-                        ((cantidad == 0 && fraction != 0) || (fraction == 0 && cantidad != 0)) && (productoC!=null?(productoC.fraction != 0?true:false):false) ?
+                        ((cantidad == 0 && fraction != 0) || (fraction == 0 && cantidad != 0)) && (productoC != null ? (productoC.fraction != 0 ? true : false) : false) ?
                             <Grid item xs={12} md={12}>
 
                                 <Alert severity="info">No hay stock suficiente</Alert>
@@ -476,27 +493,79 @@ export default function CrearN(props) {
                             icons={TableIcons}
                             columns={[
 
-
+                                {
+                                    title: 'Laboratorio',
+                                    field: 'warehouse',
+                                    render: rowData => (
+                                        <span >{rowData.warehouse}</span>
+                                    ),
+                                    editable: 'never'
+                                },
                                 {
                                     title: 'Producto',
                                     field: 'product',
                                     render: rowData => (
                                         <span >{rowData.product}</span>
-                                    ),
+                                    ), editable: 'never'
                                 },
-                                { title: "Código de Barras", field: "bar_code" },
+                                { title: "Descuento", field: "discount", type: "currency" },
+                                { title: "Unidades", field: "unity", editable: 'never' },
+                                { title: "Fracciones", field: "fraction", editable: 'never' },
 
-                                { title: "Stock", field: "stock" },
                                 { title: "Precio", field: "price", type: "currency" },
 
-                                { title: "Cantidad", field: "quantity" },
 
-                                { title: "SubTotal", field: "subtotal", type: "currency" },
+                                { title: "SubTotal", field: "subtotal", type: "currency", editable: 'never' },
 
 
 
 
                             ]}
+                            cellEditable={{
+                                onCellEditApproved: (newValue, oldValue, rowData, columnDef) => {
+                                    return new Promise((resolve, reject) => {
+                                        setTimeout(() => {
+                                            if (newValue !== "") {
+                                                if (newValue >= 0) {
+                                                    const dataUpdate = [...productos];
+
+                                                    const index = rowData.tableData.id;
+                                                    dataUpdate[index][columnDef.field] = newValue;
+                                                    //RECALCULAR SUBTOTAL
+                                                    let nuevoSub = (dataUpdate[index].quantity * dataUpdate[index].price).toFixed(2)
+                                                    //RESTAR DESCUENTO
+                                                    nuevoSub = dataUpdate[index].hasOwnProperty('discount')?(nuevoSub - dataUpdate[index].discount):nuevoSub
+                                                    let disc=0;
+                                                    if(columnDef.field=="discount"){
+                                                        if(dataUpdate[index].hasOwnProperty('discount')){
+                                                           let m =  dataUpdate[index].discount-(oldValue!=undefined?oldValue:0)
+                                                           console.log(dataUpdate[index].discount)
+                                                           console.log(oldValue)
+                                                            disc =  discount+(m)
+                                                        }
+                                                      
+
+                                                    }
+
+                                                    //CALCULAR EL SUBTOTAL
+                                                    let tSub = parseFloat((subTotalV - dataUpdate[index].subtotal)) + parseFloat(nuevoSub);
+                                                    //CALCULAR EL SUBTOTAL SI ES IVA ==0
+                                                    let tSubSinIva =  dataUpdate[index].has_iva == 0 ? tSub : 0
+                                                    dataUpdate[index].subtotal = nuevoSub
+
+                                                    setSubTotalV(tSub)
+                                                    setSubTotalVI(tSubSinIva)
+                                                    setDiscount(disc)
+                                                    setProductos([...dataUpdate]);
+
+                                                }
+                                            }
+                                            resolve();
+                                        }, 1000)
+                                    });
+                                }
+                            }}
+
                             data={
                                 productos
                             }
@@ -553,7 +622,20 @@ export default function CrearN(props) {
 
                             size="small"
                             label="SubTotal"
-                            value={subTotalV}
+                            value={subTotalV.toFixed(2)}
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                            }}
+                        />
+
+                    </Grid>
+                    <Grid item xs={12} md={12} style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                        <TextField
+                            variant="outlined"
+
+                            size="small"
+                            label="Descuento"
+                            value={discount.toFixed(2)}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                             }}
@@ -579,7 +661,7 @@ export default function CrearN(props) {
 
                             size="small"
                             label="Total"
-                            value={subTotalV + ((subTotalV - subTotalVI) * 0.12)}
+                            value={(subTotalV + ((subTotalV - subTotalVI) * 0.12)).toFixed(2)}
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                             }}

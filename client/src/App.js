@@ -49,6 +49,9 @@ import Kardex from './containers/Inventario/Kardex/Index'
 import Reporte from './containers/Inventario/Reporte/Index'
 import Roles from './containers/Inventario/Roles/Index'
 import Cajas from './containers/Inventario/Cajas/Index'
+import Laboratorio from './containers/Inventario/Bodegas/Index'
+import Zonas from './containers/Inventario/Zonas/Index'
+
 import { indigo } from '@material-ui/core/colors';
 
 function Alert(props) {
@@ -190,6 +193,10 @@ export default function App(props) {
                   <Route exact path="/inventario/transferencias" component={Transferencias} />
                   <Route exact path="/inventario/ajustes" component={Ajustes} />
                   <Route exact path="/facturas" component={Facturas} />
+                  <Route exact path="/laboratorios" component={Laboratorio} />
+              
+                  <Route exact path="/zonas" component={Zonas} />
+
                   <Route exact path="/clientes" component={Clientes} />
                   <Route exact path="/personal" component={Personal} />
                
