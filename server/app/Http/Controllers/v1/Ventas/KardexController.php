@@ -16,7 +16,7 @@ class KardexController extends Controller
             ->selectRaw('kardexes.stock*products.fraction total_fraction,products.id,products.fraction,products.name,products.bar_code,kardexes.concept,kardexes.quantity,kardexes.stock,kardexes.type,users.names,users.last_names,kardexes.created_at')->get();
             $kp1 = Kardex::where('concept','=','E')->count();
             $kp2 = Kardex::where('concept','=','S')->count();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 'entrada'=>$kp1,
@@ -25,7 +25,7 @@ class KardexController extends Controller
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'

@@ -18,14 +18,14 @@ class TransferController extends Controller
             ->join('warehouses as w1', 'transfers.warehouse_origin', '=', 'w1.id')
             ->join('warehouses as w2', 'transfers.warehouse_destination', '=', 'w2.id')
             ->selectRaw('p.image,p.name,inventories.jp_code,inventories.supplier_code,w1.name as warehouse_origin,w2.name as warehouse_destination,transfers.created_at')->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -53,13 +53,13 @@ class TransferController extends Controller
                 $ord->save();
                }
             }
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -69,7 +69,7 @@ class TransferController extends Controller
     public function show($id)
     {
         $data = Transfer::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -80,13 +80,13 @@ class TransferController extends Controller
         try {
             $co = Transfer::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -98,7 +98,7 @@ class TransferController extends Controller
     {
         $data = Transfer::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'

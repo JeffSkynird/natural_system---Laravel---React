@@ -31,6 +31,9 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import CrearCliente from '../../Clientes/componentes/Crear'
 import { downloadFiles, printTicket } from '../../../../utils/API/reporte';
+import { PUBLIC_PATH } from '../../../../config/API';
+import Cambio from './Cambio'
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -41,6 +44,8 @@ export default function CrearN(props) {
     const [open, setOpen] = React.useState(false)
     const [finalConsumer, setFinalConsumer] = React.useState(false)
     const [crearCliente, setCrearCliente] = React.useState(false)
+    const [cambioCliente, setCambioCliente] = React.useState(false)
+    const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
 
     const [cantidad, setCantidad] = React.useState("")
     const [fraction, setFraction] = React.useState("")
@@ -232,7 +237,7 @@ export default function CrearN(props) {
                    
                     let unity =cantidad-(cantidad % 1)
                
-                    t.push({ unity:unity, warehouse: productoC.warehouse, has_iva: productoC.has_iva, product: productoC.name, bar_code: productoC.bar_code, stock: (productoC.stock - cantidad), product_id: productoC.id, quantity: cantidad, fraction: frac, price: productoC.sale_price, subtotal: (cantidad * productoC.sale_price) })
+                    t.push({image:productoC.image, description:productoC.description,unity:unity, warehouse: productoC.warehouse, has_iva: productoC.has_iva, product: productoC.name, bar_code: productoC.bar_code, stock: (productoC.stock - cantidad), product_id: productoC.id, quantity: cantidad, fraction: frac, price: productoC.sale_price, subtotal: (cantidad * productoC.sale_price) })
                     subT = subT + (cantidad * productoC.sale_price)
                     subTSinIva = subTSinIva + (productoC.has_iva == 0 ? (cantidad * productoC.sale_price) : 0)
 
@@ -333,6 +338,15 @@ export default function CrearN(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
+  <Cambio sistema={(subTotalV + ((subTotalV - subTotalVI) * 0.12)).toFixed(2)} setSelected={() => null} setOpen={setCambioCliente} open={cambioCliente} carga={() => null
+
+           } />
+          <Confirmar open={confirmarMensaje} setOpen={setConfirmarMensaje} accion={guardar} titulo='¿Desea continuar? Se creará la factura' customAction={  <Button         startIcon={<MonetizationOnIcon />} color="primary" onClick={()=>{
+              setCambioCliente(true)
+              setConfirmarMensaje(false)
+          }}>
+                    Cambio
+                </Button>}/>
 
             <CrearCliente sistema={null} setSelected={() => null} setOpen={setCrearCliente} open={crearCliente} carga={() => {
                 obtenerClientes(setClientData, initializer)
@@ -434,7 +448,7 @@ export default function CrearN(props) {
                         style={{ width: '100%' }}
                         type="number"
                         size="small"
-                        label="Cantidad"
+                        label="Unidad"
 
                         value={cantidad}
                         onChange={(e) => {
@@ -492,7 +506,17 @@ export default function CrearN(props) {
                             id={1}
                             icons={TableIcons}
                             columns={[
-
+                                {
+                                    title: 'Imágen',
+                                    field: 'avatar',
+                                    render: rowData => (
+                                        <img
+                                            style={{ height: 36, width: 36, borderRadius: 36 ,cursor: 'pointer' }}
+                                            src={PUBLIC_PATH+"storage/" + rowData.image}
+                                        />
+                                    ),
+                                    editable: 'never',
+                                },
                                 {
                                     title: 'Laboratorio',
                                     field: 'warehouse',
@@ -506,6 +530,13 @@ export default function CrearN(props) {
                                     field: 'product',
                                     render: rowData => (
                                         <span >{rowData.product}</span>
+                                    ), editable: 'never'
+                                },
+                                {
+                                    title: 'Descripcion',
+                                    field: 'description',
+                                    render: rowData => (
+                                        <span >{rowData.description}</span>
                                     ), editable: 'never'
                                 },
                                 { title: "Descuento", field: "discount", type: "currency" },
@@ -578,6 +609,14 @@ export default function CrearN(props) {
                                 isFreeAction: true,
                                 onClick: (event, rowData) => {
                                     agregar()
+                                }
+                            },
+                            {
+                                icon: TableIcons.MonetizationOnIcon,
+                                tooltip: 'Cambio',
+                                isFreeAction: true,
+                                onClick: (event, rowData) => {
+                                  setCambioCliente(true)
                                 }
                             },
                             {
@@ -678,7 +717,7 @@ export default function CrearN(props) {
                     Cancelar
                 </Button>
                 <Button color="primary" disabled={productos.length == 0} onClick={() => {
-                    guardar()
+                    setConfirmarMensaje(true)
                 }}>
                     Guardar
                 </Button>

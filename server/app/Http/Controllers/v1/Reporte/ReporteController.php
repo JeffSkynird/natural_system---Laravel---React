@@ -41,7 +41,7 @@ class ReporteController extends Controller
         if ($data != null) {
             return $data->stream('reporte.pdf');
         } else {
-            return response()->json(['error' => 'No se encontraron datos'], 404);
+            return json_encode(['error' => 'No se encontraron datos'], 404);
         }
     }
     public function obtenerFraccionUnidades($cantidad,$fraccion){

@@ -18,14 +18,14 @@ class AdjustmentController extends Controller
             $data = Adjustment::join('products', 'adjustments.product_id', '=', 'products.id')
             ->join('reasons', 'adjustments.reason_id', '=', 'reasons.id')
             ->selectRaw('products.name,products.bar_code,products.stock,products.fraction,adjustments.quantity as quantity,reasons.name as reason,adjustments.created_at')->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -76,13 +76,13 @@ class AdjustmentController extends Controller
               
                }
             }
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -92,7 +92,7 @@ class AdjustmentController extends Controller
     public function show($id)
     {
         $data = Adjustment::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -103,13 +103,13 @@ class AdjustmentController extends Controller
         try {
             $co = Adjustment::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -121,7 +121,7 @@ class AdjustmentController extends Controller
     {
         $data = Adjustment::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'

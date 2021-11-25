@@ -18,14 +18,14 @@ class InvoiceController extends Controller
             $data = Invoice::leftjoin('clients', 'invoices.client_id', '=', 'clients.id')
           
             ->selectRaw('invoices.status,invoices.created_at,invoices.id,invoices.final_consumer,invoices.total,invoices.iva,clients.document,clients.names')->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -76,14 +76,14 @@ class InvoiceController extends Controller
                     'user_id'=>Auth::id()
                 ]);
             }
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "numero_factura" => $inv->id,
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -93,7 +93,7 @@ class InvoiceController extends Controller
     public function show($id)
     {
         $data = Invoice::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -104,13 +104,13 @@ class InvoiceController extends Controller
         try {
             $co = Invoice::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -139,13 +139,13 @@ class InvoiceController extends Controller
             InvoiceProduct::where('invoice_id',$id)->delete();
             $data->status='C';
             $data->save();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Anulación exitosa',
                 "type" => 'success'
             ]);
         }else{
-            return response()->json([
+            return json_encode([
                 "status" => "400",
                 "message" => 'La factura ya está anulada',
                 "type" => 'error'
@@ -157,7 +157,7 @@ class InvoiceController extends Controller
     {
         $data = Invoice::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'

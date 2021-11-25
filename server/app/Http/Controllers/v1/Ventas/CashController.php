@@ -19,14 +19,14 @@ class CashController extends Controller
         try {
             $userId = Auth::id();
             $data = Cash::join('users', 'cashes.user_id', '=', 'users.id')->where('cashes.user_id', $userId)->orderBy('id', 'desc')->selectRaw("cashes.id,start_amount,final_amount,status, concat_ws(' ', users.names, users.last_names) as names,cashes.created_at")->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data' => $data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -45,7 +45,7 @@ class CashController extends Controller
                 [DB::raw('DATE(created_at)'), '=', Carbon::now()->format('Y-m-d')]
             ])->first();
             if (!is_null($cashC)) {
-                return response()->json([
+                return json_encode([
                     "status" => "200",
                     "message" => 'Ya ha abierto la caja hoy',
                     "type" => 'error'
@@ -57,13 +57,13 @@ class CashController extends Controller
                 'start_amount' => $amountStart,
                 'final_amount' => 0
             ]);
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Caja abierta con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -85,7 +85,7 @@ class CashController extends Controller
             })
             ->select('denominations.id', 'denominations.name', 'denominations.amount', DB::raw('COALESCE( splits.quantity, 0 ) as quantity'))->get();
 
-        return response()->json([
+        return json_encode([
             "status" => "200",
             'data' => $denominations,
             "message" => 'Datos obtenidos con éxito',
@@ -95,7 +95,7 @@ class CashController extends Controller
     public function splits()
     {
         $denominations = Denomination::select('id', 'name', 'amount', DB::raw('0 as quantity'))->get();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             'data' => $denominations,
             "message" => 'Datos obtenidos con éxito',
@@ -113,7 +113,7 @@ class CashController extends Controller
                 [DB::raw('DATE(created_at)'), '=', Carbon::now()->format('Y-m-d')]
             ])->first();
             if (is_null($cash)) {
-                return response()->json([
+                return json_encode([
                     "status" => "200",
                     "message" => 'No ha abierto la caja hoy',
                     "type" => 'error'
@@ -138,13 +138,13 @@ class CashController extends Controller
             $cash->save();
 
             $this->close($cash->id);
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Desglose registrado con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -161,14 +161,14 @@ class CashController extends Controller
         ])->first();
 
         if (is_null($cash)) {
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'abierta' => 0,
                 "message" => 'No ha abierto la caja aún',
                 "type" => 'error'
             ]);
         }else{
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'abierta' => 1,
                 "message" => 'Caja abierta',
@@ -182,13 +182,13 @@ class CashController extends Controller
         try {
             $co = Cash::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -200,7 +200,7 @@ class CashController extends Controller
     {
         $data = Cash::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'
