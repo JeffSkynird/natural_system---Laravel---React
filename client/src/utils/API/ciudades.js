@@ -7,7 +7,7 @@ export const obtenerTodos = (setData,store) => {
 
   const { usuario, cargarUsuario, mostrarNotificacion, mostrarLoader } = store;
 
-  let url = LARAVEL_SGI+"cities"
+  let url = ENTRYPOINT+"cities"
   let setting = {
     method: "Get",
     url: url,
