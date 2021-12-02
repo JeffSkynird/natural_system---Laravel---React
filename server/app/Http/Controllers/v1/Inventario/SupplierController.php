@@ -36,14 +36,14 @@ class SupplierController extends Controller
         try {
             $data = Supplier::leftjoin('orders', 'orders.supplier_id', '=', 'suppliers.id')
             ->selectRaw('suppliers.*,count(orders.*) as products')->groupBy('suppliers.id')->orderBy('id','desc')->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -66,13 +66,13 @@ class SupplierController extends Controller
             $request['logo']=$url;
             $request['user_id']=Auth::id();
             Supplier::create($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -82,7 +82,7 @@ class SupplierController extends Controller
     public function show($id)
     {
         $data = Supplier::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -96,13 +96,13 @@ class SupplierController extends Controller
            
 
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -114,7 +114,7 @@ class SupplierController extends Controller
     {
         $data = Supplier::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'

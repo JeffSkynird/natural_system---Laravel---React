@@ -33,6 +33,11 @@ export default function Crear(props) {
                 {props.body}
             </DialogContent>
             <DialogActions>
+                {
+                    props.hasOwnProperty('customAction')&&(
+                        props.customAction
+                    )
+                }
                 <Button onClick={() => props.setOpen(false)} color="default">
                     Cancelar
                 </Button>

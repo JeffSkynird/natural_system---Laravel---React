@@ -14,7 +14,7 @@ class UsuarioController extends Controller
 {
     public function index(){
         $usuarios = User::all();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "data"=> $usuarios,
             "message" => 'Listado exitoso',
@@ -45,13 +45,13 @@ class UsuarioController extends Controller
             $params['user_id']=Auth::id();
             $us= User::create($params);
             $this->asignRole($us->id,$params['rol']);
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -61,7 +61,7 @@ class UsuarioController extends Controller
     public function show($id)
     {
         $data = User::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -70,7 +70,7 @@ class UsuarioController extends Controller
     }
     public function showAuth()
     {
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => Auth::user(),
@@ -93,13 +93,13 @@ class UsuarioController extends Controller
             }
             $user->save();
             $this->asignRole($id, $request->input('rol'));
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -133,13 +133,13 @@ class UsuarioController extends Controller
             }
             $user->save();
 
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -151,7 +151,7 @@ class UsuarioController extends Controller
         $data = User::find($id);
         $data->roles()->detach();
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'
@@ -180,7 +180,7 @@ class UsuarioController extends Controller
         $save->image_path = "storage/".$us->id."_".$name;
         $save->save();
            
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Actualización exitosa',
             "type" => 'success'

@@ -22,7 +22,7 @@ class OrderController extends Controller
             $data = Order::join('suppliers', 'orders.supplier_id', '=', 'suppliers.id')
                 ->selectRaw('orders.*,suppliers.business_name as supplier')->groupBy('orders.id', 'suppliers.business_name')->get();
             $totalCompras = Order::sum('total');
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data' => $data,
                 'total_compras' => floatval($totalCompras),
@@ -30,7 +30,7 @@ class OrderController extends Controller
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -73,7 +73,7 @@ class OrderController extends Controller
         if ($data->status != 'C') {
             $inv = OrderProduct::where('order_id', $id)->get();
             if($this->validarExistencia($inv)){
-                return response()->json([
+                return json_encode([
                     "status" => "500",
                     "message" => 'No se puede anular, productos no tienen suficiente existencia',
                     "type" => 'error'
@@ -97,13 +97,13 @@ class OrderController extends Controller
             OrderProduct::where('order_id', $id)->delete();
             $data->status = 'E';
             $data->save();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Anulación exitosa',
                 "type" => 'success'
             ]);
         } else {
-            return response()->json([
+            return json_encode([
                 "status" => "400",
                 "message" => 'La compra ya está anulada',
                 "type" => 'error'
@@ -118,14 +118,14 @@ class OrderController extends Controller
                 ->join('suppliers as su', 'or.supplier_id', '=', 'su.id')
                 ->where('or.id', $id)
                 ->selectRaw('order_products.id as id_detalle,su.business_name as supplier,su.id as supplier_id,pro.id as product_id,pro.name as product,order_products.quantity')->groupBy('order_products.id', 'su.id', 'pro.id', 'order_products.quantity')->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data' => $data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -155,13 +155,13 @@ class OrderController extends Controller
                 }
             }
 
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Datos guardados con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -184,13 +184,13 @@ class OrderController extends Controller
                     $this->createDetailOrder($val2['product_id'], $val2['quantity'], $order->id);
                 }
             }
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -221,7 +221,7 @@ class OrderController extends Controller
                 'name' => 'Anulado'
             ]
         );
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "data" => $ar,
             "type" => 'success'
@@ -253,7 +253,7 @@ class OrderController extends Controller
                     }
                 }
             }
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Estado actualizado con éxito',
                 "type" => 'success'
@@ -279,14 +279,14 @@ class OrderController extends Controller
                 ])
                 ->selectRaw('products.id as product_id,products.name,products.bar_code,products.stock')->get();
 
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Datos obtenidos con éxito',
                 "data" => $data,
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -296,7 +296,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $data = Order::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -310,7 +310,7 @@ class OrderController extends Controller
         $data = Order::find($id);
         $data->authorized_by = $idUser;
         $data->save();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Autorización exitosa',
             "type" => 'success'
@@ -335,13 +335,13 @@ class OrderController extends Controller
                     $this->createDetailOrder($val2['product_id'], $val2['quantity'], $order->id);
                 }
             }
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -355,13 +355,13 @@ class OrderController extends Controller
             $data = Order::find($id);
 
             $data->delete();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Eliminación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'

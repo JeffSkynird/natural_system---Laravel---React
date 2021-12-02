@@ -12,14 +12,14 @@ class CountryController extends Controller
     {
         try {
             $data = Country::all();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -30,13 +30,13 @@ class CountryController extends Controller
     {
         try {
             Country::create($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -46,7 +46,7 @@ class CountryController extends Controller
     public function show($id)
     {
         $data = Country::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -58,13 +58,13 @@ class CountryController extends Controller
             $name = $request->input('name');
             $co = Country::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -76,7 +76,7 @@ class CountryController extends Controller
     {
         $data = Country::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'

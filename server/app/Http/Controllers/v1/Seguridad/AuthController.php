@@ -43,7 +43,7 @@ class AuthController extends Controller
                 ]);
             }
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -55,13 +55,13 @@ class AuthController extends Controller
         try {
             $user = Auth::user()->token();
             $user->revoke();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Sesión finalizada correctamente',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'

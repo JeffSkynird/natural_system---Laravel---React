@@ -12,14 +12,14 @@ class FeatureController extends Controller
     {
         try {
             $data = Feature::all();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -30,13 +30,13 @@ class FeatureController extends Controller
     {
         try {
             Feature::create($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -46,7 +46,7 @@ class FeatureController extends Controller
     public function show($id)
     {
         $data = Feature::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -57,13 +57,13 @@ class FeatureController extends Controller
         try {
             $co = Feature::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -75,7 +75,7 @@ class FeatureController extends Controller
     {
         $data = Feature::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'

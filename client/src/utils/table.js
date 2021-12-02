@@ -33,6 +33,7 @@ import AutorenewIcon from '@material-ui/icons/Autorenew';
 import PhoneInTalkIcon from '@material-ui/icons/PhoneInTalk';
 import EventIcon from '@material-ui/icons/Event';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 export const TableIcons = {
     
     RefreshIcon: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />),
@@ -67,7 +68,8 @@ export const TableIcons = {
     PhoneInTalkIcon:forwardRef((props, ref) => <PhoneInTalkIcon {...props} ref={ref} />),
     EventIcon:forwardRef((props, ref) => <EventIcon {...props} ref={ref} />),
     AccountCircleIcon:forwardRef((props, ref) => <AccountCircleIcon {...props} ref={ref} />),
-    SaveIcon:forwardRef((props, ref) => <SaveIcon {...props} ref={ref} />)
+    SaveIcon:forwardRef((props, ref) => <SaveIcon {...props} ref={ref} />),
+    MonetizationOnIcon:forwardRef((props, ref) => <MonetizationOnIcon {...props} ref={ref} />)
 
     
     

@@ -16,14 +16,14 @@ class InventoryController extends Controller
             $data = Product::join('inventories', 'products.id', '=', 'inventories.product_id')
             ->join('unities', 'products.unity_id', '=', 'unities.id')
         ->select('products.*','unities.name as unity','inventories.*')->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -34,13 +34,13 @@ class InventoryController extends Controller
     {
         try {
             Inventory::create($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -50,7 +50,7 @@ class InventoryController extends Controller
     public function show($id)
     {
         $data = Inventory::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -61,13 +61,13 @@ class InventoryController extends Controller
         try {
             $co = Inventory::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -79,7 +79,7 @@ class InventoryController extends Controller
     {
         $data = Inventory::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'

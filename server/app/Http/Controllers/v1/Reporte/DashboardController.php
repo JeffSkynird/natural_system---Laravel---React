@@ -31,7 +31,7 @@ class DashboardController extends Controller
                 array_push($cantidad, $value->count);
                 array_push($ventas, $value->sums);
             }
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data' => array(
                     'meses' => $meses,
@@ -42,7 +42,7 @@ class DashboardController extends Controller
                 "type" => 'success'
             ]);
         } catch (\Exception $exception) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $exception->getMessage(),
                 "type" => 'error'
@@ -59,7 +59,7 @@ class DashboardController extends Controller
             ['status', '=', 'A'],
             [DB::raw('DATE(created_at)'), '=', Carbon::now()->format('Y-m-d')]
         ])->sum('total');
-        return response()->json([
+        return json_encode([
             "status" => "200",
             'data' => array(
                 'factura' => round(doubleval($invoice), 2),
@@ -80,7 +80,7 @@ class DashboardController extends Controller
             ['status', '=', 'A'],
             [DB::raw('created_at'), '>=', DB::raw("date_trunc('month', now()) - interval '3 month'")]
         ])->sum('total');
-        return response()->json([
+        return json_encode([
             "status" => "200",
             'data' => array(
                 'ventas' => round(doubleval($invoice), 2),

@@ -346,7 +346,7 @@ export default function Crearn(props) {
                         style={{  width: '100%' }}
                         type="number"
                         size="small"
-                        label="Cantidad"
+                        label="Unidad"
                         min="0"
                         value={cantidad}
                         onChange={(e) => {

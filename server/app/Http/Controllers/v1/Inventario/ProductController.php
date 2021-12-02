@@ -30,14 +30,14 @@ class ProductController extends Controller
             ->join('categories', 'products.category_id', '=', 'categories.id')
             ->leftjoin('warehouses', 'products.warehouse_id', '=', 'warehouses.id')
     ->select('warehouses.name as warehouse','warehouses.id as warehouse_id','products.*','unities.name as unity','categories.name as category')->orderBy('id','desc')->get();
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 'data'=>$data,
                 "message" => 'Data obtenida con éxito',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -54,13 +54,13 @@ class ProductController extends Controller
             $request['user_id']=Auth::id();
             Product::create($request->all());
 
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Registro exitoso',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -70,7 +70,7 @@ class ProductController extends Controller
     public function show($id)
     {
         $data = Product::find($id);
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Datos obtenidos con éxito',
             "data" => $data,
@@ -100,13 +100,13 @@ class ProductController extends Controller
         
             $co = Product::find($id);
             $co->update($request->all());
-            return response()->json([
+            return json_encode([
                 "status" => "200",
                 "message" => 'Modificación exitosa',
                 "type" => 'success'
             ]);
         } catch (\Exception $e) {
-            return response()->json([
+            return json_encode([
                 "status" => "500",
                 "message" => $e->getMessage(),
                 "type" => 'error'
@@ -118,7 +118,7 @@ class ProductController extends Controller
     {
         $data = Product::find($id);
         $data->delete();
-        return response()->json([
+        return json_encode([
             "status" => "200",
             "message" => 'Eliminación exitosa',
             "type" => 'success'
