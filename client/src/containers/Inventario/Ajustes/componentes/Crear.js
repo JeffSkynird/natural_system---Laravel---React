@@ -191,12 +191,12 @@ export default function Crearn(props) {
                
                 if(razon==2){
                     if((productoC.stock-cantidad)>=0){
-                        t.push({unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                        t.push({warehouse:productoC.warehouse,unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
                         }else{
                             outStock=true
                         }
                 }else{
-                    t.push({unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
+                    t.push({warehouse:productoC.warehouse,unity:unity,fraction:frac,product:productoC.name,bar_code:productoC.bar_code,stock:productoC.stock,product_id:productoC.id,reason_id:razon,reason:obtenerRazon(razon),quantity:cantidad})
 
                 }
             }
@@ -412,6 +412,7 @@ export default function Crearn(props) {
                             ),
                           },
                         { title: "Código de Barras", field: "bar_code" },
+                        { title: "Laboratorio", field: "warehouse" },
                         { title: "Unidades", field: "unity", editable: 'never' },
                         { title: "Fracciones", field: "fraction", editable: 'never' },
                         { title: "Tipo", field: "reason" }
@@ -453,7 +454,7 @@ export default function Crearn(props) {
                         actionsColumnIndex: -1,
                         width:'100%',
                         maxBodyHeight: 150,
-                        padding: 'dense',
+          
                         headerStyle: {
                             textAlign: 'left'
                         },

@@ -8,6 +8,7 @@
     <style>
         * {
             font-family: Verdana, Geneva, sans-serif;
+            font-size: 12px!IMPORTANT;
         }
 
         .title {
@@ -136,6 +137,8 @@
                     <th>Fracciones</th>
                     <th>Stock</th>
                     <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
                 </tr>
             </thead>
 
@@ -152,6 +155,8 @@
 
                     <td>{{ $dt['stock'] }}</td>
                     <td>{{$dt['type']=='V'?'Venta':($dt['type']=='C'?'Compra':($dt['type']=='A'?'Ajuste':'Anulación')) }}</td>
+                    <td>{{ $dt['created_at'] }}</td>
+                    <td>{{ $dt['names']  }} {{$dt['last_names']}}</td>
                 </tr>
                 @endforeach
             </tbody>

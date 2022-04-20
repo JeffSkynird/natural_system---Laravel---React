@@ -18,7 +18,7 @@ class CashController extends Controller
     {
         try {
             $userId = Auth::id();
-            $data = Cash::join('users', 'cashes.user_id', '=', 'users.id')->where('cashes.user_id', $userId)->orderBy('id', 'desc')->selectRaw("cashes.id,start_amount,final_amount,status, concat_ws(' ', users.names, users.last_names) as names,cashes.created_at")->get();
+            $data = Cash::join('users', 'cashes.user_id', '=', 'users.id')->where('cashes.user_id', $userId)->orderBy('id', 'desc')->selectRaw("cashes.updated_at,cashes.id,start_amount,final_amount,status, concat_ws(' ', users.names, users.last_names) as names,cashes.created_at")->get();
             return json_encode([
                 "status" => "200",
                 'data' => $data,
@@ -83,7 +83,7 @@ class CashController extends Controller
                 $join->on('denominations.id', '=', 'splits.denomination_id');
                 $join->on('splits.cash_id', '=', DB::raw($id));
             })
-            ->select('denominations.id', 'denominations.name', 'denominations.amount', DB::raw('COALESCE( splits.quantity, 0 ) as quantity'))->get();
+            ->select('denominations.id', 'denominations.name', 'denominations.amount', DB::raw('COALESCE( splits.quantity, 0 ) as quantity'))->orderBy('id','asc')->get();
 
         return json_encode([
             "status" => "200",
@@ -94,7 +94,7 @@ class CashController extends Controller
     }
     public function splits()
     {
-        $denominations = Denomination::select('id', 'name', 'amount', DB::raw('0 as quantity'))->get();
+        $denominations = Denomination::select('id', 'name', 'amount', DB::raw('0 as quantity'))->orderBy('id','asc')->get();
         return json_encode([
             "status" => "200",
             'data' => $denominations,

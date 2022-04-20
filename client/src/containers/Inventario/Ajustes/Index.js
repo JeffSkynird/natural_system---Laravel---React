@@ -97,7 +97,7 @@ export default function Sistemas(props) {
                       
                         { title: "Nombre", field: "name" },
                         { title: "Codigo de Barras", field: "bar_code" },
-                
+                        { title: "Laboratorio", field: "warehouse" },
                         { title: "Ajuste unidad", field: "quantity" ,render: rowData => (
                             <span>{obtenerFraccionUnidades(rowData.quantity,rowData.fraction).unity}</span>
                         ), },

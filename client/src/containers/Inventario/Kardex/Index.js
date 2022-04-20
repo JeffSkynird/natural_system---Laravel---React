@@ -122,6 +122,7 @@ export default function Sistemas(props) {
                     columns={[
                       
                         { title: "Producto", field: "name" },
+                        { title: "Laboratorio", field: "warehouse" },
                         { title: "Concepto", field: "concept",render: rowData => (
                             <span>{rowData.concept=='E'?'Entrada':'Salida'}</span>
                         ), },

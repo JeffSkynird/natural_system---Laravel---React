@@ -118,7 +118,8 @@ export default function Sistemas(props) {
                         { title: "Monto apertura", field: "start_amount" },
                         { title: "Monto Final", field: "final_amount" },
                         { title: "Usuario", field: "names" },
-                        { title: "Registro", field: "created_at", type: "datetime" },
+                        { title: "Fecha apertura", field: "created_at", type: "datetime" },
+                        { title: "Fecha cierre", field: "updated_at", type: "datetime" },
 
 
                     ]}

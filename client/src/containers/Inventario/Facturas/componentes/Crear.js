@@ -8,6 +8,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Initializer from '../../../../store/Initializer'
 import Confirmar from '../../../../components/Confirmar'
+import VerFoto from '../../../../components/Confirmar'
+
 import Slide from '@material-ui/core/Slide';
 import { Checkbox, Grid, InputAdornment, Tooltip } from '@material-ui/core';
 import { editar as editarPedido, obtenerDetalleOrden, registrar as registrarPedido, obtenerInventarioOrden, guardarAlmacen } from '../../../../utils/API/pedidos';
@@ -46,7 +48,9 @@ export default function CrearN(props) {
     const [crearCliente, setCrearCliente] = React.useState(false)
     const [cambioCliente, setCambioCliente] = React.useState(false)
     const [confirmarMensaje, setConfirmarMensaje] = React.useState(false)
+    const [foto, setFoto] = React.useState(false)
 
+    const [imageSelected, setImageSelected] = React.useState(null)
     const [cantidad, setCantidad] = React.useState("")
     const [fraction, setFraction] = React.useState("")
 
@@ -338,6 +342,14 @@ export default function CrearN(props) {
             aria-labelledby="alert-dialog-slide-title"
             aria-describedby="alert-dialog-slide-description"
         >
+              <VerFoto ancho={true} body={<img
+                style={{ height: '100%', width: '100%' }}
+                src={PUBLIC_PATH+"storage/" + imageSelected}
+            />} open={foto} setOpen={setFoto} accion={() => {
+                setImageSelected(null)
+                setFoto(false)
+            }} titulo='Foto del producto' />
+
   <Cambio sistema={(subTotalV + ((subTotalV - subTotalVI) * 0.12)).toFixed(2)} setSelected={() => null} setOpen={setCambioCliente} open={cambioCliente} carga={() => null
 
            } />
@@ -509,13 +521,17 @@ export default function CrearN(props) {
                                 {
                                     title: 'Imágen',
                                     field: 'avatar',
+                                    editable: 'never',
                                     render: rowData => (
                                         <img
+                                            onClick={() =>{
+                                                setFoto(true)
+                                                setImageSelected(rowData.image)
+                                            }}
                                             style={{ height: 36, width: 36, borderRadius: 36 ,cursor: 'pointer' }}
                                             src={PUBLIC_PATH+"storage/" + rowData.image}
                                         />
                                     ),
-                                    editable: 'never',
                                 },
                                 {
                                     title: 'Laboratorio',

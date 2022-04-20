@@ -136,6 +136,7 @@
                     <th>IVA</th>
 
                     <th>Total</th>
+                    <th>Fecha</th>
                    
                 </tr>
             </thead>
@@ -149,7 +150,7 @@
                     <td>{{ $dt['iva'] }}</td>
 
                     <td>${{ $dt['total'] }}</td>
-           
+                    <td>{{ $dt['created_at'] }}</td>
                 </tr>
                 @endforeach
             </tbody>

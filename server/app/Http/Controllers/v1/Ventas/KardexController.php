@@ -13,7 +13,9 @@ class KardexController extends Controller
         try {
             $data = Kardex::join('products', 'kardexes.product_id', '=', 'products.id')
             ->join('users', 'kardexes.user_id', '=', 'users.id')
-            ->selectRaw('kardexes.stock*products.fraction total_fraction,products.id,products.fraction,products.name,products.bar_code,kardexes.concept,kardexes.quantity,kardexes.stock,kardexes.type,users.names,users.last_names,kardexes.created_at')->get();
+            ->leftjoin('warehouses', 'products.warehouse_id', '=', 'warehouses.id')
+
+            ->selectRaw('warehouses.name as warehouse,warehouses.id as warehouse_id,kardexes.stock*products.fraction total_fraction,products.id,products.fraction,products.name,products.bar_code,kardexes.concept,kardexes.quantity,kardexes.stock,kardexes.type,users.names,users.last_names,kardexes.created_at')->get();
             $kp1 = Kardex::where('concept','=','E')->count();
             $kp2 = Kardex::where('concept','=','S')->count();
             return json_encode([
